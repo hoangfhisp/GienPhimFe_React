@@ -1,10 +1,12 @@
-.login-container {
-    background-image: url("https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQZjfXldWj-AR1QUOFBUVqe09pU1x8uHoPjWUUglrvEDlYLyPKsKe94fK_yL2d-GVxgOr7U-u_f0nY2UOOdLDkZ8CsHIwMHiy7rXgTbNDeeG5Jh5pgIiuTfFDS7jpwbwgum85LZveLvxlVUqWN94dlXlO6z8.jpg?r=fa8");
-    background-size: cover;
-    width: 100%;
-    height: auto;
-    min-height: 100vh;
-    position: relative;
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+    font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif
 }
 
 .login-overlay {
@@ -13,23 +15,6 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
 }
-
-.login-header {
-    padding-top: 20px;
-    padding-left: 44px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
-
-    .login-header a {
-        font-size: 5rem;
-        font-weight: 700;
-        text-decoration: none;
-        text-transform: uppercase;
-        color: #E50914;
-    }
 
 .login-body {
     width: 448px;
@@ -218,3 +203,62 @@
     bottom: 0;
     padding: 30px 0;
 }
+
+.forgot-password-link {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: white;
+    font-weight: null;
+    font-size: 1.6rem;
+    text-decoration: underline;
+    text-align: center;
+}
+
+    .forgot-password-link:hover {
+        color: #ffcc00;
+        text-decoration: underline;
+    }
+
+
+.dropdown-menu::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 93%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #343a40;
+}
+
+.agree-cbx {
+    height: 20px;
+    width: 20px;
+    border-radius: 2px;
+    accent-color: #fff;
+    border: 2px solid #fff;
+    margin-right: 8px;
+    margin-bottom: 21px;
+}
+
+.agree-lbl {
+    font-size: 1.4rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #fff;
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    .agree-lbl a {
+        color: #0071eb;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .agree-lbl a:hover {
+            text-decoration: underline;
+        }

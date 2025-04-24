@@ -1,6 +1,8 @@
 import React from "react";
 import NavbarMenu from "./NavbarMenu";
 import logo from "../../assets/img/logo.png" 
+import './Header.scss';  // Import file CSS vào đây
+
 
 export default function header(){
     return(

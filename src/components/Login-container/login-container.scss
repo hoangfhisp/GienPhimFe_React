@@ -1,0 +1,25 @@
+.login-container {
+    background-image: url("https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQZjfXldWj-AR1QUOFBUVqe09pU1x8uHoPjWUUglrvEDlYLyPKsKe94fK_yL2d-GVxgOr7U-u_f0nY2UOOdLDkZ8CsHIwMHiy7rXgTbNDeeG5Jh5pgIiuTfFDS7jpwbwgum85LZveLvxlVUqWN94dlXlO6z8.jpg?r=fa8");
+    background-size: cover;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    position: relative;
+}
+
+.login-header {
+    padding-top: 20px;
+    padding-left: 44px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+    .login-header a {
+        font-size: 3.3rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #E50914;
+    }
