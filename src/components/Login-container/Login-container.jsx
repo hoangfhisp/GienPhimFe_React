@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Sử dụng Link để điều hướng trong React
-import './login-container.scss';
+import './Login.scss';
 
 const LoginContainer = () => {
     return (
@@ -8,6 +8,7 @@ const LoginContainer = () => {
         <div className="login-header">
           <Link to="/">GIENPHIM</Link>
         </div>
+        <div class="login-overlay"></div>
       </div>
     );
   };

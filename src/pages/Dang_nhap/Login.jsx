@@ -37,10 +37,7 @@ const Login = () => {
               placeholder="name@example.com"
               required
             />
-            {/* Error message cho Email */}
-            {/* (Ở đây bạn có thể thêm logic để hiển thị thông báo lỗi nếu cần) */}
 
-            {/* Input cho Password */}
             <input
               type="password"
               className="login-form-input"
@@ -110,7 +107,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div class="login-overlay"></div>
     </div>
   );
 };

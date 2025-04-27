@@ -9,6 +9,15 @@ html {
     font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif
 }
 
+.login-container {
+    background-image: url("https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQZjfXldWj-AR1QUOFBUVqe09pU1x8uHoPjWUUglrvEDlYLyPKsKe94fK_yL2d-GVxgOr7U-u_f0nY2UOOdLDkZ8CsHIwMHiy7rXgTbNDeeG5Jh5pgIiuTfFDS7jpwbwgum85LZveLvxlVUqWN94dlXlO6z8.jpg?r=fa8");
+    background-size: cover;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    position: relative;
+}
+
 .login-overlay {
     position: absolute;
     width: 100%;
@@ -16,10 +25,28 @@ html {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+.login-header {
+    padding-top: 20px;
+    padding-left: 44px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+    .login-header a {
+        font-size: 5rem;
+        font-weight: 700;
+        margin-left: 60px;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #E50914;
+    }
+
 .login-body {
     width: 448px;
     height: auto;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0,0,0,0.85);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -62,17 +89,27 @@ html {
         margin-top: 30px;
     }
 
-.login-form-button {
-    color: #fff;
-    background-color: #e50914;
-    width: 100%;
-    font-size: 1.6rem;
-    padding: 16px;
-    border-radius: 4px;
-    border: 0px;
-    margin: 40px 0 14px;
-    font-weight: 700;
-}
+    .login-form-button {
+        color: #fff;
+        background-color: #e50914;
+        width: 100%;
+        font-size: 1.6rem;
+        padding: 16px;
+        border-radius: 4px;
+        border: 0;
+        margin: 40px 0 14px;
+        font-weight: 700;
+        cursor: pointer;
+      
+        /* 👇 Hiệu ứng chuyển đổi màu mượt */
+        transition: background-color 0.3s ease, color 0.3s ease;
+      
+        &:hover {
+          background-color: #b7040d; /* Màu sáng hơn khi hover */
+          color: #fff;
+        }
+      }
+      
 
 .login-phone-button {
     display: flex;
@@ -262,3 +299,243 @@ html {
         .agree-lbl a:hover {
             text-decoration: underline;
         }
+
+.signup-form-agree {
+    color: #fff;
+    font-size: 1.4rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.signup-form-other {
+    margin-top: 20px;
+}
+
+.signup-form-login {
+    font-size: 16px;
+    color: #737373;
+    margin-top: 16px;
+}
+
+.signup-form-login-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+    .signup-form-login-link:hover {
+        text-decoration: underline;
+    }
+
+.signup-term {
+    color: #737373;
+    font-size: 1.3rem;
+    margin-top: 16px;
+}
+
+    .signup-term p {
+        display: inline;
+    }
+
+    .signup-term a {
+        color: #0071eb;
+        text-decoration: none;
+    }
+
+        .signup-term a:hover {
+            text-decoration: underline;
+        }
+
+.forgot-password-link {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: white;
+    font-weight: null;
+    font-size: 1.6rem;
+    text-decoration: underline;
+    text-align: center;
+}
+
+    .forgot-password-link:hover {
+        color: #ffcc00;
+        text-decoration: underline;
+    }
+
+.reset-password-input {
+    width: 100%;
+    height: 50px;
+    margin-top: 16px;
+    padding: 0 16px;
+    color: #fff;
+    font-size: 1.6rem;
+    background-color: #333333;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    outline: none;
+}
+
+    .reset-password-input:focus {
+        border-bottom: 3px solid #eeaf67;
+    }
+
+    .reset-password-input:first-child {
+        margin-top: 25px;
+    }
+
+.reset-password-button {
+    color: #fff;
+    background-color: #e50914;
+    width: 100%;
+    font-size: 1.6rem;
+    padding: 16px;
+    border-radius: 4px;
+    border: 0px;
+    margin: 40px 0 14px;
+    font-weight: 700;
+}
+
+.reset-password-method label {
+    display: inline-block;
+    font-size: 1.6rem;
+    color: #fff;
+    margin-right: 110px;
+    cursor: pointer;
+    line-height: 1.5;
+    padding-top: 3%;
+}
+
+#status-message {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.code-input-container {
+    margin-top: 20px;
+}
+
+    .code-input-container input {
+        width: 100%;
+        height: 50px;
+        margin-top: 16px;
+        padding: 0 16px;
+        color: #fff;
+        font-size: 1.6rem;
+        background-color: #333333;
+        border: 1px solid #333333;
+        border-radius: 4px;
+        outline: none;
+    }
+
+.trogiup-body {
+    width: auto;
+    height: auto;
+    background-color: rgba(0,0,0,0.75);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    z-index: 1;
+    padding-bottom: 2.5%;
+}
+
+.trogiup-question {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    border: 0px;
+}
+
+    .trogiup-question h4 {
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .trogiup-question p {
+        font-size: 15px;
+        color: #fff;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .trogiup-question a {
+        color: #FFA725;
+        font-size: 15.5px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .trogiup-question a:hover {
+            text-decoration: underline;
+        }
+
+.back-link-container {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 17.5px;
+}
+
+.back-link {
+    color: #FFA725;
+    text-decoration: none;
+}
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+        .back-link:hover i {
+            text-decoration: underline;
+        }
+
+.text-danger {
+    display: block;
+    color: red;
+    margin-top: 5px;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.qr-container {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 20px;
+}
+
+.qr-code {
+    width: 170px; /* Điều chỉnh kích thước ảnh */
+    height: auto;
+}
+
+.transaction-info {
+    color: white;
+    font-size: 16px;
+}
+
+.transaction-label {
+    display: flex; /* Sử dụng flex để căn chỉnh */
+    justify-content: space-between; /* Căn chỉnh các thành phần trong một dòng */
+    padding: 5px 10px; /* Thêm một chút khoảng cách cho các thành phần */
+    margin: 10px 0; /* Tạo khoảng cách giữa các đoạn */
+    gap: 55px;
+}
+
+    .transaction-label strong {
+        color: #ffd900;
+        margin-right: 10px; /* Thêm khoảng cách giữa tiêu đề và giá trị */
+    }
+
+.transaction-value {
+    text-align: right; /* Canh lề phải cho các giá trị */
+    flex-grow: 1; /* Dùng flex-grow để các giá trị kéo giãn sang bên phải */
+    text-align: right; /* Đảm bảo các giá trị nằm bên phải */
+}
