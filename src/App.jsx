@@ -1,15 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom'; // Import Router từ react-router-dom
-import Routes from './routes/Route'; // Import Routes component
+import Headers from "./components/Header/Header";
+import Footer from "./components/Footer/Footer.jsx"
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import AppRoutes from "./routes/AppRoutes.jsx";
+import { useLocation } from "react-router-dom";
 
 function App() {
+  const location = useLocation();
+
+  const hiddenFooterPaths = ['/'];
+  const isFooterVisible = !hiddenFooterPaths.includes(location.pathname);
+  console.log('Current path:', location.pathname);
   return (
-    <Router>
-      <Routes />
-    </Router>
+      {isFooterVisible&&<Footer/>}
+    </div>
   );
 }
 
