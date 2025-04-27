@@ -1,0 +1,42 @@
+.phim-list-info{
+    display: flex;
+    align-items: center;
+    margin: 8px;
+    height: 110px;
+    background-color: #222e33;
+    border-radius: 8px;
+}
+.phim-avatar{
+    width: 60px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
+    margin: 12px;
+}
+.phim-info{
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;
+    overflow: hidden;
+    align-items: flex-start;
+ 
+
+}
+.phim-title{
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Giới hạn tối đa 3 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Thêm dấu "..." khi vượt quá */
+
+}
+.phim-tap{
+    color: red;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: -15px;
+}

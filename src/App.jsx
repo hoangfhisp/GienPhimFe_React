@@ -1,13 +1,22 @@
 import Headers from "./components/Header/Header";
-import LoginCard from "./components/login-card/Logincard";
+import Footer from "./components/Footer/Footer.jsx"
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import AppRoutes from "./routes/AppRoutes.jsx";
+import { useLocation } from "react-router-dom";
 
 function App() {
+  const location = useLocation();
+
+  const hiddenFooterPaths = ['/'];
+  const isFooterVisible = !hiddenFooterPaths.includes(location.pathname);
+  console.log('Current path:', location.pathname);
   return (
-    <div>
+    <div className="Main">
       <Headers />
-      <LoginCard />
+      <AppRoutes/>
+      {isFooterVisible&&<Footer/>}
     </div>
   );
 }
