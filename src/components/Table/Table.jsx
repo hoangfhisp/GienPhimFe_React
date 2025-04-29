@@ -23,7 +23,9 @@ const Table = ({
     };
 
     const sortedData = useMemo(() => {
+        if (!Array.isArray(data)) return []; // Kiểm tra nếu `data` không phải là mảng, trả về mảng rỗng
         if (!sortConfig.key) return data;
+
         const sorted = [...data].sort((a, b) => {
             const aVal = a[sortConfig.key];
             const bVal = b[sortConfig.key];
@@ -38,7 +40,7 @@ const Table = ({
 
     const paginatedData = useMemo(() => {
         const start = (currentPage - 1) * itemsPerPage;
-        return sortedData.slice(start, start + itemsPerPage);
+        return Array.isArray(sortedData) ? sortedData.slice(start, start + itemsPerPage) : []; // Kiểm tra lại nếu `sortedData` là mảng
     }, [sortedData, currentPage, itemsPerPage]);
 
     return (

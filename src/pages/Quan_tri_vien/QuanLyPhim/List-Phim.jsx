@@ -6,6 +6,15 @@ import '../../../components/Admin-board/Admin-board.scss';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import {
+    fetchMovies, searchMovies,
+    filterMovies,
+    addMovieFromAPI,
+    createMovie,
+    updateMovie,
+    deleteMovie
+} from '../../../services/movieService';
+
 const PhimList = () => {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,22 +34,24 @@ const PhimList = () => {
     // Load tất cả dữ liệu
     const fetchData = () => {
         setLoading(true);
-        axios.get('http://localhost:5039/api/Admin/Phim')
+        fetchMovies()
             .then(response => {
                 setMovies(response.data);
-                setLoading(false);
             })
             .catch(err => {
                 console.error("Lỗi tải phim:", err);
-                setLoading(false);
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     // Lọc phim theo tiêu chí
     const handleLocPhim = e => {
         e.preventDefault();
-        const query = `?theLoai=${selectedTheLoai}&quocGia=${selectedQuocGia}&ngonNgu=${selectedNgonNgu}`;
-        axios.get(`http://localhost:5039/api/Admin/Phim${query}`)
+        filterMovies({
+            theLoai: selectedTheLoai,
+            quocGia: selectedQuocGia,
+            ngonNgu: selectedNgonNgu
+        })
             .then(response => {
                 setMovies(response.data);
             })
@@ -52,7 +63,7 @@ const PhimList = () => {
     // Tìm kiếm theo tên phim
     const handleTimKiem = e => {
         e.preventDefault();
-        axios.get(`http://localhost:5039/api/Admin/Search?tenp=${tenPhim}`)
+        searchMovies(tenPhim)
             .then(response => {
                 setMovies(response.data);
             })
@@ -64,13 +75,8 @@ const PhimList = () => {
     // Thêm phim thông qua API
     const handleInputAPI = e => {
         e.preventDefault();
-        axios.post('http://localhost:5039/api/Admin/Phim/inputapi', { query: apiLink })
-            .then(() => {
-                return axios.get('http://localhost:5039/api/Admin/Phim');
-            })
-            .then(response => {
-                setMovies(response.data);
-            })
+        addMovieFromAPI(apiLink)
+            .then(() => fetchData()) // Sử dụng lại hàm fetchData đã cập nhật
             .catch(err => {
                 console.error("Lỗi thêm phim:", err);
             });
@@ -82,7 +88,7 @@ const PhimList = () => {
 
     const columns = [
         { header: "Tên phim", accessor: "tenP", render: row => <div className="ten-phim-cell">{row.tenP}</div> },
-        { header: "Thời lượng", accessor: "thuoiLuongP" },
+        { header: "Thời lượng", accessor: "thoiLuongP" },
         {
             header: "Avatar",
             accessor: "avatarP",
@@ -119,9 +125,9 @@ const PhimList = () => {
         try {
             setLoading(true);
             if (cardAction === 'create') {
-                await axios.post('http://localhost:5039/api/Admin/Phim', movieData);
+                await createMovie(movieData);
             } else {
-                await axios.put(`http://localhost:5039/api/Admin/Phim/${movieData.id}`, movieData);
+                await updateMovie(movieData.id, movieData);
             }
             fetchData();
             handleCloseCard();
@@ -136,7 +142,7 @@ const PhimList = () => {
         if (!window.confirm(`Bạn chắc chắn muốn xóa phim "${movie.tenP}"?`)) return;
         try {
             setLoading(true);
-            await axios.delete(`http://localhost:5039/api/Admin/Phim/${movie.id}`);
+            await deleteMovie(movie.id);
             fetchData();
             handleCloseCard();
         } catch (error) {
