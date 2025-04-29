@@ -1,86 +1,97 @@
-// Card.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './Card.scss';
 
-const Card = ({ action, movie, columns, onClose, onSave, onDelete }) => {
-    const renderCardContent = () => {
-        switch (action) {
-            case 'view':
-                return (
-                    <div>
-                        <h3>Xem chi tiết</h3>
-                        {columns.map((col) => (
-                            <div key={col.accessor}>
-                                <strong>{col.header}:</strong> {movie[col.accessor]}
-                            </div>
-                        ))}
-                    </div>
-                );
+const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
+    const [formData, setFormData] = useState({});
 
-            case 'edit':
-                return (
-                    <div>
-                        <h3>Chỉnh sửa thông tin</h3>
-                        <form>
-                            {columns.map((col) => (
-                                <div key={col.accessor}>
-                                    <label>{col.header}:</label>
-                                    <input
-                                        type="text"
-                                        value={movie[col.accessor]}
-                                        onChange={(e) => (movie[col.accessor] = e.target.value)}
-                                    />
-                                </div>
-                            ))}
-                            <button type="button" onClick={() => onSave(movie)}>
-                                Lưu thay đổi
-                            </button>
-                        </form>
-                    </div>
-                );
+    useEffect(() => {
+        // Khởi tạo form data khi nhận prop mới
+        setFormData(data || columns.reduce((acc, col) => {
+            acc[col.accessor] = '';
+            return acc;
+        }, {}));
+    }, [data, columns]);
 
-            case 'create':
-                return (
-                    <div>
-                        <h3>Thêm phim mới</h3>
-                        <form>
-                            {columns.map((col) => (
-                                <div key={col.accessor}>
-                                    <label>{col.header}:</label>
-                                    <input
-                                        type="text"
-                                        value={movie[col.accessor]}
-                                        onChange={(e) => (movie[col.accessor] = e.target.value)}
-                                    />
-                                </div>
-                            ))}
-                            <button type="button" onClick={() => onSave(movie)}>
-                                Thêm phim
-                            </button>
-                        </form>
-                    </div>
-                );
+    const handleInputChange = (e, accessor) => {
+        setFormData(prev => ({
+            ...prev,
+            [accessor]: e.target.value
+        }));
+    };
 
-            case 'delete':
-                return (
-                    <div>
-                        <h3>Xoá phim</h3>
-                        <p>Bạn có chắc muốn xoá bộ phim {movie.TenP}?</p>
-                        <button onClick={() => onDelete(movie)}>Xoá</button>
-                        <button onClick={onClose}>Hủy</button>
-                    </div>
-                );
-
-            default:
-                return null;
-        }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSave(formData);
     };
 
     return (
         <div className="card-overlay">
-            {renderCardContent()}
+            <div className="card-modal">
+                <button className="close-btn" onClick={onClose}>×</button>
+
+                {action === 'view' && (
+                    <div className="view-mode">
+                        <h3>Xem chi tiết</h3>
+                        {columns.map(col => (
+                            <div key={col.accessor} className="field">
+                                <label>{col.header}:</label>
+                                <div>{col.render ? col.render(data) : data[col.accessor]}</div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {(action === 'edit' || action === 'create') && (
+                    <form onSubmit={handleSubmit} className="edit-form">
+                        <h3>{action === 'edit' ? 'Chỉnh sửa' : 'Thêm mới'}</h3>
+                        {columns.map(col => (
+                            <div key={col.accessor} className="form-group">
+                                <label>{col.header}:</label>
+                                <input
+                                    type="text"
+                                    value={formData[col.accessor] || ''}
+                                    onChange={(e) => handleInputChange(e, col.accessor)}
+                                />
+                            </div>
+                        ))}
+                        <div className="form-actions">
+                            <button type="submit" className="save-btn">
+                                {action === 'edit' ? 'Lưu thay đổi' : 'Thêm mới'}
+                            </button>
+                            <button type="button" className="cancel-btn" onClick={onClose}>
+                                Hủy
+                            </button>
+                        </div>
+                    </form>
+                )}
+
+                {action === 'delete' && (
+                    <div className="delete-confirm">
+                        <h3>Xác nhận xóa</h3>
+                        <p>Bạn có chắc muốn xóa bản ghi này?</p>
+                        <div className="actions">
+                            <button className="delete-btn" onClick={() => onDelete(data)}>
+                                Xóa
+                            </button>
+                            <button className="cancel-btn" onClick={onClose}>
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
+};
+
+Card.propTypes = {
+    action: PropTypes.oneOf(['view', 'edit', 'create', 'delete']).isRequired,
+    data: PropTypes.object,
+    columns: PropTypes.array.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSave: PropTypes.func,
+    onDelete: PropTypes.func
 };
 
 export default Card;
