@@ -1,23 +1,16 @@
 
-const animelist = [
-    { id: 1, TenP: "Thăng Cấp 1 Mình", poster: "https://phimimg.com/upload/vod/20240109-1/7cd20bfff7d6ad42644017bc731a0377.jpg" , luotxem: 1 , Ratting: 100},
-    { id: 2, TenP: "Phim 2", poster: "https://cdn.animevietsub.lol/data/poster/2025/04/03/animevsub-zzodeusJQP.jpg", luotxem: 19 , Ratting: 100}
-];
-
-export default function AnimeList(){
+export default function AnimeList({data}){
     return(
-        <>
-            {animelist.map(animelist => (        
+        <>       
                 <div className="anime-item">
                     <a href="#">
-                        <img src={animelist.poster} alt={animelist.TenP}/>
-                        <p ><strong>{animelist.TenP}</strong></p>
-                        <h6>Lượt xem: {animelist.luotxem}</h6>
-                        <span className="rating-score">Rating: {animelist.Ratting}%</span>
+                        <img src={data.avatarPoster} alt={data.tenP}/>
+                        <p ><strong>{data.tenP}</strong></p>
+                        <h6>Lượt xem: {data.luotXemP}</h6>
+                        <span className="rating-score">Rating: {(data.luotThichP / (data.luotThichP + data.luotThichP))*100}%</span>
                         <span className="stars">★★★★★</span>
                     </a>
                 </div>    
-            ))}
         </>
 
     );

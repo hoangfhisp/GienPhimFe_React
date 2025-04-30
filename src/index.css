@@ -228,6 +228,12 @@ div.banner {
 
 .anime-item p{
   font-size: 18px;
+  display: -webkit-box;
+    -webkit-line-clamp: 1; 
+    line-clamp: 3;/* Giới hạn tối đa 3 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }
 
 .anime-item a {

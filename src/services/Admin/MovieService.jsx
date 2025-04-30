@@ -1,6 +1,6 @@
 // services/movieService.js
-import axios from 'axios';
-
+import * as request from "../../untils/Request.jsx";
+import axios from "axios";
 const API_URL = 'http://localhost:5039/api/Admin/Phim';
 
 const handleError = (error) => {
@@ -8,11 +8,16 @@ const handleError = (error) => {
     throw error; // Hoặc trả về thông báo lỗi thân thiện
 };
 
-export const fetchMovies = async () => {
+export const fetchMovies = async (page,limit) => {
     try {
-        const response = await axios.get('http://localhost:5039/api/Admin/Phim');
+        const response = await request.get('/Admin/Phim',{
+            params:{
+                page,
+                limit
+            }
+        });
         // Kiểm tra response.data.Data thay vì response.data
-        return response.data || [];
+        return response || [];
     } catch (error) {
         console.error("Lỗi tải phim:", error);
         return [];

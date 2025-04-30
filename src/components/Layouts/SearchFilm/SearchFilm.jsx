@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import TippyHeadless from '@tippyjs/react/headless';
 import Tippy from "@tippyjs/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import WrapperPopper from "../../Popper/Wrapper";
 import './SearchFilm.scss'
 import FilmInfo from "../../Layouts/FilmInfo/FilmInfo";
 import TabButton from "../../Button/TabButton";
-import * as phimServices  from "../../../services/api/FilmService";
-import * as searchServices from "../../../services/api/SearchSevice"
+import * as phimServices  from "../../../services/User/FilmService";
+import * as searchServices from "../../../services/User/SearchSevice"
 import useDebounce from "../../../hooks/useDebounce";
 
 export default function SearchFilm(){

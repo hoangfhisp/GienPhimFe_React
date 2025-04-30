@@ -13,7 +13,7 @@ import {
     createMovie,
     updateMovie,
     deleteMovie
-} from '../../../services/api/movieService';
+} from '../../../services/Admin/MovieService';
 
 const PhimList = () => {
     const [movies, setMovies] = useState([]);
@@ -34,7 +34,7 @@ const PhimList = () => {
     // Load tất cả dữ liệu
     const fetchData = () => {
         setLoading(true);
-        fetchMovies()
+        fetchMovies(2,5)
             .then(response => {
                 setMovies(response.data);
             })
