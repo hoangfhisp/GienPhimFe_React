@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../components/Login-container/Login.scss';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Admin-board.scss';
 import backgroundImage from '../../assets/img/background.jpg';
 import logoImage from '../../assets/img/logo.jpg';

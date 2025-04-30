@@ -10,10 +10,16 @@ import { useLocation } from "react-router-dom";
 function App() {
   const location = useLocation();
 
-  const hiddenFooterPaths = ['/'];
-  const isFooterVisible = !hiddenFooterPaths.includes(location.pathname);
+  const hiddenHeadersPaths = ['/Home'];
+  const isHeadersVisible = hiddenHeadersPaths.includes(location.pathname)
+
+  const hiddenFooterPaths = ['/Home'];
+  const isFooterVisible = hiddenFooterPaths.includes(location.pathname);
   console.log('Current path:', location.pathname);
   return (
+    <div>
+      {isHeadersVisible&&<Headers/>}
+      <AppRoutes/>
       {isFooterVisible&&<Footer/>}
     </div>
   );

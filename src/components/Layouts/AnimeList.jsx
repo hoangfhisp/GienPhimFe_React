@@ -11,7 +11,7 @@ export default function AnimeList(){
                 <div className="anime-item">
                     <a href="#">
                         <img src={animelist.poster} alt={animelist.TenP}/>
-                        <h5><strong>{animelist.TenP}</strong></h5>
+                        <p ><strong>{animelist.TenP}</strong></p>
                         <h6>Lượt xem: {animelist.luotxem}</h6>
                         <span className="rating-score">Rating: {animelist.Ratting}%</span>
                         <span className="stars">★★★★★</span>

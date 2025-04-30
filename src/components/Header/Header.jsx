@@ -1,42 +1,12 @@
-import React, { useEffect, useState } from "react";
-import TippyHeadless from '@tippyjs/react/headless';
+import React from "react";
+
 import { Link } from "react-router-dom";
-import Tippy from "@tippyjs/react";
 
 import logo from "../../assets/img/logo.png" 
 import NavbarMenu from "../Header/NavbarMenu";
-import TabButton from "../Button/TabButton";
-import * as phimServices  from "../../services/api/FilmService";
-import WrapperPopper from "../Popper/Wrapper";
-import './Header.scss'
-import FilmInfo from "../Layouts/FilmInfo/FilmInfo";
+import SearchFilm from "../Layouts/SearchFilm/SearchFilm";
 
 export default function Header(){
-    const[search,setSearch] = useState("nhấn click")
-    const [inputValue, setInputValue] = useState("");
-    const[searchResult,setSearchResult] = useState([]);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setSearchResult([1,2,3])
-        }, 3000);
-    },[])
-
-    function HandelSearch(onSearch) {
-        alert(`${onSearch} được chọn`);
-            const fetchApi = async () => {
-                let result;
-                if(!onSearch){
-                    result = await phimServices.listphim();
-                }else{
-                    result = await phimServices.phim(onSearch);
-                }
-                setSearch(result);
-            }
-        fetchApi();
-      }
-
-
 
     return(
         <>
@@ -55,28 +25,9 @@ export default function Header(){
 
                         <NavbarMenu/>
                         
-                            <form className="d-flex " onSubmit={(e) => e.preventDefault()}>
-                                
-                                <TippyHeadless
-                                    interactive = {true}
-                                    visible={searchResult.length > 0}
-                                    render={attrs => (
-                                        <WrapperPopper>
-                                            <div className="search-result" tabIndex={-1} {...attrs}>
-                                                <FilmInfo/>
-                                                <FilmInfo/>
-                                                <FilmInfo/>
-                                            </div>
-                                        </WrapperPopper>
-                                    )}
-                                    >
-                                    <div>
-                                        <input className="search-form-control me-2" type="search" name="timkiem" placeholder="Tìm anime..." value={inputValue} onChange={(e) => setInputValue(e.target.value)}/>
-                                    </div>
-                                </TippyHeadless>
+                        <SearchFilm/>
 
-                                <TabButton onSelect={() => {HandelSearch(inputValue)}}>Tìm</TabButton>
-                            </form> 
+                        <seacr/>
 
                         <ul className="navbar-nav ms-3">
                             <li className="nav-item dropdown">

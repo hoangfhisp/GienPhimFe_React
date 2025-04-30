@@ -2,7 +2,6 @@ import React from 'react';
 import LoginContainer from '../../components/Login-container/Login-container';
 import { Link } from 'react-router-dom';
 import '../../components/Login-container/Login.scss';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Help = () => {
   const faqList = [

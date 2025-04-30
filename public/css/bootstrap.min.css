@@ -3115,7 +3115,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 }
 
 @media (min-width:992px) {
-    .dropdown-menu-lg-left {
+    .-lg-left {
         right: auto;
         left: 0
     }
@@ -3132,7 +3132,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
         left: 0
     }
 
-    .dropdown-menu-xl-right {
+    .-xl-right {
         right: 0;
         left: auto
     }

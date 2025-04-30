@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function NavbarMenu({}){
     return (
         <div className="collapse navbar-collapse" id="navbarNav">
@@ -13,7 +15,7 @@ export default function NavbarMenu({}){
 function NavbarSingle({children}){
     return(
             <li className="nav-item">
-                <a className="nav-link @isHome" href="/">{children}</a>
+                 <Link to="/Home" className="nav-link @isHome" >{children}</Link>
             </li>
     );
 }
