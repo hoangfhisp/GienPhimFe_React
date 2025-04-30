@@ -8,21 +8,21 @@ import AppRoutes from "./routes/AppRoutes.jsx";
 import { useLocation } from "react-router-dom";
 
 function App() {
-  const location = useLocation();
+    const location = useLocation();
 
-  const hiddenHeadersPaths = ['/Home'];
-  const isHeadersVisible = hiddenHeadersPaths.includes(location.pathname)
+    const hiddenHeadersPaths = ['/Home'];
+    const isHeadersVisible = hiddenHeadersPaths.includes(location.pathname)
 
-  const hiddenFooterPaths = ['/Home'];
-  const isFooterVisible = hiddenFooterPaths.includes(location.pathname);
-  console.log('Current path:', location.pathname);
-  return (
-    <div>
-      {isHeadersVisible&&<Headers/>}
-      <AppRoutes/>
-      {isFooterVisible&&<Footer/>}
-    </div>
-  );
+    const hiddenFooterPaths = ['/Home'];
+    const isFooterVisible = hiddenFooterPaths.includes(location.pathname);
+    console.log('Current path:', location.pathname);
+    return (
+        <div>
+            {isHeadersVisible && <Headers />}
+            <AppRoutes />
+            {isFooterVisible && <Footer />}
+        </div>
+    );
 }
 
 export default App;
