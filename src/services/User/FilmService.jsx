@@ -1,8 +1,13 @@
 import * as request from "../../untils/Request.jsx";
 
-export const listphim = async () =>{
+export const listphim = async (page,limit) =>{
     try {
-        const res = await request.get('/phim');
+        const res = await request.get('/phim',{
+            params:{
+                page,
+                limit
+            }
+        });
         return res;
         
     } catch (error) {

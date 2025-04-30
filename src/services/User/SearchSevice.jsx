@@ -7,6 +7,7 @@ export const searchphim = async (tenp) =>{
                 tenp,
                 page: 1,
                 limit: 3
+                
             }
         });
         return res;
