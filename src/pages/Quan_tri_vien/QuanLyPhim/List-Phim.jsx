@@ -13,7 +13,7 @@ import {
     createMovie,
     updateMovie,
     deleteMovie
-} from '../../../services/movieService';
+} from '../../../services/api/movieService';
 
 const PhimList = () => {
     const [movies, setMovies] = useState([]);
