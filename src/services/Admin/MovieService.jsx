@@ -8,19 +8,26 @@ const handleError = (error) => {
     throw error; // Hoặc trả về thông báo lỗi thân thiện
 };
 
-export const fetchMovies = async (page,limit) => {
+export const fetchMovies = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/Phim',{
-            params:{
-                page,
-                limit
-            }
+        const response = await request.get('/Admin/Phim', {
+            params: { page, limit }
         });
-        // Kiểm tra response.data.Data thay vì response.data
-        return response || [];
+
+        console.log('API Response:', response);
+
+        const responseData = response.data?.data || response.data || response;
+
+        return response;
+
     } catch (error) {
         console.error("Lỗi tải phim:", error);
-        return [];
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách phim'
+        };
     }
 };
 

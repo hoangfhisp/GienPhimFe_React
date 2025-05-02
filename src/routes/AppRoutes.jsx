@@ -7,21 +7,24 @@ import Help from '../pages/Dang_nhap/Help';
 import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
 import PhimList from '../pages/Quan_tri_vien/QuanLyPhim/List-Phim';
+import TheLoaiList from '../pages/Quan_tri_vien/QuanLyTheLoai/List-The-Loai';
 import Login from '../pages/Dang_nhap/Login.jsx'
 
 
-export default function AppRoutes(){
-    return(
+export default function AppRoutes() {
+    return (
         <Routes>
-            <Route path="/Home" element = {<Home/>}/>
+            <Route path="/Home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/List-Phim" element={<PhimList />} />
+            <Route path="/List-The-Loai" element={<TheLoaiList />} />
+
             {/* Thêm route 404 nếu muốn */}
-            <Route path="*" element={<NotFound/>} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }

@@ -4,7 +4,6 @@ import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 import {
     fetchMovies, searchMovies,
@@ -31,45 +30,76 @@ const PhimList = () => {
     const [tenPhim, setTenPhim] = useState('');
     const [apiLink, setApiLink] = useState('');
 
-    // Load tất cả dữ liệu
-    const fetchData = () => {
+    const fetchData = (page = 1) => {
+        const limit = pagination.itemsPerPage || 10;
         setLoading(true);
-        fetchMovies(2,5)
-            .then(response => {
-                setMovies(response.data);
+
+        fetchMovies(page, limit)
+            .then(result => {
+                console.log('Service Result:', result);
+
+                setMovies(Array.isArray(result.data) ? result.data : []);
+
+                setPagination(prev => ({
+                    ...prev,
+                    currentPage: page,
+                    totalItems: result.pagination?.total || 0, // Sửa thành result.pagination?.total
+                    itemsPerPage: result.pagination?.limit || 10
+                }));
             })
             .catch(err => {
                 console.error("Lỗi tải phim:", err);
+                setMovies([]);
+                setPagination(prev => ({ ...prev, totalItems: 0 }));
             })
-            .finally(() => setLoading(false));
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
-    // Lọc phim theo tiêu chí
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > pagination.totalItems) return;
+        fetchData(newPage);
+    };
+
     const handleLocPhim = e => {
         e.preventDefault();
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
         filterMovies({
             theLoai: selectedTheLoai,
             quocGia: selectedQuocGia,
-            ngonNgu: selectedNgonNgu
+            ngonNgu: selectedNgonNgu,
+            page: 1,
+            limit: pagination.itemsPerPage
         })
             .then(response => {
                 setMovies(response.data);
+                setPagination(prev => ({
+                    ...prev,
+                    totalItems: response.totalItems
+                }));
             })
-            .catch(err => {
-                console.error("Lỗi lọc phim:", err);
-            });
+            .catch(err => console.error("Lỗi lọc phim:", err));
     };
 
-    // Tìm kiếm theo tên phim
     const handleTimKiem = e => {
         e.preventDefault();
-        searchMovies(tenPhim)
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        searchMovies(tenPhim, 1, pagination.itemsPerPage)
             .then(response => {
                 setMovies(response.data);
+                setPagination(prev => ({
+                    ...prev,
+                    totalItems: response.totalItems
+                }));
             })
-            .catch(err => {
-                console.error("Lỗi tìm kiếm phim:", err);
-            });
+            .catch(err => console.error("Lỗi tìm kiếm phim:", err));
     };
 
     // Thêm phim thông qua API
@@ -83,7 +113,7 @@ const PhimList = () => {
     };
 
     useEffect(() => {
-        fetchData();
+        fetchData(1);
     }, []);
 
     const columns = [
@@ -129,7 +159,7 @@ const PhimList = () => {
             } else {
                 await updateMovie(movieData.id, movieData);
             }
-            fetchData();
+            fetchData(pagination.currentPage); // Giữ nguyên trang hiện tại
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi lưu phim:", error);
@@ -143,7 +173,7 @@ const PhimList = () => {
         try {
             setLoading(true);
             await deleteMovie(movie.id);
-            fetchData();
+            fetchData(pagination.currentPage); // Giữ nguyên trang hiện tại
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
@@ -302,8 +332,12 @@ const PhimList = () => {
                             columns={columns}
                             data={movies}
                             loading={loading}
+                            totalItems={pagination.totalItems} // Quan trọng
+                            currentPage={pagination.currentPage}
+                            itemsPerPage={pagination.itemsPerPage}
                             actions={['view', 'edit', 'delete']}
                             onAction={handleAction}
+                            onPageChange={handlePageChange}
                         />
                     </div>
                 </div>
