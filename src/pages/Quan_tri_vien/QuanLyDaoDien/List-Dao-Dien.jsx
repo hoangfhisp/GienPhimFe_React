@@ -1,154 +1,234 @@
 import React, { useEffect, useState } from 'react';
 import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
-import '../../../components/Admin-board/Admin-board.scss';
 import Card from '../../../components/Table/Card';
+import '../../../components/Admin-board/Admin-board.scss';
+import { Link } from 'react-router-dom';
+
+import {
+    fetchDaoDiens,
+    searchDaoDiens,
+    createDaoDien,
+    updateDaoDien,
+    deleteDaoDien
+} from '../../../services/Admin/DaoDienService';
 
 const DaoDienList = () => {
-    const [daoDienList, setDaoDienList] = useState([]);
+    const [daoDiens, setDaoDiens] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentDaoDien, setCurrentDaoDien] = useState(null); // Lưu đạo diễn hiện tại khi click
-    const [tenDaoDien, setTenDaoDien] = useState('');
+    const [currentDaoDien, setCurrentDaoDien] = useState(null);
+    const [cardAction, setCardAction] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    // Lấy danh sách đạo diễn
-    const fetchData = () => {
+    const fetchData = (page = 1) => {
+        const limit = pagination.itemsPerPage || 10;
         setLoading(true);
-        fetch('/api/daodienapi') // Thay '/api/daodienapi' bằng API thực tế của bạn
-            .then(res => res.json())
-            .then(data => {
-                setDaoDienList(data);
-                setLoading(false);
+
+        fetchDaoDiens(page, limit)
+            .then(result => {
+                setDaoDiens(Array.isArray(result.data) ? result.data : []);
+
+                setPagination(prev => ({
+                    ...prev,
+                    currentPage: page,
+                    totalItems: result.pagination?.total || 0,
+                    itemsPerPage: result.pagination?.limit || limit
+                }));
             })
             .catch(err => {
                 console.error("Lỗi tải đạo diễn:", err);
+                setDaoDiens([]);
+                setPagination(prev => ({ ...prev, totalItems: 0 }));
+            })
+            .finally(() => {
                 setLoading(false);
             });
     };
 
-    // Tìm kiếm đạo diễn theo tên
-    const handleTimKiem = e => {
-        e.preventDefault();
-        fetch(`/api/daodienapi/timkiem?tenDaoDien=${tenDaoDien}`) // Thay '/api/daodienapi/timkiem' bằng API thực tế
-            .then(res => res.json())
-            .then(setDaoDienList);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
+        fetchData(newPage);
     };
 
-    // Cập nhật dữ liệu tự động mỗi 30s
+    const handleSearch = e => {
+        e.preventDefault();
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        searchDaoDiens(searchTerm, 1, pagination.itemsPerPage)
+            .then(response => {
+                setDaoDiens(response.data);
+                setPagination(prev => ({
+                    ...prev,
+                    totalItems: response.totalItems
+                }));
+            })
+            .catch(err => console.error("Lỗi tìm kiếm đạo diễn:", err));
+    };
+
     useEffect(() => {
-        fetchData();
-        const refreshInterval = setInterval(() => {
-            fetchData();
-        }, 30000);
-        return () => {
-            clearInterval(refreshInterval);
-        };
+        fetchData(1);
     }, []);
 
-    // Định dạng thời gian
-    const formatDate = (date) => {
-        const d = new Date(date);
-        return d.toLocaleString();
-    };
-
     const columns = [
-        { header: "Tên đạo diễn", accessor: "TenDG" },
-        { header: "Mô tả", accessor: "MoTaDG" },
+        { header: "Tên đạo diễn", accessor: "tenDG" },
+        { header: "Mô tả", accessor: "moTaDG" },
         {
-            header: "Thời gian tạo",
-            render: row => formatDate(row.ThoiGianTao),
+            header: "Tạo lúc",
+            accessor: "thoiGianTao",
+            render: row => new Date(row.thoiGianTao).toLocaleString()
         },
         {
-            header: "Thời gian cập nhật",
-            render: row => formatDate(row.ThoiGianCapNhat),
-        },
-        {
-            header: "Thao tác",
-            render: row => (
-                <>
-                    <button onClick={() => setCurrentDaoDien({ ...row, action: 'view' })}>Xem chi tiết</button> |{' '}
-                    <button onClick={() => setCurrentDaoDien({ ...row, action: 'edit' })}>Chỉnh sửa</button> |{' '}
-                    <button onClick={() => setCurrentDaoDien({ ...row, action: 'delete' })}>Xóa</button>
-                </>
-            ),
+            header: "Cập nhật",
+            accessor: "thoiGianCapNhat",
+            render: row => new Date(row.thoiGianCapNhat).toLocaleString()
         }
     ];
+
+    const handleAction = (action, daoDien) => {
+        setCurrentDaoDien(daoDien);
+        setCardAction(action);
+    };
+
+    const handleCloseCard = () => {
+        setCardAction(null);
+        setCurrentDaoDien(null);
+    };
+
+    const handleSave = async (daoDienData) => {
+        try {
+            setLoading(true);
+            if (cardAction === 'create') {
+                await createDaoDien(daoDienData);
+            } else {
+                await updateDaoDien(daoDienData.daoDienId, daoDienData);
+            }
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi lưu đạo diễn:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (daoDien) => {
+        if (!window.confirm(`Bạn chắc chắn muốn xóa đạo diễn "${daoDien.tenDaoDien}"?`)) return;
+        try {
+            setLoading(true);
+            await deleteDaoDien(daoDien.daoDienId);
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi xóa đạo diễn:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="wrapper d-flex">
             <AdminBoard username="Admin" />
             <div id="content" className="content p-4 p-md-5 pt-5">
-                <h1>Danh sách đạo diễn</h1>
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                    <h1 className="mb-0">Danh sách đạo diễn</h1>
+                </div>
                 <hr />
 
-                {/* Thêm đạo diễn mới */}
+                {/* Navigation links */}
                 <div className="mb-4">
-                    <button onClick={() => setCurrentDaoDien({ action: 'create' })} className="title me-3">
-                        Thêm đạo diễn mới
-                    </button>
-                </div>
-
-                {/* Bộ lọc & Tìm kiếm */}
-                <div className="d-flex flex-wrap justify-content-between align-items-center filter-container mb-4">
-                    <form className="d-flex timkiemB mb-2" onSubmit={handleTimKiem}>
-                        <input
-                            className="form-control searchbar me-2"
-                            name="tenDaoDien"
-                            type="search"
-                            placeholder="Nhập tên đạo diễn..."
-                            value={tenDaoDien}
-                            onChange={e => setTenDaoDien(e.target.value)}
-                        />
-                        <button className="title" type="submit">Tìm</button>
-                    </form>
-                </div>
-
-                {/* Hiển thị bảng đạo diễn */}
-                <Table columns={columns} data={daoDienList} loading={loading} />
-
-                {/* Hiển thị spinner nếu đang tải dữ liệu */}
-                {loading && (
-                    <div className="spinner-container">
-                        <div className="spinner"></div>
-                        <p>Đang tải dữ liệu...</p>
+                    <div className="d-flex flex-wrap gap-3">
+                        <button
+                            onClick={() => handleAction('create', {})}
+                            className="btn btn-primary"
+                        >
+                            <i className="fas fa-plus me-2"></i>Thêm đạo diễn mới
+                        </button>
+                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
+                            <i className="fas fa-film me-2"></i>Quản lý phim
+                        </Link>
+                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
+                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
+                        </Link>
+                        <Link to="/quanly/dienvien" className="btn btn-outline-secondary">
+                            <i className="fas fa-users me-2"></i>Quản lý diễn viên
+                        </Link>
                     </div>
-                )}
+                </div>
 
-                {/* Nút làm mới bảng */}
-                <button className="btn btn-primary" onClick={fetchData}>Làm mới bảng</button>
+                {/* Search Section */}
+                <div className="card mb-4">
+                    <div className="card-body">
+                        <h5 className="card-title">Tìm kiếm đạo diễn</h5>
+                        <form onSubmit={handleSearch} className="input-group">
+                            <input
+                                className="form-control"
+                                name="searchTerm"
+                                type="search"
+                                placeholder="Nhập tên đạo diễn..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                            />
+                            <button className="btn btn-primary" type="submit">
+                                <i className="fas fa-search me-2"></i>Tìm kiếm
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    fetchData();
+                                }}
+                                className="btn btn-outline-secondary"
+                                type="button"
+                            >
+                                <i className="fas fa-times me-2"></i>Xóa
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {/* Table Section */}
+                <div className="card">
+                    <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="card-title mb-0">Danh sách đạo diễn</h5>
+                            <button
+                                onClick={fetchData}
+                                className="btn btn-sm btn-outline-primary"
+                                disabled={loading}
+                            >
+                                <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''} me-2`}></i>
+                                {loading ? 'Đang tải...' : 'Làm mới'}
+                            </button>
+                        </div>
+
+                        <Table
+                            columns={columns}
+                            data={daoDiens}
+                            loading={loading}
+                            totalItems={pagination.totalItems}
+                            currentPage={pagination.currentPage}
+                            itemsPerPage={pagination.itemsPerPage}
+                            actions={['view', 'edit', 'delete']}
+                            onAction={handleAction}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Hiển thị thẻ Card (Overlay) nếu trạng thái overlayVisible là true */}
-            {currentDaoDien && (
+            {/* Card Overlay */}
+            {cardAction && (
                 <Card
-                    action={currentDaoDien.action} // Thực hiện hành động create, edit, view, delete
-                    daoDien={currentDaoDien}
+                    action={cardAction}
+                    data={currentDaoDien}
                     columns={columns}
-                    onClose={() => setCurrentDaoDien(null)} // Đóng overlay khi không cần
-                    onSave={(daoDien) => {
-                        if (currentDaoDien && currentDaoDien.action === 'edit') {
-                            // Cập nhật đạo diễn
-                            fetch(`/api/daodienapi/${currentDaoDien.DaoDienId}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(daoDien),
-                            }).then(() => fetchData());
-                        } else if (currentDaoDien && currentDaoDien.action === 'create') {
-                            // Thêm mới đạo diễn
-                            fetch('/api/daodienapi', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(daoDien),
-                            }).then(() => fetchData());
-                        }
-                        setCurrentDaoDien(null); // Đóng overlay sau khi lưu
-                    }}
-                    onDelete={(daoDien) => {
-                        // Hàm xử lý xóa
-                        fetch(`/api/daodienapi/${daoDien.DaoDienId}`, {
-                            method: 'DELETE',
-                        }).then(() => fetchData());
-                        setCurrentDaoDien(null); // Đóng overlay sau khi xóa
-                    }}
+                    onClose={handleCloseCard}
+                    onSave={handleSave}
+                    onDelete={handleDelete}
                 />
             )}
         </div>

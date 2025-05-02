@@ -1,154 +1,230 @@
 import React, { useEffect, useState } from 'react';
 import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
+import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
-import Card from '../../../components/Table/Card'; // Đảm bảo Card được import đúng
+import { Link } from 'react-router-dom';
+
+import {
+    fetchNgonNgus,
+    searchNgonNgus,
+    createNgonNgu,
+    updateNgonNgu,
+    deleteNgonNgu
+} from '../../../services/Admin/NgonNguService';
 
 const NgonNguList = () => {
-    const [ngonNguList, setNgonNguList] = useState([]);
+    const [ngonNgus, setNgonNgus] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentNgonNgu, setCurrentNgonNgu] = useState(null); // Lưu ngôn ngữ hiện tại khi click
-    const [tenNgonNgu, setTenNgonNgu] = useState('');
+    const [currentNgonNgu, setCurrentNgonNgu] = useState(null);
+    const [cardAction, setCardAction] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    // Lấy danh sách ngôn ngữ
-    const fetchData = () => {
+    const fetchData = (page = 1) => {
+        const limit = pagination.itemsPerPage || 10;
         setLoading(true);
-        fetch('/api/ngonnguapi') // Thay '/api/ngonnguapi' bằng API thực tế của bạn
-            .then(res => res.json())
-            .then(data => {
-                setNgonNguList(data);
-                setLoading(false);
+
+        fetchNgonNgus(page, limit)
+            .then(result => {
+                setNgonNgus(Array.isArray(result.data) ? result.data : []);
+                setPagination(prev => ({
+                    ...prev,
+                    currentPage: page,
+                    totalItems: result.pagination?.total || 0,
+                    itemsPerPage: result.pagination?.limit || limit
+                }));
             })
             .catch(err => {
                 console.error("Lỗi tải ngôn ngữ:", err);
+                setNgonNgus([]);
+                setPagination(prev => ({ ...prev, totalItems: 0 }));
+            })
+            .finally(() => {
                 setLoading(false);
             });
     };
 
-    // Tìm kiếm ngôn ngữ theo tên
-    const handleTimKiem = e => {
-        e.preventDefault();
-        fetch(`/api/ngonnguapi/timkiem?tenNgonNgu=${tenNgonNgu}`) // Thay '/api/ngonnguapi/timkiem' bằng API thực tế
-            .then(res => res.json())
-            .then(setNgonNguList);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
+        fetchData(newPage);
     };
 
-    // Cập nhật dữ liệu tự động mỗi 30s
+    const handleSearch = e => {
+        e.preventDefault();
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        searchNgonNgus(searchTerm, 1, pagination.itemsPerPage)
+            .then(response => {
+                setNgonNgus(response.data);
+                setPagination(prev => ({
+                    ...prev,
+                    totalItems: response.totalItems
+                }));
+            })
+            .catch(err => console.error("Lỗi tìm kiếm ngôn ngữ:", err));
+    };
+
     useEffect(() => {
-        fetchData();
-        const refreshInterval = setInterval(() => {
-            fetchData();
-        }, 30000);
-        return () => {
-            clearInterval(refreshInterval);
-        };
+        fetchData(1);
     }, []);
 
-    // Định dạng thời gian
-    const formatDate = (date) => {
-        const d = new Date(date);
-        return d.toLocaleString();
-    };
-
     const columns = [
-        { header: "Tên ngôn ngữ", accessor: "TenNN" },
-        { header: "Mô tả", accessor: "MoTaNN" },
+        { header: "Tên ngôn ngữ", accessor: "tenNN" },
+        { header: "Mô tả", accessor: "moTaNN" },
         {
-            header: "Thời gian tạo",
-            render: row => formatDate(row.ThoiGianTao),
+            header: "Tạo lúc",
+            accessor: "thoiGianTao",
+            render: row => new Date(row.thoiGianTao).toLocaleString()
         },
         {
-            header: "Thời gian cập nhật",
-            render: row => formatDate(row.ThoiGianCapNhat),
-        },
-        {
-            header: "Thao tác",
-            render: row => (
-                <>
-                    <button onClick={() => setCurrentNgonNgu({ ...row, action: 'view' })}>Xem chi tiết</button> |{' '}
-                    <button onClick={() => setCurrentNgonNgu({ ...row, action: 'edit' })}>Chỉnh sửa</button> |{' '}
-                    <button onClick={() => setCurrentNgonNgu({ ...row, action: 'delete' })}>Xóa</button>
-                </>
-            ),
+            header: "Cập nhật",
+            accessor: "thoiGianCapNhat",
+            render: row => new Date(row.thoiGianCapNhat).toLocaleString()
         }
     ];
+
+    const handleAction = (action, ngonNgu) => {
+        setCurrentNgonNgu(ngonNgu);
+        setCardAction(action);
+    };
+
+    const handleCloseCard = () => {
+        setCardAction(null);
+        setCurrentNgonNgu(null);
+    };
+
+    const handleSave = async (ngonNguData) => {
+        try {
+            setLoading(true);
+            if (cardAction === 'create') {
+                await createNgonNgu(ngonNguData);
+            } else {
+                await updateNgonNgu(ngonNguData.ngonNguId, ngonNguData);
+            }
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi lưu ngôn ngữ:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (ngonNgu) => {
+        if (!window.confirm(`Bạn chắc chắn muốn xóa ngôn ngữ "${ngonNgu.tenNN}"?`)) return;
+        try {
+            setLoading(true);
+            await deleteNgonNgu(ngonNgu.ngonNguId);
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi xóa ngôn ngữ:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="wrapper d-flex">
             <AdminBoard username="Admin" />
             <div id="content" className="content p-4 p-md-5 pt-5">
-                <h1>Danh sách ngôn ngữ</h1>
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                    <h1 className="mb-0">Danh sách ngôn ngữ</h1>
+                </div>
                 <hr />
 
-                {/* Thêm ngôn ngữ mới */}
+                {/* Navigation links */}
                 <div className="mb-4">
-                    <button onClick={() => setCurrentNgonNgu({ action: 'create' })} className="title me-3">
-                        Thêm ngôn ngữ mới
-                    </button>
-                </div>
-
-                {/* Bộ lọc & Tìm kiếm */}
-                <div className="d-flex flex-wrap justify-content-between align-items-center filter-container mb-4">
-                    <form className="d-flex timkiemB mb-2" onSubmit={handleTimKiem}>
-                        <input
-                            className="form-control searchbar me-2"
-                            name="tenNgonNgu"
-                            type="search"
-                            placeholder="Nhập tên ngôn ngữ..."
-                            value={tenNgonNgu}
-                            onChange={e => setTenNgonNgu(e.target.value)}
-                        />
-                        <button className="title" type="submit">Tìm</button>
-                    </form>
-                </div>
-
-                {/* Hiển thị bảng ngôn ngữ */}
-                <Table columns={columns} data={ngonNguList} loading={loading} />
-
-                {/* Hiển thị spinner nếu đang tải dữ liệu */}
-                {loading && (
-                    <div className="spinner-container">
-                        <div className="spinner"></div>
-                        <p>Đang tải dữ liệu...</p>
+                    <div className="d-flex flex-wrap gap-3">
+                        <button
+                            onClick={() => handleAction('create', {})}
+                            className="btn btn-primary"
+                        >
+                            <i className="fas fa-plus me-2"></i>Thêm ngôn ngữ mới
+                        </button>
+                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
+                            <i className="fas fa-film me-2"></i>Quản lý phim
+                        </Link>
+                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
+                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
+                        </Link>
                     </div>
-                )}
+                </div>
 
-                {/* Nút làm mới bảng */}
-                <button className="btn btn-primary" onClick={fetchData}>Làm mới bảng</button>
+                {/* Search Section */}
+                <div className="card mb-4">
+                    <div className="card-body">
+                        <h5 className="card-title">Tìm kiếm ngôn ngữ</h5>
+                        <form onSubmit={handleSearch} className="input-group">
+                            <input
+                                className="form-control"
+                                name="searchTerm"
+                                type="search"
+                                placeholder="Nhập tên ngôn ngữ..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                            />
+                            <button className="btn btn-primary" type="submit">
+                                <i className="fas fa-search me-2"></i>Tìm kiếm
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    fetchData();
+                                }}
+                                className="btn btn-outline-secondary"
+                                type="button"
+                            >
+                                <i className="fas fa-times me-2"></i>Xóa
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {/* Table Section */}
+                <div className="card">
+                    <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="card-title mb-0">Danh sách ngôn ngữ</h5>
+                            <button
+                                onClick={fetchData}
+                                className="btn btn-sm btn-outline-primary"
+                                disabled={loading}
+                            >
+                                <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''} me-2`}></i>
+                                {loading ? 'Đang tải...' : 'Làm mới'}
+                            </button>
+                        </div>
+
+                        <Table
+                            columns={columns}
+                            data={ngonNgus}
+                            loading={loading}
+                            totalItems={pagination.totalItems}
+                            currentPage={pagination.currentPage}
+                            itemsPerPage={pagination.itemsPerPage}
+                            actions={['view', 'edit', 'delete']}
+                            onAction={handleAction}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Hiển thị thẻ Card (Overlay) nếu trạng thái overlayVisible là true */}
-            {currentNgonNgu && (
+            {/* Card Overlay */}
+            {cardAction && (
                 <Card
-                    action={currentNgonNgu.action} // Thực hiện hành động create, edit, view, delete
-                    ngonNgu={currentNgonNgu}
+                    action={cardAction}
+                    data={currentNgonNgu}
                     columns={columns}
-                    onClose={() => setCurrentNgonNgu(null)} // Đóng overlay khi không cần
-                    onSave={(ngonNgu) => {
-                        if (currentNgonNgu && currentNgonNgu.action === 'edit') {
-                            // Cập nhật ngôn ngữ
-                            fetch(`/api/ngonnguapi/${currentNgonNgu.NgonNguId}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(ngonNgu),
-                            }).then(() => fetchData());
-                        } else if (currentNgonNgu && currentNgonNgu.action === 'create') {
-                            // Thêm mới ngôn ngữ
-                            fetch('/api/ngonnguapi', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(ngonNgu),
-                            }).then(() => fetchData());
-                        }
-                        setCurrentNgonNgu(null); // Đóng overlay sau khi lưu
-                    }}
-                    onDelete={(ngonNgu) => {
-                        // Hàm xử lý xóa
-                        fetch(`/api/ngonnguapi/${ngonNgu.NgonNguId}`, {
-                            method: 'DELETE',
-                        }).then(() => fetchData());
-                        setCurrentNgonNgu(null); // Đóng overlay sau khi xóa
-                    }}
+                    onClose={handleCloseCard}
+                    onSave={handleSave}
+                    onDelete={handleDelete}
                 />
             )}
         </div>

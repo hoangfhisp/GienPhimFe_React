@@ -76,7 +76,7 @@ const TheLoaiList = () => {
     }, []);
 
     const columns = [
-        { header: "Tên thể loại", accessor: "tenTL", render: row => <div className="ten-theloai-cell">{row.tenTL}</div> },
+        { header: "Tên thể loại", accessor: "tenTL" },
         { header: "Mô tả", accessor: "moTa" },
         {
             header: "Tạo lúc",

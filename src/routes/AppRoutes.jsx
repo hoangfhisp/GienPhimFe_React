@@ -6,8 +6,14 @@ import Register from '../pages/Dang_nhap/Register';
 import Help from '../pages/Dang_nhap/Help';
 import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
+import OverviewDashboard from '../pages/Quan_tri_vien/TongQuan/Tong-Quan';
 import PhimList from '../pages/Quan_tri_vien/QuanLyPhim/List-Phim';
 import TheLoaiList from '../pages/Quan_tri_vien/QuanLyTheLoai/List-The-Loai';
+import QuocGiaList from '../pages/Quan_tri_vien/QuanLyQuocGia/List-Quoc-Gia';
+import NgonNguList from '../pages/Quan_tri_vien/QuanLyNgonNgu/List-Ngon-Ngu';
+import DaoDienList from '../pages/Quan_tri_vien/QuanLyDaoDien/List-Dao-Dien';
+import DienVienList from '../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien';
+import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
 import Login from '../pages/Dang_nhap/Login.jsx'
 
 
@@ -20,8 +26,14 @@ export default function AppRoutes() {
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/Tong-Quan" element={<OverviewDashboard />} />
             <Route path="/List-Phim" element={<PhimList />} />
             <Route path="/List-The-Loai" element={<TheLoaiList />} />
+            <Route path="/List-Quoc-Gia" element={<QuocGiaList />} />
+            <Route path="/List-Ngon-Ngu" element={<NgonNguList />} />
+            <Route path="/List-Dao-Dien" element={<DaoDienList />} />
+            <Route path="/List-Dien-Vien" element={<DienVienList />} />
+            <Route path="/List-The-Tag" element={<TheTagList />} />
 
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />
