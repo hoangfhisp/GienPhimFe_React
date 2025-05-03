@@ -1,7 +1,7 @@
 // services/Admin/TheLoaiService.jsx
 import * as request from "../../untils/Request.jsx";
 import axios from "axios";
-const API_URL = 'http://localhost:5039/api/Admin/TheLoai';
+const API_URL = 'http://localhost:5039/api/Admin/QuanTriVienTheLoai';
 
 const handleError = (error) => {
     console.error('API Error:', error);
@@ -10,13 +10,9 @@ const handleError = (error) => {
 
 export const fetchTheLoais = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/TheLoai', {
+        const response = await request.get('/Admin/QuanTriVienTheLoai', {
             params: { page, limit }
         });
-
-        console.log('API Response TheLoai:', response);
-
-        const responseData = response.data?.data || response.data || response;
 
         return response;
 

@@ -3,6 +3,7 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import {
@@ -13,6 +14,8 @@ import {
     updateMovie,
     deleteMovie
 } from '../../../services/Admin/MovieService';
+
+import * as requestTheLoai from '../../../services/Admin/TheLoaiService.jsx';
 
 const PhimList = () => {
     const [movies, setMovies] = useState([]);
@@ -36,15 +39,14 @@ const PhimList = () => {
 
         fetchMovies(page, limit)
             .then(result => {
-                console.log('Service Result:', result);
-
+                // Sử dụng result.data (đã được chuẩn hóa)
                 setMovies(Array.isArray(result.data) ? result.data : []);
 
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
-                    totalItems: result.pagination?.total || 0, // Sửa thành result.pagination?.total
-                    itemsPerPage: result.pagination?.limit || 10
+                    totalItems: result.pagination.total, // Lấy từ result.pagination
+                    itemsPerPage: result.pagination.limit
                 }));
             })
             .catch(err => {
@@ -96,7 +98,7 @@ const PhimList = () => {
                 setMovies(response.data);
                 setPagination(prev => ({
                     ...prev,
-                    totalItems: response.totalItems
+                    totalItems: response.pagination.total // Sửa thành response.pagination.total
                 }));
             })
             .catch(err => console.error("Lỗi tìm kiếm phim:", err));
@@ -113,12 +115,50 @@ const PhimList = () => {
     };
 
     useEffect(() => {
-        fetchData(1);
+        const fetchApi = async () => {
+            const result = await requestTheLoai.fetchTheLoais(1, 1000);
+            setTheLoaiList(result.data)
+        }
+        fetchApi();
+
     }, []);
+
+
+    useEffect(() => {
+        const debouncedSearch = debounce(() => {
+            if (tenPhim.trim() === '') {
+                fetchData(1);
+                return;
+            }
+
+            searchMovies(tenPhim, 1, 2)
+                .then(response => {
+                    setMovies(response.data);
+                    console.log(tenPhim)
+                    console.log(response)
+                    setPagination(prev => ({
+                        ...prev,
+                        totalItems: response.totalItems
+                    }));
+                })
+                .catch(err => console.error("Lỗi tìm kiếm phim:", err));
+        }, 500); // delay 500ms
+
+        debouncedSearch(); // Gọi hàm debounce
+
+        return () => {
+            debouncedSearch.cancel(); // cleanup debounce mỗi lần unmount hoặc `tenPhim` thay đổi
+        };
+    }, [tenPhim, pagination.itemsPerPage]);
 
     const columns = [
         { header: "Tên phim", accessor: "tenP", render: row => <div className="ten-phim-cell">{row.tenP}</div> },
-        { header: "Thời lượng", accessor: "thoiLuongP" },
+        //{ header: "Mô tả", accessor: "moTaP", render: row => <div className="ten-phim-cell">{row.moTaP}</div> },
+        {
+            header: "Thời lượng",
+            accessor: "thoiLuongP",
+            render: row => row.thoiLuongP
+        },
         {
             header: "Avatar",
             accessor: "avatarP",
@@ -242,7 +282,7 @@ const PhimList = () => {
                                 >
                                     <option value="">Tất cả thể loại</option>
                                     {theLoaiList.map(item => (
-                                        <option key={item.value} value={item.value}>{item.text}</option>
+                                        <option key={item.theLoaiId} value={item.tenTL}>{item.tenTL}</option>
                                     ))}
                                 </select>
                             </div>
@@ -332,7 +372,7 @@ const PhimList = () => {
                             columns={columns}
                             data={movies}
                             loading={loading}
-                            totalItems={pagination.totalItems} // Quan trọng
+                            totalItems={pagination.totalItems}
                             currentPage={pagination.currentPage}
                             itemsPerPage={pagination.itemsPerPage}
                             actions={['view', 'edit', 'delete']}

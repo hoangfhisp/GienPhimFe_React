@@ -1,4 +1,4 @@
-// services/movieService.js
+// services/movieService.jsx
 import * as request from "../../untils/Request.jsx";
 import axios from "axios";
 const API_URL = 'http://localhost:5039/api/Admin/Phim';
@@ -31,8 +31,22 @@ export const fetchMovies = async (page, limit) => {
     }
 };
 
-export const searchMovies = (tenp) => {
-    return axios.get(`http://localhost:5039/api/Admin/Search?tenp=${tenp}`);
+export const searchMovies = async (tenp, page = 1, limit = 10) => {
+    try {
+        const response = await request.get('/Search', {
+            params: { tenp, page, limit }
+        });
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi khi tìm kiếm phim:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: { page, limit, total: 0 },
+            msg: error.message || 'Lỗi khi tìm kiếm phim'
+        };
+    }
 };
 
 export const filterMovies = ({ theLoai, quocGia, ngonNgu }) => {
