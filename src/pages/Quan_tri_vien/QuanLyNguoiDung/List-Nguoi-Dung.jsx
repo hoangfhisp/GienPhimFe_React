@@ -1,205 +1,235 @@
 import React, { useEffect, useState } from 'react';
 import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
-import '../../../components/Admin-board/Admin-board.scss';
 import Card from '../../../components/Table/Card';
+import '../../../components/Admin-board/Admin-board.scss';
+import { Link } from 'react-router-dom';
+import {
+    fetchUsers,
+    searchUsers,
+    createUser,
+    updateUser,
+    deleteUser
+} from '../../../services/Admin/UserService';
 
-const TaiKhoanList = () => {
-    const [taiKhoanList, setTaiKhoanList] = useState([]);
+const UserList = () => {
+    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentTaiKhoan, setCurrentTaiKhoan] = useState(null); // Lưu tài khoản hiện tại khi click
-    const [tenNguoiDung, setTenNguoiDung] = useState('');
+    const [currentUser, setCurrentUser] = useState(null);
+    const [cardAction, setCardAction] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    // Lấy danh sách tài khoản
-    const fetchData = () => {
+    const fetchData = (page = 1) => {
+        const limit = pagination.itemsPerPage || 10;
         setLoading(true);
-        fetch('/api/taikhoanapi') // Thay '/api/taikhoanapi' bằng API thực tế của bạn
-            .then(res => res.json())
-            .then(data => {
-                setTaiKhoanList(data);
-                setLoading(false);
+
+        fetchUsers(page, limit)
+            .then(result => {
+                // Đảm bảo setUsers nhận đúng cấu trúc dữ liệu
+                setUsers(Array.isArray(result.data) ? result.data : []);
+
+                setPagination(prev => ({
+                    ...prev,
+                    currentPage: page,
+                    totalItems: result.pagination?.total || 0,
+                    itemsPerPage: result.pagination?.limit || limit
+                }));
             })
             .catch(err => {
-                console.error("Lỗi tải tài khoản:", err);
+                console.error("Lỗi tải người dùng:", err);
+                setUsers([]);
+                setPagination(prev => ({ ...prev, totalItems: 0 }));
+            })
+            .finally(() => {
                 setLoading(false);
             });
     };
 
-    // Tìm kiếm tài khoản theo tên người dùng
-    const handleTimKiem = e => {
-        e.preventDefault();
-        fetch(`/api/taikhoanapi/timkiem?tenNguoiDung=${tenNguoiDung}`) // Thay '/api/taikhoanapi/timkiem' bằng API thực tế
-            .then(res => res.json())
-            .then(setTaiKhoanList);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
+        fetchData(newPage);
     };
 
-    // Cập nhật dữ liệu tự động mỗi 30s
+    const handleSearch = e => {
+        e.preventDefault();
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+        searchUsers(searchTerm, 1, pagination.itemsPerPage)
+            .then(response => {
+                setUsers(response.data);
+                setPagination(prev => ({
+                    ...prev,
+                    totalItems: response.totalItems
+                }));
+            })
+            .catch(err => console.error("Lỗi tìm kiếm người dùng:", err));
+    };
+
     useEffect(() => {
-        fetchData();
-        const refreshInterval = setInterval(() => {
-            fetchData();
-        }, 30000);
-        return () => {
-            clearInterval(refreshInterval);
-        };
+        fetchData(1);
     }, []);
 
-    // Định dạng thời gian
-    const formatDate = (date) => {
-        const d = new Date(date);
-        return d.toLocaleString();
-    };
-
     const columns = [
-        { header: "Email", accessor: "Email" },
+        { header: "Tên người dùng", accessor: "userName" },
+        { header: "Email", accessor: "email" },
         {
-            header: "Email Xác Nhận",
-            render: row => row.EmailConfirmed ? "✔️" : "❌",
-        },
-        { header: "Tên Đăng Nhập", accessor: "UserName" },
-        {
-            header: "Giới Tính",
-            render: row => {
-                switch (row.GioiTinh) {
-                    case 1: return "Nam";
-                    case 2: return "Nữ";
-                    default: return "Không xác định";
-                }
-            },
-        },
-        { header: "Mô Tả", accessor: "MoTa" },
-        { header: "Số Điện Thoại", accessor: "PhoneNumber" },
-        {
-            header: "Xác Nhận SĐT",
-            render: row => row.PhoneNumberConfirmed ? "✔️" : "❌",
+            header: "Ngày tạo",
+            accessor: "thoiGianTao",
+            render: row => new Date(row.thoiGianTao).toLocaleString()
         },
         {
-            header: "2FA",
-            render: row => row.TwoFactorEnabled ? "✔️" : "❌",
-        },
-        {
-            header: "Khóa Tài Khoản",
-            render: row => (
-                <>
-                    {row.LockoutEnabled ? (
-                        <span className="badge bg-danger">Bị Khóa</span>
-                    ) : (
-                        <span className="badge bg-success">Hoạt Động</span>
-                    )}
-                </>
-            ),
-        },
-        {
-            header: "Thao Tác",
-            render: row => (
-                <>
-                    <button
-                        className="btn btn-success btn-sm me-2"
-                        onClick={() => handleUnlock(row.Id)}
-                    >
-                        Mở khóa
-                    </button>
-                    <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleLock(row.Id)}
-                    >
-                        Khóa
-                    </button>
-                </>
-            ),
+            header: "Ngày cập nhật",
+            accessor: "thoiGianCapNhat",
+            render: row => new Date(row.thoiGianCapNhat).toLocaleString()
         }
     ];
 
-    const handleLock = (id) => {
-        fetch(`/api/taikhoanapi/lock/${id}`, { method: 'POST' }) // Thay '/api/taikhoanapi/lock' bằng API thực tế
-            .then(() => fetchData());
+    const handleAction = (action, user) => {
+        setCurrentUser(user);
+        setCardAction(action);
     };
 
-    const handleUnlock = (id) => {
-        fetch(`/api/taikhoanapi/unlock/${id}`, { method: 'POST' }) // Thay '/api/taikhoanapi/unlock' bằng API thực tế
-            .then(() => fetchData());
+    const handleCloseCard = () => {
+        setCardAction(null);
+        setCurrentUser(null);
+    };
+
+    const handleSave = async (userData) => {
+        try {
+            setLoading(true);
+            if (cardAction === 'create') {
+                await createUser(userData);
+            } else {
+                await updateUser(userData.id, userData);
+            }
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi lưu người dùng:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (user) => {
+        if (!window.confirm(`Bạn chắc chắn muốn xóa người dùng "${user.username}"?`)) return;
+        try {
+            setLoading(true);
+            await deleteUser(user.id);
+            fetchData(pagination.currentPage);
+            handleCloseCard();
+        } catch (error) {
+            console.error("Lỗi khi xóa người dùng:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="wrapper d-flex">
             <AdminBoard username="Admin" />
             <div id="content" className="content p-4 p-md-5 pt-5">
-                <h1>Danh sách tài khoản</h1>
+                <div className="d-flex justify-content-center align-items-center mb-4">
+                    <h1 className="mb-0">Danh sách người dùng</h1>
+                </div>
                 <hr />
 
-                {/* Thêm tài khoản mới */}
+                {/* Navigation links */}
                 <div className="mb-4">
-                    <button onClick={() => setCurrentTaiKhoan({ action: 'create' })} className="title me-3">
-                        Thêm tài khoản mới
-                    </button>
-                </div>
-
-                {/* Bộ lọc & Tìm kiếm */}
-                <div className="d-flex flex-wrap justify-content-between align-items-center filter-container mb-4">
-                    <form className="d-flex timkiemB mb-2" onSubmit={handleTimKiem}>
-                        <input
-                            className="form-control searchbar me-2"
-                            name="tenNguoiDung"
-                            type="search"
-                            placeholder="Nhập tên người dùng..."
-                            value={tenNguoiDung}
-                            onChange={e => setTenNguoiDung(e.target.value)}
-                        />
-                        <button className="title" type="submit">Tìm</button>
-                    </form>
-                </div>
-
-                {/* Hiển thị bảng tài khoản */}
-                <Table columns={columns} data={taiKhoanList} loading={loading} />
-
-                {/* Hiển thị spinner nếu đang tải dữ liệu */}
-                {loading && (
-                    <div className="spinner-container">
-                        <div className="spinner"></div>
-                        <p>Đang tải dữ liệu...</p>
+                    <div className="d-flex flex-wrap gap-3">
+                        <button
+                            onClick={() => handleAction('create', {})}
+                            className="btn btn-primary"
+                        >
+                            <i className="fas fa-plus me-2"></i>Thêm người dùng mới
+                        </button>
+                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
+                            <i className="fas fa-film me-2"></i>Quản lý phim
+                        </Link>
+                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
+                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
+                        </Link>
                     </div>
-                )}
+                </div>
 
-                {/* Nút làm mới bảng */}
-                <button className="btn btn-primary" onClick={fetchData}>Làm mới bảng</button>
+                {/* Search Section */}
+                <div className="card mb-4">
+                    <div className="card-body">
+                        <h5 className="card-title">Tìm kiếm người dùng</h5>
+                        <form onSubmit={handleSearch} className="input-group">
+                            <input
+                                className="form-control"
+                                name="searchTerm"
+                                type="search"
+                                placeholder="Nhập tên người dùng..."
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                            />
+                            <button className="btn btn-primary" type="submit">
+                                <i className="fas fa-search me-2"></i>Tìm kiếm
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    fetchData();
+                                }}
+                                className="btn btn-outline-secondary"
+                                type="button"
+                            >
+                                <i className="fas fa-times me-2"></i>Xóa
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {/* Table Section */}
+                <div className="card">
+                    <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <h5 className="card-title mb-0">Danh sách người dùng</h5>
+                            <button
+                                onClick={fetchData}
+                                className="btn btn-sm btn-outline-primary"
+                                disabled={loading}
+                            >
+                                <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''} me-2`}></i>
+                                {loading ? 'Đang tải...' : 'Làm mới'}
+                            </button>
+                        </div>
+
+                        <Table
+                            columns={columns}
+                            data={users}
+                            loading={loading}
+                            totalItems={pagination.totalItems}
+                            currentPage={pagination.currentPage}
+                            itemsPerPage={pagination.itemsPerPage}
+                            actions={['view', 'edit', 'delete']}
+                            onAction={handleAction}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                </div>
             </div>
 
-            {/* Hiển thị thẻ Card (Overlay) nếu trạng thái overlayVisible là true */}
-            {currentTaiKhoan && (
+            {/* Card Overlay */}
+            {cardAction && (
                 <Card
-                    action={currentTaiKhoan.action} // Thực hiện hành động create, edit, view, delete
-                    taiKhoan={currentTaiKhoan}
+                    action={cardAction}
+                    data={currentUser}
                     columns={columns}
-                    onClose={() => setCurrentTaiKhoan(null)} // Đóng overlay khi không cần
-                    onSave={(taiKhoan) => {
-                        if (currentTaiKhoan && currentTaiKhoan.action === 'edit') {
-                            // Cập nhật tài khoản
-                            fetch(`/api/taikhoanapi/${currentTaiKhoan.Id}`, {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(taiKhoan),
-                            }).then(() => fetchData());
-                        } else if (currentTaiKhoan && currentTaiKhoan.action === 'create') {
-                            // Thêm mới tài khoản
-                            fetch('/api/taikhoanapi', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(taiKhoan),
-                            }).then(() => fetchData());
-                        }
-                        setCurrentTaiKhoan(null); // Đóng overlay sau khi lưu
-                    }}
-                    onDelete={(taiKhoan) => {
-                        // Hàm xử lý xóa
-                        fetch(`/api/taikhoanapi/${taiKhoan.Id}`, {
-                            method: 'DELETE',
-                        }).then(() => fetchData());
-                        setCurrentTaiKhoan(null); // Đóng overlay sau khi xóa
-                    }}
+                    onClose={handleCloseCard}
+                    onSave={handleSave}
+                    onDelete={handleDelete}
                 />
             )}
         </div>
     );
 };
 
-export default TaiKhoanList;
+export default UserList;

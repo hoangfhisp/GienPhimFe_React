@@ -14,6 +14,8 @@ import NgonNguList from '../pages/Quan_tri_vien/QuanLyNgonNgu/List-Ngon-Ngu';
 import DaoDienList from '../pages/Quan_tri_vien/QuanLyDaoDien/List-Dao-Dien';
 import DienVienList from '../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien';
 import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
+import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung';
+import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import Login from '../pages/Dang_nhap/Login.jsx'
 
 
@@ -34,7 +36,8 @@ export default function AppRoutes() {
             <Route path="/List-Dao-Dien" element={<DaoDienList />} />
             <Route path="/List-Dien-Vien" element={<DienVienList />} />
             <Route path="/List-The-Tag" element={<TheTagList />} />
-
+            <Route path="/List-Nguoi-Dung" element={<UserList />} />
+            <Route path="/List-Vai-Tro" element={<RoleList />} />
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />
         </Routes>

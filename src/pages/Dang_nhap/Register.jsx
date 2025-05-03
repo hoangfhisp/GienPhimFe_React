@@ -1,139 +1,163 @@
 import React, { useState } from 'react';
 import LoginContainer from '../../components/Login-container/Login-container';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';  // Thêm useNavigate để chuyển hướng sau khi đăng ký thành công
+import { registerUser } from '../../services/User/UserService'; // Import hàm registerUser từ service
 import '../../components/Login-container/Login.scss';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [agree, setAgree] = useState(false);
-  const [errors, setErrors] = useState({});
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [agree, setAgree] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [errorMessage, setErrorMessage] = useState(''); // Để lưu thông báo lỗi từ API khi đăng ký không thành công
+    const navigate = useNavigate(); // Dùng navigate để chuyển hướng
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const newErrors = {};
+        const newErrors = {};
 
-    if (!email) newErrors.email = 'Email không được để trống.';
-    if (!phoneNumber) newErrors.phoneNumber = 'Số điện thoại không được để trống.';
-    if (!password) newErrors.password = 'Mật khẩu không được để trống.';
-    if (password !== confirmPassword) newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
-    if (!agree) newErrors.agree = 'Bạn cần đồng ý với điều khoản.';
+        // Kiểm tra các lỗi đầu vào
+        if (!email) newErrors.email = 'Email không được để trống.';
+        if (!phoneNumber) newErrors.phoneNumber = 'Số điện thoại không được để trống.';
+        if (!password) newErrors.password = 'Mật khẩu không được để trống.';
+        if (password !== confirmPassword) newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp.';
+        if (!agree) newErrors.agree = 'Bạn cần đồng ý với điều khoản.';
 
-    setErrors(newErrors);
+        setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      // Gửi dữ liệu đăng ký
-      console.log({ email, phoneNumber, password, confirmPassword });
-    }
-  };
+        if (Object.keys(newErrors).length === 0) {
+            // Gửi dữ liệu đăng ký nếu không có lỗi
+            const userData = { email, phoneNumber, password };
 
-  return (
-    <div className="login-container">
-      <LoginContainer />
-        <div className="login-body">
-            <div className="login-form-container">
-                <div className="login-form-header">
-                <h4 style={{ textAlign: 'center' }}>Đăng ký tài khoản</h4>
-                </div>
+            try {
+                const response = await registerUser(userData); // Gọi API đăng ký
 
-                <form className="login-form" id="registerForm" onSubmit={handleSubmit}>
-                {/* Email */}
-                <input
-                    type="email"
-                    className="login-form-input"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="username"
-                    placeholder="name@example.com"
-                    required
-                />
-                {errors.email && <span className="text-danger">{errors.email}</span>}
+                if (response.status) {
+                    // Đăng ký thành công, chuyển hướng đến trang đăng nhập
+                    navigate('/login'); // Sử dụng navigate để chuyển hướng đến trang login
+                } else {
+                    // Nếu đăng ký thất bại, hiển thị thông báo lỗi
+                    setErrorMessage(response.msg);
+                }
+            } catch (error) {
+                console.error('Lỗi đăng ký:', error);
+                setErrorMessage('Đã có lỗi xảy ra, vui lòng thử lại.');
+            }
+        }
+    };
 
-                {/* Số điện thoại */}
-                <input
-                    type="tel"
-                    className="login-form-input"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    autoComplete="tel"
-                    placeholder="phone number"
-                    required
-                />
-                {errors.phoneNumber && <span className="text-danger">{errors.phoneNumber}</span>}
+    return (
+        <div className="login-container">
+            <LoginContainer />
 
-                {/* Mật khẩu */}
-                <input
-                    type="password"
-                    className="login-form-input"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="password"
-                    required
-                />
-                {errors.password && <span className="text-danger">{errors.password}</span>}
-
-                {/* Xác nhận mật khẩu */}
-                <input
-                    type="password"
-                    className="login-form-input"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="password"
-                    required
-                />
-                {errors.confirmPassword && <span className="text-danger">{errors.confirmPassword}</span>}
-
-                {/* Đồng ý điều khoản */}
-                <div className="login-form-help">
-                    <div className="signup-form-agree">
-                    <input
-                        type="checkbox"
-                        className="agree-cbx"
-                        id="agree_checkbox"
-                        checked={agree}
-                        onChange={() => setAgree(!agree)}
-                    />
-                    {errors.agree && <span className="text-danger">{errors.agree}</span>}
-                    <label className="agree-lbl" htmlFor="agree_checkbox">
-                        Tôi đồng ý với{' '}
-                        <a href="https://policies.google.com/terms?hl=vi" target="_blank" rel="noreferrer">
-                        Điều khoản sử dụng
-                        </a>{' '}
-                        và{' '}
-                        <a href="https://policies.google.com/privacy?hl=vi" target="_blank" rel="noreferrer">
-                        Chính sách bảo mật
-                        </a>
-                    </label>
+            <div className="login-body">
+                <div className="login-form-container">
+                    <div className="login-form-header">
+                        <h4 style={{ textAlign: 'center' }}>Đăng ký tài khoản</h4>
                     </div>
-                </div>
 
-                <button id="registerSubmit" type="submit" className="login-form-button">
-                    Đăng Ký
-                </button>
-                </form>
+                    <form className="login-form" id="registerForm" onSubmit={handleSubmit}>
+                        {/* Email */}
+                        <input
+                            type="email"
+                            className="login-form-input"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoComplete="username"
+                            placeholder="name@example.com"
+                            required
+                        />
+                        {errors.email && <span className="text-danger">{errors.email}</span>}
 
-                <div className="signup-form-other">
-                <div className="signup-form-login">
-                    Đã có tài khoản?
-                    <Link to="/login" className="signup-form-login-link">Đăng nhập ngay.</Link>
-                </div>
+                        {/* Số điện thoại */}
+                        <input
+                            type="tel"
+                            className="login-form-input"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            autoComplete="tel"
+                            placeholder="phone number"
+                            required
+                        />
+                        {errors.phoneNumber && <span className="text-danger">{errors.phoneNumber}</span>}
 
-                <div className="login-term">
-                    <p>Trang này được bảo vệ bởi Google reCAPTCHA để đảm bảo bạn không phải là bot.</p>
-                    <a href="https://www.google.com/recaptcha" target="_blank" rel="noreferrer">
-                    Tìm hiểu thêm.
-                    </a>
-                </div>
+                        {/* Mật khẩu */}
+                        <input
+                            type="password"
+                            className="login-form-input"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="new-password"
+                            placeholder="password"
+                            required
+                        />
+                        {errors.password && <span className="text-danger">{errors.password}</span>}
+
+                        {/* Xác nhận mật khẩu */}
+                        <input
+                            type="password"
+                            className="login-form-input"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            autoComplete="new-password"
+                            placeholder="password"
+                            required
+                        />
+                        {errors.confirmPassword && <span className="text-danger">{errors.confirmPassword}</span>}
+
+                        {/* Đồng ý điều khoản */}
+                        <div className="login-form-help">
+                            <div className="signup-form-agree">
+                                <input
+                                    type="checkbox"
+                                    className="agree-cbx"
+                                    id="agree_checkbox"
+                                    checked={agree}
+                                    onChange={() => setAgree(!agree)}
+                                />
+                                {errors.agree && <span className="text-danger">{errors.agree}</span>}
+                                <label className="agree-lbl" htmlFor="agree_checkbox">
+                                    Tôi đồng ý với{' '}
+                                    <a href="https://policies.google.com/terms?hl=vi" target="_blank" rel="noreferrer">
+                                        Điều khoản sử dụng
+                                    </a>{' '}
+                                    và{' '}
+                                    <a href="https://policies.google.com/privacy?hl=vi" target="_blank" rel="noreferrer">
+                                        Chính sách bảo mật
+                                    </a>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Nút đăng ký */}
+                        <button id="registerSubmit" type="submit" className="login-form-button">
+                            Đăng Ký
+                        </button>
+                    </form>
+
+                    {/* Hiển thị thông báo lỗi từ API */}
+                    {errorMessage && <div className="login-error-message">{errorMessage}</div>}
+
+                    <div className="signup-form-other">
+                        <div className="signup-form-login">
+                            Đã có tài khoản?
+                            <Link to="/login" className="signup-form-login-link">Đăng nhập ngay.</Link>
+                        </div>
+
+                        <div className="login-term">
+                            <p>Trang này được bảo vệ bởi Google reCAPTCHA để đảm bảo bạn không phải là bot.</p>
+                            <a href="https://www.google.com/recaptcha" target="_blank" rel="noreferrer">
+                                Tìm hiểu thêm.
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-  );
+    );
 };
 
 export default Register;
