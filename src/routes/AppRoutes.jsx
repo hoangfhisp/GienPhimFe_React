@@ -8,6 +8,7 @@ import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
 import PhimList from '../pages/Quan_tri_vien/QuanLyPhim/List-Phim';
 import Login from '../pages/Dang_nhap/Login.jsx'
+import FilmBanner from "../components/Layouts/FilmBanners/FilmBanner.jsx";
 
 
 export default function AppRoutes(){
