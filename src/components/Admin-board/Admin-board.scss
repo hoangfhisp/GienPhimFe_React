@@ -12327,21 +12327,36 @@ a[data-toggle="collapse"] {
 }
 
 .table-pagination {
-    margin-top: 1rem;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 8px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    /* Màu nền để dễ nhận biết */
+}
 
-    .page-btn {
-        margin: 0 4px;
-        padding: 6px 10px;
-        border: none;
-        background-color: #eee;
-        cursor: pointer;
-        border-radius: 4px;
+.page-btn {
+    padding: 5px 10px;
+    border: 1px solid #dee2e6;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
 
-        &.active {
-            background-color: #333;
-            color: #fff;
-        }
+    &:hover:not(:disabled) {
+        background: #e9ecef;
+    }
+
+    &.active {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 }
 
