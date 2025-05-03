@@ -17,6 +17,7 @@ import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
 import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung';
 import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import Login from '../pages/Dang_nhap/Login.jsx'
+import FilmBanner from "../components/Layouts/FilmBanners/FilmBanner.jsx";
 
 
 export default function AppRoutes() {
