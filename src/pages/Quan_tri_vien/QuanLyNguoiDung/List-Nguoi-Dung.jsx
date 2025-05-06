@@ -3,13 +3,14 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 import {
     fetchUsers,
-    searchUsers,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    searchNguoiDungs
 } from '../../../services/Admin/UserService';
 
 const UserList = () => {
@@ -18,6 +19,11 @@ const UserList = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [cardAction, setCardAction] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
 
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
@@ -25,9 +31,7 @@ const UserList = () => {
 
         fetchUsers(page, limit)
             .then(result => {
-                // Đảm bảo setUsers nhận đúng cấu trúc dữ liệu
                 setUsers(Array.isArray(result.data) ? result.data : []);
-
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
@@ -45,38 +49,54 @@ const UserList = () => {
             });
     };
 
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0
-    });
-
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
         fetchData(newPage);
     };
 
-    const handleSearch = e => {
-        e.preventDefault();
+    const handleSearch = () => {
         setPagination(prev => ({ ...prev, currentPage: 1 }));
-        searchUsers(searchTerm, 1, pagination.itemsPerPage)
+        searchNguoiDungs(searchTerm, 1, pagination.itemsPerPage)
             .then(response => {
-                setUsers(response.data);
+                setUsers(response?.data || []);
                 setPagination(prev => ({
                     ...prev,
-                    totalItems: response.totalItems
+                    totalItems: response?.totalItems || 0
                 }));
             })
             .catch(err => console.error("Lỗi tìm kiếm người dùng:", err));
     };
 
+    // Hàm debounce
+    const debouncedSearch = debounce(() => {
+        if (searchTerm.trim() === '') {
+            fetchData(1);  // Nếu không có từ khóa tìm kiếm, tải lại danh sách người dùng
+        } else {
+            handleSearch();  // Nếu có từ khóa tìm kiếm, gọi hàm tìm kiếm
+        }
+    }, 500);
+
+    // Thực hiện debounce khi searchTerm thay đổi
     useEffect(() => {
-        fetchData(1);
+        debouncedSearch();
+        return () => debouncedSearch.cancel();  // Hủy debounce khi component unmount
+    }, [searchTerm, pagination.itemsPerPage]);
+
+    useEffect(() => {
+        fetchData(1);  // Lần đầu tiên gọi để tải dữ liệu
     }, []);
 
     const columns = [
         { header: "Tên người dùng", accessor: "userName" },
         { header: "Email", accessor: "email" },
+        {
+            header: "Vai trò",
+            accessor: "roles",
+            render: row => {
+                const roles = row.roles;
+                return roles && roles.length > 0 ? roles.join(", ") : "Null";
+            }
+        },
         {
             header: "Ngày tạo",
             accessor: "thoiGianTao",
@@ -155,7 +175,7 @@ const UserList = () => {
                 <div className="card mb-4">
                     <div className="card-body">
                         <h5 className="card-title">Tìm kiếm người dùng</h5>
-                        <form onSubmit={handleSearch} className="input-group">
+                        <form onSubmit={e => e.preventDefault()} className="input-group">
                             <input
                                 className="form-control"
                                 name="searchTerm"
@@ -164,7 +184,11 @@ const UserList = () => {
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                             />
-                            <button className="btn btn-primary" type="submit">
+                            <button
+                                className="btn btn-primary"
+                                type="submit"
+                                onClick={handleSearch}
+                            >
                                 <i className="fas fa-search me-2"></i>Tìm kiếm
                             </button>
                             <button

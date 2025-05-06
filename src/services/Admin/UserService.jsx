@@ -53,6 +53,19 @@ export const searchUsers = async (keyword, page, limit) => {
     }
 };
 
+
+export const searchNguoiDungs = async (tenND, page = 1, limit = 10) => {
+    try {
+        const res = await request.get('/Search/NguoiDung', {
+            params: { tenND, page, limit }
+        });
+        return res;
+
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
 export const getUserById = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);

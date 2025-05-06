@@ -32,29 +32,17 @@ export const fetchRoles = async (page, limit) => {
 };
 
 // Tìm kiếm vai trò
-export const searchRoles = async (keyword, page, limit) => {
+export const searchVaiTros = async (tenVT, page = 1, limit = 10) => {
     try {
-        const response = await axios.get(`${API_URL}/search`, {
-            params: { keyword, page, limit }
+        const res = await request.get('/Search/VaiTro', {
+            params: { tenVT, page, limit }
         });
-
-        return {
-            status: response.data?.status || true,
-            data: response.data?.data || [],
-            pagination: response.data?.pagination || null,
-            msg: response.data?.msg || 'Tìm kiếm vai trò thành công'
-        };
+        return res;
 
     } catch (error) {
-        console.error("Lỗi tìm kiếm vai trò:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.response?.data?.msg || error.message || 'Lỗi khi tìm kiếm vai trò'
-        };
+        console.error("Lỗi khi gọi API:", error);
     }
-};
+}
 
 // Lấy thông tin vai trò theo ID
 export const getRoleById = async (id) => {
@@ -129,3 +117,5 @@ export const deleteRole = async (id) => {
         };
     }
 };
+
+
