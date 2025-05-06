@@ -3,6 +3,7 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import {
@@ -20,6 +21,12 @@ const DaoDienList = () => {
     const [cardAction, setCardAction] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
         setLoading(true);
@@ -27,7 +34,6 @@ const DaoDienList = () => {
         fetchDaoDiens(page, limit)
             .then(result => {
                 setDaoDiens(Array.isArray(result.data) ? result.data : []);
-
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
@@ -45,19 +51,12 @@ const DaoDienList = () => {
             });
     };
 
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0
-    });
-
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
         fetchData(newPage);
     };
 
-    const handleSearch = e => {
-        e.preventDefault();
+    const handleSearch = () => {
         setPagination(prev => ({ ...prev, currentPage: 1 }));
         searchDaoDiens(searchTerm, 1, pagination.itemsPerPage)
             .then(response => {
@@ -71,8 +70,20 @@ const DaoDienList = () => {
     };
 
     useEffect(() => {
-        fetchData(1);
-    }, []);
+        const debouncedSearch = debounce(() => {
+            if (searchTerm.trim() === '') {
+                fetchData(1);
+            } else {
+                handleSearch();
+            }
+        }, 500);
+
+        debouncedSearch();
+
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [searchTerm, pagination.itemsPerPage]);
 
     const columns = [
         { header: "Tên đạo diễn", accessor: "tenDG" },
@@ -117,7 +128,7 @@ const DaoDienList = () => {
     };
 
     const handleDelete = async (daoDien) => {
-        if (!window.confirm(`Bạn chắc chắn muốn xóa đạo diễn "${daoDien.tenDaoDien}"?`)) return;
+        if (!window.confirm(`Bạn chắc chắn muốn xóa đạo diễn "${daoDien.tenDG}"?`)) return;
         try {
             setLoading(true);
             await deleteDaoDien(daoDien.daoDienId);
@@ -139,7 +150,6 @@ const DaoDienList = () => {
                 </div>
                 <hr />
 
-                {/* Navigation links */}
                 <div className="mb-4">
                     <div className="d-flex flex-wrap gap-3">
                         <button
@@ -148,23 +158,13 @@ const DaoDienList = () => {
                         >
                             <i className="fas fa-plus me-2"></i>Thêm đạo diễn mới
                         </button>
-                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý phim
-                        </Link>
-                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
-                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
-                        </Link>
-                        <Link to="/quanly/dienvien" className="btn btn-outline-secondary">
-                            <i className="fas fa-users me-2"></i>Quản lý diễn viên
-                        </Link>
                     </div>
                 </div>
 
-                {/* Search Section */}
                 <div className="card mb-4">
                     <div className="card-body">
                         <h5 className="card-title">Tìm kiếm đạo diễn</h5>
-                        <form onSubmit={handleSearch} className="input-group">
+                        <form onSubmit={e => e.preventDefault()} className="input-group">
                             <input
                                 className="form-control"
                                 name="searchTerm"
@@ -173,7 +173,11 @@ const DaoDienList = () => {
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                             />
-                            <button className="btn btn-primary" type="submit">
+                            <button
+                                className="btn btn-primary"
+                                type="submit"
+                                onClick={handleSearch}
+                            >
                                 <i className="fas fa-search me-2"></i>Tìm kiếm
                             </button>
                             <button
@@ -190,7 +194,6 @@ const DaoDienList = () => {
                     </div>
                 </div>
 
-                {/* Table Section */}
                 <div className="card">
                     <div className="card-body">
                         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -220,7 +223,6 @@ const DaoDienList = () => {
                 </div>
             </div>
 
-            {/* Card Overlay */}
             {cardAction && (
                 <Card
                     action={cardAction}

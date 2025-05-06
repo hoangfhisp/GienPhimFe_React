@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 
 import {
     fetchMovies, searchMovies,
-    filterMovies,
     addMovieFromAPI,
     createMovie,
     updateMovie,
@@ -16,6 +15,10 @@ import {
 } from '../../../services/Admin/MovieService';
 
 import * as requestTheLoai from '../../../services/Admin/TheLoaiService.jsx';
+import * as requestQuocGia from '../../../services/Admin/QuocGiaService.jsx';
+import * as requestNgonNgu from '../../../services/Admin/NgonNguService.jsx';
+
+import { filterMovies } from '../../../services/User/LocPhimService.jsx';
 
 const PhimList = () => {
     const [movies, setMovies] = useState([]);
@@ -37,16 +40,21 @@ const PhimList = () => {
         const limit = pagination.itemsPerPage || 10;
         setLoading(true);
 
-        fetchMovies(page, limit)
-            .then(result => {
-                // Sử dụng result.data (đã được chuẩn hóa)
-                setMovies(Array.isArray(result.data) ? result.data : []);
+        filterMovies({
+            TenTL: selectedTheLoai,
+            TenQG: selectedQuocGia,
+            TenNN: selectedNgonNgu,
+            page: page,
+            limit: limit
+        })
+            .then(response => {
+                setMovies(Array.isArray(response.data) ? response.data : []);
 
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
-                    totalItems: result.pagination.total, // Lấy từ result.pagination
-                    itemsPerPage: result.pagination.limit
+                    totalItems: response.pagination.total,
+                    itemsPerPage: response.pagination.limit
                 }));
             })
             .catch(err => {
@@ -73,21 +81,34 @@ const PhimList = () => {
     const handleLocPhim = e => {
         e.preventDefault();
         setPagination(prev => ({ ...prev, currentPage: 1 }));
+
         filterMovies({
-            theLoai: selectedTheLoai,
-            quocGia: selectedQuocGia,
-            ngonNgu: selectedNgonNgu,
-            page: 1,
+            TenTL: selectedTheLoai,
+            TenQG: selectedQuocGia,
+            TenNN: selectedNgonNgu,
+            page: pagination.currentPage,
             limit: pagination.itemsPerPage
         })
             .then(response => {
-                setMovies(response.data);
+                const dataArray = Array.isArray(response.data) ? response.data : [];
+                setMovies(dataArray);
                 setPagination(prev => ({
                     ...prev,
-                    totalItems: response.totalItems
+                    totalItems: response.pagination?.total || 0
                 }));
             })
-            .catch(err => console.error("Lỗi lọc phim:", err));
+            .catch(err => {
+                console.error("Lỗi lọc phim:", err);
+                setMovies([]);
+            });
+    };
+
+    const handleClearFilter = () => {
+        setSelectedTheLoai('');
+        setSelectedQuocGia('');
+        setSelectedNgonNgu('');
+
+        fetchData(1);
     };
 
     const handleTimKiem = e => {
@@ -98,17 +119,16 @@ const PhimList = () => {
                 setMovies(response.data);
                 setPagination(prev => ({
                     ...prev,
-                    totalItems: response.pagination.total // Sửa thành response.pagination.total
+                    totalItems: response.pagination.total
                 }));
             })
             .catch(err => console.error("Lỗi tìm kiếm phim:", err));
     };
 
-    // Thêm phim thông qua API
     const handleInputAPI = e => {
         e.preventDefault();
         addMovieFromAPI(apiLink)
-            .then(() => fetchData()) // Sử dụng lại hàm fetchData đã cập nhật
+            .then(() => fetchData())
             .catch(err => {
                 console.error("Lỗi thêm phim:", err);
             });
@@ -116,11 +136,20 @@ const PhimList = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const result = await requestTheLoai.fetchTheLoais(1, 1000);
-            setTheLoaiList(result.data)
-        }
-        fetchApi();
+            try {
+                const result = await requestTheLoai.fetchTheLoais(1, 1000);
+                setTheLoaiList(result.data || []);
 
+                const quocGiaResult = await requestQuocGia.fetchQuocGias(1, 1000);
+                setQuocGiaList(quocGiaResult.data || []);
+
+                const ngonNguResult = await requestNgonNgu.fetchNgonNgus(1, 1000);
+                setNgonNguList(ngonNguResult.data || []);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+            }
+        };
+        fetchApi();
     }, []);
 
 
@@ -142,12 +171,12 @@ const PhimList = () => {
                     }));
                 })
                 .catch(err => console.error("Lỗi tìm kiếm phim:", err));
-        }, 500); // delay 500ms
+        }, 500);
 
-        debouncedSearch(); // Gọi hàm debounce
+        debouncedSearch();
 
         return () => {
-            debouncedSearch.cancel(); // cleanup debounce mỗi lần unmount hoặc `tenPhim` thay đổi
+            debouncedSearch.cancel();
         };
     }, [tenPhim, pagination.itemsPerPage]);
 
@@ -199,7 +228,7 @@ const PhimList = () => {
             } else {
                 await updateMovie(movieData.id, movieData);
             }
-            fetchData(pagination.currentPage); // Giữ nguyên trang hiện tại
+            fetchData(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi lưu phim:", error);
@@ -213,7 +242,7 @@ const PhimList = () => {
         try {
             setLoading(true);
             await deleteMovie(movie.id);
-            fetchData(pagination.currentPage); // Giữ nguyên trang hiện tại
+            fetchData(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
@@ -231,7 +260,6 @@ const PhimList = () => {
                 </div>
                 <hr />
 
-                {/* Navigation links */}
                 <div className="mb-4">
                     <div className="d-flex flex-wrap gap-3">
                         <button
@@ -241,18 +269,17 @@ const PhimList = () => {
                             <i className="fas fa-plus me-2"></i>Thêm phim mới
                         </button>
                         <Link to="/quanly/daodien" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý đạo diễn
+                            <i className="fas fa-film me-2"></i>Quản lý đạo diễn của phim
                         </Link>
                         <Link to="/quanly/dienvien" className="btn btn-outline-secondary">
-                            <i className="fas fa-users me-2"></i>Quản lý diễn viên
+                            <i className="fas fa-users me-2"></i>Quản lý diễn viên của phim
                         </Link>
                         <Link to="/quanly/theloai" className="btn btn-outline-secondary">
-                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
+                            <i className="fas fa-tags me-2"></i>Quản lý thể loại của phim
                         </Link>
                     </div>
                 </div>
 
-                {/* Search and Filter Section */}
                 <div className="card mb-4">
                     <div className="card-body">
                         <h5 className="card-title">Bộ lọc & Tìm kiếm</h5>
@@ -294,7 +321,7 @@ const PhimList = () => {
                                 >
                                     <option value="">Tất cả quốc gia</option>
                                     {quocGiaList.map(item => (
-                                        <option key={item.value} value={item.value}>{item.text}</option>
+                                        <option key={item.quocGiaId} value={item.tenQG}>{item.tenQG}</option>
                                     ))}
                                 </select>
                             </div>
@@ -306,7 +333,7 @@ const PhimList = () => {
                                 >
                                     <option value="">Tất cả ngôn ngữ</option>
                                     {ngonNguList.map(item => (
-                                        <option key={item.value} value={item.value}>{item.text}</option>
+                                        <option key={item.ngonNguId} value={item.tenNN}>{item.tenNN}</option>
                                     ))}
                                 </select>
                             </div>
@@ -318,12 +345,7 @@ const PhimList = () => {
                                     <i className="fas fa-filter me-2"></i>Lọc phim
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        setSelectedTheLoai('');
-                                        setSelectedQuocGia('');
-                                        setSelectedNgonNgu('');
-                                        fetchData();
-                                    }}
+                                    onClick={handleClearFilter}
                                     className="btn btn-outline-secondary"
                                 >
                                     <i className="fas fa-times me-2"></i>Xóa bộ lọc
@@ -333,7 +355,6 @@ const PhimList = () => {
                     </div>
                 </div>
 
-                {/* API Input Section */}
                 <div className="card mb-4">
                     <div className="card-body">
                         <h5 className="card-title">Nhập phim từ API</h5>
@@ -353,7 +374,6 @@ const PhimList = () => {
                     </div>
                 </div>
 
-                {/* Table Section */}
                 <div className="card">
                     <div className="card-body">
                         <div className="d-flex justify-content-between align-items-center mb-3">
@@ -383,7 +403,6 @@ const PhimList = () => {
                 </div>
             </div>
 
-            {/* Card Overlay */}
             {cardAction && (
                 <Card
                     action={cardAction}

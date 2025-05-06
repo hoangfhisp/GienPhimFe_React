@@ -3,6 +3,7 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import {
@@ -20,6 +21,13 @@ const NgonNguList = () => {
     const [cardAction, setCardAction] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
+    // Fetch data from the API
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
         setLoading(true);
@@ -44,19 +52,13 @@ const NgonNguList = () => {
             });
     };
 
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0
-    });
-
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
         fetchData(newPage);
     };
 
-    const handleSearch = e => {
-        e.preventDefault();
+    // Handle search with debounce
+    const handleSearch = () => {
         setPagination(prev => ({ ...prev, currentPage: 1 }));
         searchNgonNgus(searchTerm, 1, pagination.itemsPerPage)
             .then(response => {
@@ -70,8 +72,21 @@ const NgonNguList = () => {
     };
 
     useEffect(() => {
-        fetchData(1);
-    }, []);
+        const debouncedSearch = debounce(() => {
+            if (searchTerm.trim() === '') {
+                fetchData(1);  // If no search term, load all data
+            } else {
+                handleSearch();  // Perform search if there's a search term
+            }
+        }, 500);  // Debounce time of 500ms
+
+        debouncedSearch();
+
+        // Cleanup debounce function on component unmount or when searchTerm changes
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [searchTerm, pagination.itemsPerPage]);
 
     const columns = [
         { header: "Tên ngôn ngữ", accessor: "tenNN" },
@@ -147,12 +162,6 @@ const NgonNguList = () => {
                         >
                             <i className="fas fa-plus me-2"></i>Thêm ngôn ngữ mới
                         </button>
-                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý phim
-                        </Link>
-                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
-                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
-                        </Link>
                     </div>
                 </div>
 
@@ -160,7 +169,7 @@ const NgonNguList = () => {
                 <div className="card mb-4">
                     <div className="card-body">
                         <h5 className="card-title">Tìm kiếm ngôn ngữ</h5>
-                        <form onSubmit={handleSearch} className="input-group">
+                        <form onSubmit={e => e.preventDefault()} className="input-group">
                             <input
                                 className="form-control"
                                 name="searchTerm"
@@ -169,7 +178,11 @@ const NgonNguList = () => {
                                 value={searchTerm}
                                 onChange={e => setSearchTerm(e.target.value)}
                             />
-                            <button className="btn btn-primary" type="submit">
+                            <button
+                                className="btn btn-primary"
+                                type="submit"
+                                onClick={handleSearch}
+                            >
                                 <i className="fas fa-search me-2"></i>Tìm kiếm
                             </button>
                             <button

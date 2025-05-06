@@ -6,7 +6,6 @@ const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
     const [formData, setFormData] = useState({});
 
     useEffect(() => {
-        // Khởi tạo form data khi nhận prop mới
         setFormData(data || columns.reduce((acc, col) => {
             acc[col.accessor] = '';
             return acc;
@@ -28,7 +27,6 @@ const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
     return (
         <div className="card-overlay">
             <div className="card-modal">
-                <button className="close-btn" onClick={onClose}>×</button>
 
                 {action === 'view' && (
                     <div className="view-mode">
@@ -39,6 +37,11 @@ const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
                                 <div>{col.render ? col.render(data) : data[col.accessor]}</div>
                             </div>
                         ))}
+                        <div className="form-actions">
+                            <button type="button" className="cancel-btn" onClick={onClose}>
+                                Đóng
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -70,7 +73,7 @@ const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
                     <div className="delete-confirm">
                         <h3>Xác nhận xóa</h3>
                         <p>Bạn có chắc muốn xóa bản ghi này?</p>
-                        <div className="actions">
+                        <div className="form-actions">
                             <button className="delete-btn" onClick={() => onDelete(data)}>
                                 Xóa
                             </button>

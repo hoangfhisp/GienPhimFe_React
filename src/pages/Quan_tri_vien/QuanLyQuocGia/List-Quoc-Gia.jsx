@@ -3,6 +3,7 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import {
@@ -20,15 +21,19 @@ const QuocGiaList = () => {
     const [cardAction, setCardAction] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 0
+    });
+
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
         setLoading(true);
 
         fetchQuocGias(page, limit)
             .then(result => {
-                // Đảm bảo setQuocGias nhận đúng cấu trúc dữ liệu
                 setQuocGias(Array.isArray(result.data) ? result.data : []);
-
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
@@ -46,19 +51,12 @@ const QuocGiaList = () => {
             });
     };
 
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0
-    });
-
     const handlePageChange = (newPage) => {
         if (newPage < 1 || newPage > Math.ceil(pagination.totalItems / pagination.itemsPerPage)) return;
         fetchData(newPage);
     };
 
-    const handleSearch = e => {
-        e.preventDefault();
+    const handleSearch = () => {
         setPagination(prev => ({ ...prev, currentPage: 1 }));
         searchQuocGias(searchTerm, 1, pagination.itemsPerPage)
             .then(response => {
@@ -71,9 +69,23 @@ const QuocGiaList = () => {
             .catch(err => console.error("Lỗi tìm kiếm quốc gia:", err));
     };
 
+    // Cập nhật searchTerm với debounce
     useEffect(() => {
-        fetchData(1);
-    }, []);
+        const debouncedSearch = debounce(() => {
+            if (searchTerm.trim() === '') {
+                fetchData(1);  // Nếu không có từ khóa tìm kiếm, tải lại tất cả dữ liệu.
+                return;
+            }
+
+            handleSearch();  // Gọi trực tiếp `handleSearch` mà không cần sự kiện.
+        }, 500);  // Thời gian debounce là 500ms
+
+        debouncedSearch();
+
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [searchTerm, pagination.itemsPerPage]);
 
     const columns = [
         { header: "Tên quốc gia", accessor: "tenQG" },
@@ -118,7 +130,7 @@ const QuocGiaList = () => {
     };
 
     const handleDelete = async (quocGia) => {
-        if (!window.confirm(`Bạn chắc chắn muốn xóa quốc gia "${quocGia.tenQuocGia}"?`)) return;
+        if (!window.confirm(`Bạn chắc chắn muốn xóa quốc gia "${quocGia.tenQG}"?`)) return;
         try {
             setLoading(true);
             await deleteQuocGia(quocGia.quocGiaId);
@@ -149,15 +161,6 @@ const QuocGiaList = () => {
                         >
                             <i className="fas fa-plus me-2"></i>Thêm quốc gia mới
                         </button>
-                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý phim
-                        </Link>
-                        <Link to="/quanly/daodien" className="btn btn-outline-secondary">
-                            <i className="fas fa-user-tie me-2"></i>Quản lý đạo diễn
-                        </Link>
-                        <Link to="/quanly/dienvien" className="btn btn-outline-secondary">
-                            <i className="fas fa-users me-2"></i>Quản lý diễn viên
-                        </Link>
                     </div>
                 </div>
 

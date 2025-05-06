@@ -1,6 +1,7 @@
 // services/movieService.jsx
 import * as request from "../../untils/Request.jsx";
 import axios from "axios";
+import { filterMovies } from "../User/LocPhimService.jsx";
 const API_URL = 'http://localhost:5039/api/Admin/Phim';
 
 const handleError = (error) => {
@@ -49,9 +50,19 @@ export const searchMovies = async (tenp, page = 1, limit = 10) => {
     }
 };
 
-export const filterMovies = ({ theLoai, quocGia, ngonNgu }) => {
-    const query = `?theLoai=${theLoai}&quocGia=${quocGia}&ngonNgu=${ngonNgu}`;
-    return axios.get(`${API_URL}${query}`);
+export const fetchFilteredMovies = async (filters) => {
+    try {
+        const response = await filterMovies(filters);
+        return response;
+    } catch (error) {
+        console.error("Lỗi lọc phim:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi lọc phim'
+        };
+    }
 };
 
 export const addMovieFromAPI = (apiLink) => {

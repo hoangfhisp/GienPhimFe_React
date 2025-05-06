@@ -148,12 +148,6 @@ const UserList = () => {
                         >
                             <i className="fas fa-plus me-2"></i>Thêm người dùng mới
                         </button>
-                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý phim
-                        </Link>
-                        <Link to="/quanly/theloai" className="btn btn-outline-secondary">
-                            <i className="fas fa-tags me-2"></i>Quản lý thể loại
-                        </Link>
                     </div>
                 </div>
 

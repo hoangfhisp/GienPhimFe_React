@@ -3,6 +3,7 @@ import AdminBoard from '../../../components/Admin-board/Admin-board';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
 import '../../../components/Admin-board/Admin-board.scss';
+import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import {
@@ -26,9 +27,7 @@ const TheLoaiList = () => {
 
         fetchTheLoais(page, limit)
             .then(result => {
-                // Đảm bảo setMovies nhận đúng cấu trúc dữ liệu
                 setTheLoais(Array.isArray(result.data) ? result.data : []);
-
                 setPagination(prev => ({
                     ...prev,
                     currentPage: page,
@@ -57,8 +56,7 @@ const TheLoaiList = () => {
         fetchData(newPage);
     };
 
-    const handleSearch = e => {
-        e.preventDefault();
+    const handleSearch = () => {
         setPagination(prev => ({ ...prev, currentPage: 1 }));
         searchTheLoais(searchTerm, 1, pagination.itemsPerPage)
             .then(response => {
@@ -71,9 +69,25 @@ const TheLoaiList = () => {
             .catch(err => console.error("Lỗi tìm kiếm thể loại:", err));
     };
 
+
+    // Cập nhật searchTerm với debounce
     useEffect(() => {
-        fetchData(1);
-    }, []);
+        const debouncedSearch = debounce(() => {
+            if (searchTerm.trim() === '') {
+                fetchData(1);  // Nếu không có từ khóa tìm kiếm, tải lại tất cả dữ liệu.
+                return;
+            }
+
+            handleSearch();  // Gọi trực tiếp `handleSearch` mà không cần sự kiện.
+        }, 500);  // Thời gian debounce là 500ms
+
+        debouncedSearch();
+
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [searchTerm, pagination.itemsPerPage]);  // Chạy lại khi `searchTerm` hoặc `itemsPerPage` thay đổi
+
 
     const columns = [
         { header: "Tên thể loại", accessor: "tenTL" },
@@ -149,15 +163,6 @@ const TheLoaiList = () => {
                         >
                             <i className="fas fa-plus me-2"></i>Thêm thể loại mới
                         </button>
-                        <Link to="/quanly/phim" className="btn btn-outline-secondary">
-                            <i className="fas fa-film me-2"></i>Quản lý phim
-                        </Link>
-                        <Link to="/quanly/daodien" className="btn btn-outline-secondary">
-                            <i className="fas fa-user-tie me-2"></i>Quản lý đạo diễn
-                        </Link>
-                        <Link to="/quanly/dienvien" className="btn btn-outline-secondary">
-                            <i className="fas fa-users me-2"></i>Quản lý diễn viên
-                        </Link>
                     </div>
                 </div>
 
