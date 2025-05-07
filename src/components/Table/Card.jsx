@@ -32,7 +32,7 @@ const Card = ({ action, data, columns, onClose, onSave, onDelete }) => {
                     <div className="view-mode">
                         <h3>Xem chi tiết</h3>
                         {columns.map(col => (
-                            <div key={col.accessor} className="field">
+                            <div key={col.accessor} className="field" >
                                 <label>{col.header}:</label>
                                 <div>{col.render ? col.render(data) : data[col.accessor]}</div>
                             </div>

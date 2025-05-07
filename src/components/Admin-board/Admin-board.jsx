@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../components/Login-container/Login.scss';
 import './Admin-board.scss';
@@ -7,11 +7,18 @@ import logoImage from '../../assets/img/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AdminBoard = ({ username = 'Admin' }) => {
+    const [isSidebarActive, setIsSidebarActive] = useState(false);
+
     const handleLogout = () => {
         alert('Đăng xuất thành công!');
     };
 
-    // UseEffect to load scripts
+    // Hàm toggle để ẩn/hiện sidebar
+    const toggleSidebar = () => {
+        setIsSidebarActive((prev) => !prev);
+    };
+
+    // UseEffect để tải các script khi component được mount
     useEffect(() => {
         const scripts = [
             '/js/jquery.min.js',
@@ -20,7 +27,6 @@ const AdminBoard = ({ username = 'Admin' }) => {
             '/js/main.js',
         ];
 
-        // Function to dynamically add the script tags
         const addScripts = () => {
             scripts.forEach((scriptSrc) => {
                 const script = document.createElement('script');
@@ -30,9 +36,9 @@ const AdminBoard = ({ username = 'Admin' }) => {
             });
         };
 
-        addScripts(); // Add scripts when component mounts
+        addScripts(); // Thêm script khi component được mount
 
-        // Cleanup function to remove scripts when component unmounts
+        // Cleanup: Xóa các script khi component bị unmount
         return () => {
             scripts.forEach((scriptSrc) => {
                 const script = document.querySelector(`script[src="${scriptSrc}"]`);
@@ -41,13 +47,19 @@ const AdminBoard = ({ username = 'Admin' }) => {
                 }
             });
         };
-    }, []); // Empty dependency array ensures this effect runs only once when component mounts
+    }, []); // Chạy effect chỉ một lần khi component được mount
 
     return (
         <div className="wrapper d-flex align-items-stretch">
-            <nav id="sidebar">
+            <nav id="sidebar" className={isSidebarActive ? 'active' : ''}>
                 <div className="custom-menu">
-                    <button type="button" id="sidebarCollapse" className="btn btn-primary"></button>
+                    <button
+                        type="button"
+                        id="sidebarCollapse"
+                        className="btn btn-primary"
+                        onClick={toggleSidebar}
+                    >
+                    </button>
                 </div>
                 <div
                     className="img bg-wrap text-center py-4"

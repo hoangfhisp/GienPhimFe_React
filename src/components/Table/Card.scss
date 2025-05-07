@@ -97,10 +97,19 @@
             padding-bottom: 0.5rem;
         }
 
+        p {
+            text-align: center;
+            font-size: 25px;
+            color: red;
+            font-weight: bold;
+        }
+
         .field {
+            font-size: 16px;
             margin-bottom: 1rem;
 
             label {
+                font-size: 17px;
                 font-weight: bold;
                 display: block;
                 margin-bottom: 0.3rem;

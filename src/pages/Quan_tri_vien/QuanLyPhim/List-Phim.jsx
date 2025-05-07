@@ -35,6 +35,7 @@ const PhimList = () => {
     const [selectedNgonNgu, setSelectedNgonNgu] = useState('');
     const [tenPhim, setTenPhim] = useState('');
     const [apiLink, setApiLink] = useState('');
+    const [viewFull, setViewFull] = useState(false);
 
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
@@ -182,7 +183,7 @@ const PhimList = () => {
 
     const columns = [
         { header: "Tên phim", accessor: "tenP", render: row => <div className="ten-phim-cell">{row.tenP}</div> },
-        //{ header: "Mô tả", accessor: "moTaP", render: row => <div className="ten-phim-cell">{row.moTaP}</div> },
+        { header: "Mô tả", accessor: "moTaP", render: row => <div className="ten-phim-cell" style={{ display: `${viewFull ? "block" : "-webkit-box"}` }}>{row.moTaP}</div> },
         {
             header: "Thời lượng",
             accessor: "thoiLuongP",
@@ -211,11 +212,16 @@ const PhimList = () => {
     ];
 
     const handleAction = (action, movie) => {
+        if (action == 'view') {
+            setViewFull(true);
+        }
         setCurrentMovie(movie);
         setCardAction(action);
+
     };
 
     const handleCloseCard = () => {
+        setViewFull(false);
         setCardAction(null);
         setCurrentMovie(null);
     };

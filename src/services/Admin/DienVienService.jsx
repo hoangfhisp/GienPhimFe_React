@@ -2,13 +2,11 @@ import * as request from "../../untils/Request.jsx";
 import axios from "axios";
 const API_URL = 'http://localhost:5039/api/Admin/DienVien';
 
-// Hàm xử lý lỗi
 const handleError = (error) => {
     console.error('API Error:', error);
     throw error;
 };
 
-// Lấy danh sách diễn viên với phân trang
 export const fetchDienViens = async (page, limit) => {
     try {
         const response = await request.get('/Admin/DienVien', {
