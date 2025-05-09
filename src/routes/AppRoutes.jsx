@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 
 import Home from "../pages/Home/Home";
-import NotFound from "../pages/NotFound/NotFound.jsx";
 import Register from '../pages/Dang_nhap/Register';
 import Help from '../pages/Dang_nhap/Help';
+import LienHe from "../pages/LienHe/LienHe.jsx";
 import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
 import OverviewDashboard from '../pages/Quan_tri_vien/TongQuan/Tong-Quan';
@@ -17,15 +17,20 @@ import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
 import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung';
 import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import Login from '../pages/Dang_nhap/Login.jsx'
-import FilmBanner from "../components/Layouts/FilmBanners/FilmBanner.jsx";
+import Phim from "../pages/Phim/Phim.jsx";
+import XemPhim from "../pages/XemPhim/XemPhim.jsx";
+import NotFound from "../pages/NotFound/NotFound.jsx";
 
 
 export default function AppRoutes() {
     return (
         <Routes>
             <Route path="/Home" element={<Home />} />
+            <Route path="/Phim/:id" element={<Phim />} />
+            <Route path="/XemPhim/:id/:tap" element={<XemPhim/>}/>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/LienHe" element={<LienHe/>}/>
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

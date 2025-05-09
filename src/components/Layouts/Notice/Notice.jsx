@@ -1,4 +1,5 @@
-import '../../index.css'
+
+import'./Notice.scss'
 
 export default function Notice(){
     return(

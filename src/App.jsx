@@ -10,14 +10,13 @@ import { useLocation } from "react-router-dom";
 function App() {
     const location = useLocation();
 
-    const hiddenHeadersPaths = ['/Home'].map(path => path.toLowerCase());
-    const isHeadersVisible = hiddenHeadersPaths.includes(location.pathname.toLowerCase())
-
-    const hiddenFooterPaths = ['/Home'].map(path => path.toLowerCase());;
-    const isFooterVisible = hiddenFooterPaths.includes(location.pathname.toLowerCase());
-    console.log('Current path:', location.pathname);
+    const hiddenHeadersPaths = ['/Home','/Phim','/XemPhim'].map(path => path.toLowerCase());
+    const isHeadersVisible = hiddenHeadersPaths.some(path => location.pathname.toLowerCase().startsWith(path));
+    
+    const hiddenFooterPaths = ['/Home','/Phim','/XemPhim'].map(path => path.toLowerCase());;
+    const isFooterVisible = hiddenFooterPaths.some(path => location.pathname.toLowerCase().startsWith(path));
     return (
-        <div>
+        <div className='body-main'>
             {isHeadersVisible && <Headers />}
             <AppRoutes />
             {isFooterVisible && <Footer />}

@@ -4,18 +4,19 @@ export default function NavbarMenu({}){
     return (
         <div className="collapse navbar-collapse" id="navbarNav">
             <ul  className="navbar-nav me-auto collapse navbar-collapse">
-                <NavbarSingle>HOME</NavbarSingle>
+                <NavbarSingle link={"/Home"}>HOME</NavbarSingle>
                 <NavbarList>THỂ LOẠI</NavbarList>
+                <NavbarSingle link={"/LienHe"}>LIÊN HỆ</NavbarSingle>
             </ul>
         </div>
     );
 }
 
 
-function NavbarSingle({children}){
+function NavbarSingle({children,link}){
     return(
             <li className="nav-item">
-                 <Link to="/Home" className="nav-link @isHome" >{children}</Link>
+                 <Link to={link} className="nav-link @isHome" >{children}</Link>
             </li>
     );
 }

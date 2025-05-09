@@ -1,0 +1,86 @@
+.anime-list::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .anime-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
+    justify-content: center; /* Căn giữa nếu ít thẻ */
+    gap: 20px;
+    padding: 20px;
+    padding-bottom: 30px;
+  }
+  
+  .anime-item p{
+    font-size: 18px;
+    margin-bottom: 0px;
+    display: -webkit-box;
+      -webkit-line-clamp: 1; 
+      line-clamp: 3;/* Giới hạn tối đa 3 dòng */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis; 
+  }
+  
+  .anime-item a {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: inherit; /* Giữ màu giống với phần tử cha */
+    margin-bottom: auto;
+  }
+  
+  .anime-item :hover {
+    color: gray;
+  }
+  .anime-item {
+    position: relative;
+    background-color: #222;
+    padding: 10px;
+    border-radius: 15px;
+    text-align: center;
+    padding-bottom: 0px;
+  }
+  
+    .anime-item h6 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        width: 100%;
+        font-size: 12px;
+        color: orange;
+        margin-bottom: 10px;
+    }
+  
+    .anime-item h5 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        width: 100%;
+        font-size: 16px;
+        margin-block: 8px;
+    }
+  
+    .anime-item img {
+        width: 96%;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        object-fit: cover;
+        height: 230px;
+    }
+  
+  /* Ẩn tất cả các phần tử sau phần tử thứ 10 */
+  .anime-list .anime-item:nth-child(n+19) {
+    display: none;
+  }
+
+  .rating-score-list {
+    font-size: 10px;
+    font-weight: bold;
+    color: yellow;
+  }
+
+  .stars-list {
+    font-size: 10px;
+    color: gold;
+  }

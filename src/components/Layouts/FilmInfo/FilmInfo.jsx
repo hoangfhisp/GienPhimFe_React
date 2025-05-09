@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom';
+
 import './FilmInfo.scss'
 
-function FilmInfo({data}){
+function FilmInfo({data,onSelect}){
     return (
-        <div className="phim-list-info">
+        <Link to={`/Phim/${data.phimId}`} className="phim-list-info" onClick={onSelect}>
             <img src= {data.avatarPoster} className="phim-avatar" alt={data.tenP}/>
             <div className="phim-info">
                 <p className="phim-title">
@@ -10,7 +12,7 @@ function FilmInfo({data}){
                 </p>
                 <span className="phim-tap">Tập 04 Vietsub</span>
             </div>
-        </div>
+        </Link>
     );
 }
 

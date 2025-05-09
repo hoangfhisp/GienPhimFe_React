@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import TippyHeadless from '@tippyjs/react/headless';
-import Tippy from "@tippyjs/react";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 import WrapperPopper from "../../Popper/Wrapper";
 import './SearchFilm.scss'
 import FilmInfo from "../../Layouts/FilmInfo/FilmInfo";
-import TabButton from "../../Button/TabButton";
+import TabButton from "../../Commons/TabButton";
 import * as phimServices  from "../../../services/User/FilmService";
 import * as searchServices from "../../../services/User/SearchSevice"
 import useDebounce from "../../../hooks/useDebounce";
@@ -51,7 +49,7 @@ export default function SearchFilm(){
 
         <form className="d-flex " onSubmit={(e) => e.preventDefault()}>
                                     
-            <TippyHeadless
+            <TippyHeadless 
                 interactive = {true}
                 visible={showResult && searchResult.length > 0}
                 onClickOutside={HandelHideResult}
@@ -59,7 +57,7 @@ export default function SearchFilm(){
                     <WrapperPopper>
                         <div className="search-result" tabIndex={-1} {...attrs}>
                             {searchResult.map((result) => (
-                                <FilmInfo key={result.phimId} data={result}/>
+                                <FilmInfo key={result.phimId} data={result} onSelect={() => setInputValue("")}/>
                             ))}
                         </div>
                     </WrapperPopper>
