@@ -1,9 +1,10 @@
 .phim-card-box {
-    background: #ffffff;
+    background: rgba(242, 239, 239, 1);
     border-radius: 12px;
     padding: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 280px;
+    min-width: 280px;
+    max-width: 370px;
     font-family: 'Segoe UI', sans-serif;
     transition: transform 0.2s ease;
     cursor: pointer;
@@ -11,6 +12,18 @@
     &:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    h4{
+      margin-block: 12px;
+      font-weight: 700;
+      font-size: 25px;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* Số dòng tối đa */
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   
@@ -32,6 +45,7 @@
       display: flex;
       align-items: center;
       padding-inline: 5px;
+      font-weight: 500;
       gap: 4px;
       border-radius: 10px;
       background-color: rgba(7, 181, 22, 0.8);
@@ -42,15 +56,41 @@
     font-size: 14px;
     color: #444;
     line-height: 1.5;
+    
   
-    p {
+    h5 {
+      color: rgb(194, 0, 0);
       margin: 6px 0;
-  
+      font-size: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4; /* Số dòng tối đa */
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    p{
+      color: black;
+      margin: 13px 0;
+      font-weight: bold;
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
       span {
+        font-size: 13px;
         font-weight: 500;
+        padding:5px ;
         color: #222;
         margin-left: 4px;
+        margin-bottom: 1px;
+        border-radius: 4px;
+        background-color: rgba(245, 213, 6, 0.6);
+        
       }
     }
+    
   }
   

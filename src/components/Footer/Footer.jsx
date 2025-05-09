@@ -7,7 +7,7 @@ export default function footer(){
                 <div className="container text-center">
                 <div className="mb-2">
                     <NavbarFooter>Giới Thiệu</NavbarFooter>
-                    <NavbarFooter>Liên Hệ</NavbarFooter>
+                    <NavbarFooter link={"/LienHe"}>Liên Hệ</NavbarFooter>
                     <NavbarFooter>Điều Khoản</NavbarFooter>
                     <NavbarFooter>Phim 18+</NavbarFooter>
                 </div>

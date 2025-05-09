@@ -1,5 +1,7 @@
-export default function NavbarFooter({children}){
+import { Link } from "react-router-dom";
+
+export default function NavbarFooter({children,link}){
     return(
-            <a href="/" className="text-light me-2">{children}</a>
+            <Link to={link} className="text-light me-2">{children}</Link>
     );
 }

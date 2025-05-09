@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
 
 export default function FilmBanner({data}){
     const [dataPhim,setDataPhim] = useState([]);
+    const [rating,setRating] = useState("0");
     useEffect(() => {
         if (data?.theLoai) {
             setDataPhim(data.theLoai);
         }
+
+        const rate = ((data.luotThichP / (data.luotThichP + data.luotDislikeP))*10).toFixed(1);
+        if(isNaN(rate)){
+            setRating("0")
+        }else{
+            setRating(rate);
+        }
     }, [data]);
+
+    
 
     return(
         
@@ -21,7 +31,7 @@ export default function FilmBanner({data}){
                 <h7 style={{color: "yellow"}}>Phim Xem Nhiều Nhất</h7>
                 <hr />
                 <div className="info-banner">
-                        <span className="tag-banner">⭐ {(data.luotThichP / (data.luotThichP + data.luotThichP))*100}</span>
+                        <span className="tag-banner">⭐ {rating}</span>
                     <span>⏳ {data.thoiLuongP}</span>
                     <span>📅 {data.ngayPhatHanhP}</span>
                 </div>
@@ -33,7 +43,7 @@ export default function FilmBanner({data}){
                     <span>{result.tenTL}</span>
                 ))}
                 </div>
-                <a  className="watch-btn">▶ Xem Phim</a>
+                <Link to={`/Phim/${data.phimId}`} className="watch-btn">▶ Xem Phim</Link>
             </div>
         </div>
     );
