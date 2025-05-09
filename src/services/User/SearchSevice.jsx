@@ -88,27 +88,3 @@ export const searchDienViens = async (tenDV, page = 1, limit = 10) => {
         console.error("Lỗi khi gọi API:", error);
     }
 }
-
-export const searchNguoiDungs = async (tenDV, page = 1, limit = 10) => {
-    try {
-        const res = await request.get('/Search/DienVien', {
-            params: { tenDV, page, limit }
-        });
-        return res;
-
-    } catch (error) {
-        console.error("Lỗi khi gọi API:", error);
-    }
-}
-
-export const searchVaiTros = async (tenVT, page = 1, limit = 10) => {
-    try {
-        const res = await request.get('/Search/VaiTro', {
-            params: { tenVT, page, limit }
-        });
-        return res;
-
-    } catch (error) {
-        console.error("Lỗi khi gọi API:", error);
-    }
-}

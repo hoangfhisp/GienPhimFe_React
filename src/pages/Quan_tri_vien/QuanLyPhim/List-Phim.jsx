@@ -11,7 +11,8 @@ import {
     addMovieFromAPI,
     createMovie,
     updateMovie,
-    deleteMovie
+    deleteMovie,
+    getPhimFormFields
 } from '../../../services/Admin/MovieService';
 
 import * as requestTheLoai from '../../../services/Admin/TheLoaiService.jsx';
@@ -36,6 +37,35 @@ const PhimList = () => {
     const [tenPhim, setTenPhim] = useState('');
     const [apiLink, setApiLink] = useState('');
     const [viewFull, setViewFull] = useState(false);
+    const [formFields, setFormFields] = useState([]);
+
+    const normalizeMovieForForm = (movies) => {
+        const extractIds = (arr, idField) =>
+            Array.isArray(arr) ? arr.map(item => item[idField]?.toString()) : [];
+
+        return {
+            ...movies,
+            theLoaiIds: extractIds(movies.theLoai, 'theLoaiId'),
+            ngonNguIds: extractIds(movies.ngonNgu, 'ngonNguId'),
+            quocGiaIds: extractIds(movies.quocGia, 'quocGiaId'),
+            daoDienIds: extractIds(movies.daoDien, 'daoDienId'),
+            dienVienIds: extractIds(movies.dienVien, 'dienVienId'),
+            theTagIds: extractIds(movies.theTag, 'theTagId')
+        };
+    };
+
+    useEffect(() => {
+        const fetchFormFields = async () => {
+            try {
+                const fields = await getPhimFormFields();
+                setFormFields(fields);
+            } catch (error) {
+                console.error("Lỗi khi tải trường form:", error);
+            }
+        };
+
+        fetchFormFields();
+    }, []);
 
     const fetchData = (page = 1) => {
         const limit = pagination.itemsPerPage || 10;
@@ -211,13 +241,12 @@ const PhimList = () => {
         }
     ];
 
-    const handleAction = (action, movie) => {
+    const handleAction = (action, movies) => {
         if (action == 'view') {
             setViewFull(true);
         }
-        setCurrentMovie(movie);
+        setCurrentMovie(normalizeMovieForForm(movies));
         setCardAction(action);
-
     };
 
     const handleCloseCard = () => {
@@ -229,11 +258,14 @@ const PhimList = () => {
     const handleSave = async (movieData) => {
         try {
             setLoading(true);
+
             if (cardAction === 'create') {
                 await createMovie(movieData);
             } else {
-                await updateMovie(movieData.id, movieData);
+                const id = movieData.get ? movieData.get("phimId") : movieData.id;
+                await updateMovie(id, movieData);
             }
+
             fetchData(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
@@ -414,6 +446,7 @@ const PhimList = () => {
                     action={cardAction}
                     data={currentMovie}
                     columns={columns}
+                    formFields={formFields}
                     onClose={handleCloseCard}
                     onSave={handleSave}
                     onDelete={handleDelete}
