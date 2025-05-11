@@ -55,3 +55,30 @@ export const newPhims = async (topphim,page,limit) => {
         console.error("Lỗi khi gọi API:", error);
     }
 }
+
+export const LichSuXemUser = async (userId,page,limit) => {
+    try {
+        const res = await request.get('/phim/LichSuXem',{
+            params:{
+                userId,
+                page,
+                limit
+            }
+        });
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
+export const addLuotXem = async(phimId,nguoiDungId) => {
+    try {
+        const res = await request.post('/LuotXem/AddLuotXem',{
+            phimId,
+            nguoiDungId
+        });
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}

@@ -6,7 +6,7 @@ const LoginContainer = () => {
     return (
       <div className="login-container-background">
         <div className="login-header">
-          <Link to="/">GIENPHIM</Link>
+          <Link to="/Home">GIENPHIM</Link>
         </div>
         <div class="login-overlay"></div>
       </div>

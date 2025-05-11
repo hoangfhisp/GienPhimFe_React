@@ -1,6 +1,6 @@
 import {  useEffect, useState } from "react";
 import TippyHeadless from '@tippyjs/react/headless';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import './AnimeList.scss'
 
@@ -8,20 +8,33 @@ import FilmCard from "../FilmCards/FilmCard.jsx";
 import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
 
-export default function AnimeList({page,limit}){
+
+export default function AnimeList({userId,page,limit,webpage,onPagination}){
     const [listPhimResult,setListPhimResult] = useState([]);
-        
-        useEffect(() => {
-            
-            const fetchApi = async () => {
-                
-                const result = await phimServices.listphim(page,limit);
-                setListPhimResult(result.data);
-            }
     
+
+        useEffect(() => {
+        const fetchApi = async () => {
+            try {
+                let result;
+                if (userId && webpage == "History"){
+                    result = await phimServices.LichSuXemUser(userId, page, limit);
+                } else {
+                    result = await phimServices.listphim(page, limit);
+                }
+
+                if (result && result.data) {
+                    setListPhimResult(result.data);
+                    onPagination(result.pagination);
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải danh sách phim:", error);
+            }
+        };
+
             fetchApi();
-            
-        },[page,limit]);
+        }, [webpage,userId, page, limit]);
+
 
     return(
         <>       
@@ -40,12 +53,17 @@ export default function AnimeList({page,limit}){
                     )}
                     >
                         <div className="anime-item">
+                            <div className="episode-label">{result.soTapP} Tập</div>
                                 <Link to={`/Phim/${result.phimId}`}>
                                     <img src={result.avatarPoster} alt={result.tenP}/>
                                     <p ><strong>{result.tenP}</strong></p>
-                                    <h6>Lượt xem: {result.luotXemP}</h6>
-                                    {/* <span className="rating-score-list">Rating: {(result.luotThichP / (result.luotThichP + result.luotThichP))*100}%</span>
-                                    <span className="stars-list">★★★★★</span> */}
+                                    {webpage === "History" ? (
+                                        <>
+                                            <h6>Đã xem tập: {result.slugTapXem} </h6> 
+                                            <h6>vào lúc {result.thoiGianXem}</h6> 
+                                            <Link to = {`/XemPhim/${result.phimId}/${result.slugTapXem}`} className="history-xemtiep">Xem tiếp</Link> 
+                                        </> 
+                                        ) : (<h6>Lượt xem: {result.luotXemP}</h6> ) }
                                 </Link>
                         </div>  
                 </TippyHeadless> 

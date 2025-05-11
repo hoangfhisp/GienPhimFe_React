@@ -21,7 +21,7 @@ const Login = () => {
 
             if (response.status) {
                 // Đăng nhập thành công, chuyển hướng đến trang khác
-                navigate('/dashboard'); // Sử dụng navigate thay vì history.push
+                navigate('/Home'); // Sử dụng navigate thay vì history.push
             } else {
                 // Nếu đăng nhập thất bại, hiển thị thông báo lỗi
                 setErrorMessage(response.msg);
@@ -39,7 +39,7 @@ const Login = () => {
             <div className="login-body">
                 <div className="login-form-container">
                     <div className="login-form-header">
-                        <h4 style={{ textAlign: 'center' }}>Đăng nhập</h4>
+                        <h4 style={{ textAlign: 'center', fontSize: "40px"}}>Đăng nhập</h4>
                     </div>
 
                     <form className="login-form" id="account" onSubmit={handleSubmit}>

@@ -52,15 +52,15 @@ function FilmPanel({data,onSelect}){
             <Link to={`/Phim/${id}`}>
                 <button >📺 Chi tiết phim</button>
             </Link>
-            <a >
+            <Link to={'/LienHe'}>
                 <button>⚠ Báo lỗi</button>
-            </a>
-            <a >
+            </Link>
+            <Link to={'/LichSuXem'} >
                 <button type="button">⬇ Tải về</button>
-            </a>
-            <a >
+            </Link>
+            <Link to={'/History'} >
                 <button>🕒 Lịch sử xem</button>
-            </a>
+            </Link>
 
         </div>
     );

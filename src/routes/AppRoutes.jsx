@@ -20,6 +20,7 @@ import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";
 import XemPhim from "../pages/XemPhim/XemPhim.jsx";
 import NotFound from "../pages/NotFound/NotFound.jsx";
+import History from "../pages/History/History.jsx";
 
 
 export default function AppRoutes() {
@@ -31,6 +32,7 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/LienHe" element={<LienHe/>}/>
+            <Route path="/History" element={<History/>}/>
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

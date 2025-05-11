@@ -14,7 +14,7 @@ function Phim(){
         <div>
             <div className="container-main">
                 <Notice/>
-
+        
                 <PhimBanner id={id}/>
 
                 <TabsPhim id={id}/>

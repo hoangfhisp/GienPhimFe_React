@@ -27,6 +27,6 @@ function XemPhim(){
             </div>
         </>
     );
-}
+}     
 
 export default XemPhim;
