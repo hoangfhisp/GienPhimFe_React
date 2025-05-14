@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import PropTypes from 'prop-types';
-import '../Admin-board/Admin-board.scss';
+import '../Layouts/Admin-board/Admin-board.scss';
 import './Card.scss';
 
 const TableRow = memo(({ row, columns, actions, onAction }) => {

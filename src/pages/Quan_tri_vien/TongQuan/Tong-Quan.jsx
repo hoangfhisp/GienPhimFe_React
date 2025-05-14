@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import AdminBoard from '../../../components/Admin-board/Admin-board';
-import '../../../components/Admin-board/Admin-board.scss';
+import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
+import '../../../components/Layouts/Admin-board/Admin-board.scss';
 
 const OverviewDashboard = () => {
     const [dashboardData, setDashboardData] = useState({

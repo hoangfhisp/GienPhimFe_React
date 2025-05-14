@@ -27,10 +27,10 @@ export default function AppRoutes() {
         <Routes>
             <Route path="/Home" element={<Home />} />
             <Route path="/Phim/:id" element={<Phim />} />
-            <Route path="/XemPhim/:id/:tap" element={<XemPhim/>}/>
+            <Route path="/XemPhim/:id/:tap" element={<XemPhim />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/LienHe" element={<LienHe/>}/>
+            <Route path="/LienHe" element={<LienHe />} />
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

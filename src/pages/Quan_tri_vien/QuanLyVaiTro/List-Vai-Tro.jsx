@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import AdminBoard from '../../../components/Admin-board/Admin-board';
+import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board.jsx';
 import Table from '../../../components/Table/Table';
 import Card from '../../../components/Table/Card';
-import '../../../components/Admin-board/Admin-board.scss';
+import '../../../components/Layouts/Admin-board/Admin-board.scss';
 import { debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 

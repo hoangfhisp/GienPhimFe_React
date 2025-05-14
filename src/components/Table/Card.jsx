@@ -39,18 +39,52 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
         onSave(formData);
     };
 
+    const handleFileChange = (e, fieldName) => {
+        const file = e.target.files[0]; // Lấy file người dùng đã chọn
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData({
+                    ...formData,
+                    [fieldName]: reader.result, // Lưu giá trị base64 (hoặc bạn có thể xử lý upload khác)
+                });
+            };
+            reader.readAsDataURL(file); // Chuyển file thành base64 để hiển thị ảnh
+        }
+    };
+
+    // Hàm để hiển thị thời gian hiện tại cho "Create"
+    const getCurrentTime = () => {
+        return new Date().toLocaleString(); // Hoặc có thể dùng Date.now() nếu chỉ cần thời gian chính xác (không cần định dạng)
+    };
+
     return (
         <div className="card-overlay">
             <div className="card-modal">
                 {action === 'view' && (
                     <div className="view-mode">
                         <h3>Xem chi tiết</h3>
-                        {columns.map(col => (
-                            <div key={col.accessor} className="field">
-                                <label>{col.header}:</label>
-                                <div>{col.render ? col.render(data) : data[col.accessor]}</div>
+                        {formFields.map(field => (
+                            <div key={field.name} className="form-group">
+                                <label>{field.label}:</label>
+                                <div className="field-value">
+                                    {field.type === 'select' && field.multiple ? (
+                                        (field.options
+                                            .filter(opt => (data[field.name] || []).map(String).includes(String(opt.value)))
+                                            .map(opt => opt.label)
+                                            .join(', ')
+                                        )
+                                    ) : field.type === 'select' ? (
+                                        (field.options.find(opt => opt.value === data[field.name])?.label || 'Null')
+                                    ) : field.type === 'file' ? (
+                                        data[field.name] ? <img src={data[field.name]} alt={field.label} width={100} /> : 'Null'
+                                    ) : (
+                                        data[field.name] || 'Null'
+                                    )}
+                                </div>
                             </div>
                         ))}
+
                         <div className="form-actions">
                             <button type="button" className="cancel-btn" onClick={onClose}>
                                 Đóng
@@ -89,6 +123,23 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                         value={field.options.find(opt => opt.value === formData[field.name]) || null}
                                         onChange={(selected) => handleSingleSelectChange(selected, field.name)}
                                         placeholder={`-- Chọn ${field.label.toLowerCase()} --`}
+                                    />
+                                ) : field.type === 'file' ? (
+                                    <>
+                                        {formData[field.name] && (
+                                            <img src={formData[field.name]} alt={field.label} width={100} />
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleFileChange(e, field.name)}
+                                        />
+                                    </>
+                                ) : field.name === 'thoiGianTao' || field.name === 'thoiGianCapNhat' ? (
+                                    <input
+                                        type="text"
+                                        value={action === 'create' ? getCurrentTime() : formData[field.name] || ''}
+                                        readOnly
                                     />
                                 ) : (
                                     <input

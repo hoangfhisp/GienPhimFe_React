@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../../components/Login-container/Login.scss';
 import './Admin-board.scss';
-import backgroundImage from '../../assets/img/background.jpg';
-import logoImage from '../../assets/img/logo.jpg';
+import backgroundImage from '../../../assets/img/background.jpg';
+import logoImage from '../../../assets/img/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AdminBoard = ({ username = 'Admin' }) => {
