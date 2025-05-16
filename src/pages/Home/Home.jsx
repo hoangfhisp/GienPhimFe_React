@@ -1,3 +1,4 @@
+import { useState } from 'react';
 
 import './Home.scss'
 
@@ -8,29 +9,36 @@ import FilmList from "../../components/Layouts/FilmList/FilmList.jsx";
 import Notice from "../../components/Layouts/Notice/Notice.jsx";
 import FilmRanking from "../../components/Layouts/FilmRanking";
 import FilmBannerList from "../../components/Layouts/FilmBanners/FilmBannerList.jsx";
+import RenderPagination from '../../components/Commons/RenderPagination.jsx';
+
 
 
 
 export default function Home() {
+    const [pagination,setPagination] = useState([]);
+    const [currentPage,setCurrentPage] = useState();
+
 
     return(
-        <div className="container-main">
-            <Notice/>
+            <div className="container-main">
+                <Notice/>
 
-            <BoxTitle>New Phim</BoxTitle>
+                <BoxTitle>New Phim</BoxTitle>
 
-            <FilmList top={20} page={1} limit={20}/>
+                <FilmList top={20} page={1} limit={20}/>
 
-            <FilmBannerList></FilmBannerList>
+                <FilmBannerList top={8} page={1} limit={10}></FilmBannerList>
 
-            <br /><hr />
-            <BoxTitle>Đề Cử</BoxTitle>
+                <br /><hr />
+                <BoxTitle>Đề Cử</BoxTitle>
 
-            <AnimeList page={1} limit={12}/>
+                <AnimeList page={currentPage} limit={12} onPagination={setPagination}/>
+                <RenderPagination data={pagination} onPageChange={setCurrentPage}/>
 
-            <SeeMore>Xem Thêm...</SeeMore>
+                <SeeMore>Xem Thêm...</SeeMore>
 
-            <FilmRanking>Hot Tuần</FilmRanking>
-        </div>
+                <FilmRanking>Hot Tuần</FilmRanking>
+               
+            </div>
     );
 }

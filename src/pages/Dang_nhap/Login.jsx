@@ -45,7 +45,7 @@ export default function Login() {
             <div className="login-body">
                 <div className="login-form-container">
                     <div className="login-form-header">
-                        <h4 style={{ textAlign: 'center' }}>Đăng nhập</h4>
+                        <h4 style={{ textAlign: 'center', fontSize: "40px"}}>Đăng nhập</h4>
                     </div>
 
                     <form className="login-form" id="account" onSubmit={handleSubmit}>

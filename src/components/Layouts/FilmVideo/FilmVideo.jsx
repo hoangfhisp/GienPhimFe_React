@@ -3,14 +3,15 @@ import { useEffect, useMemo, useState } from 'react';
 import './FilmVideo.scss'
 
 import FilmPanel from './FilmPanel';
-import * as phimServices from '../../../services/User/FilmService.jsx'
 import FilmTap from './FilmTap.jsx';
+import * as phimServices from '../../../services/User/FilmService.jsx'
 
 function FilmVideo({id,tap}){
-    const[isPlaying,setIsPlaying] = useState(false);
-    const[dataTapPhim,setDataTapPhim] = useState([]);
-    const[tapPhim,setTapPhim] = useState([]);
+    const[isPlaying,setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
+    const[dataTapPhim,setDataTapPhim] = useState([]); // hàm gắn lấy dữ liệu của 1 list phim
+    const[tapPhim,setTapPhim] = useState([]); // hàm gán 1 link của tập phim cụ thể
 
+    // Hàm lấy api id phim. rồi lấy list tập phim
     useEffect(() => {
         if(id == null){
             return;
@@ -25,10 +26,25 @@ function FilmVideo({id,tap}){
 
     },[id])
 
+    // usserId test
+    const userId = "4b6d0384-5e73-411a-9c9a-5765aef56e9e";
+
+    // Lọc danh sách tập có slugtap = tap (params)
     const tapchon = useMemo(() => {
         return dataTapPhim.find(item => item.slugTap === tap);
     },[dataTapPhim,tap])
 
+    // Gọi api xu lý lịch sử nếu slug tập thay đổi
+    useEffect(() => {
+        if(tap == null || userId == null)
+            return;
+        const fetchApiXuLyLichSuXem = async () => {
+            await phimServices.XuLyLichXuXem(id,userId,tap);
+        }
+        fetchApiXuLyLichSuXem();
+    },[tap])
+
+    // Hàm lấy tập phim để gắn vào iframe
     useEffect(() => {
         if(dataTapPhim === null){
             return;
@@ -44,6 +60,12 @@ function FilmVideo({id,tap}){
         tapphim();
 
     },[tapchon])
+
+    // Hàm để chạy api update lại số lượt xem khi người dùng xem
+    const Views = async (idphim,nguoiDungId) => {
+        await phimServices.addLuotXem(idphim,nguoiDungId);
+        setIsPlaying(true); 
+    }
 
     return(
         <>
@@ -61,7 +83,7 @@ function FilmVideo({id,tap}){
                     </p>
 
 
-                    <button className="play-btn" onClick={() => setIsPlaying(true)}>
+                    <button className="play-btn" onClick={() => Views(id,userId)}> {/* Khi người dùng ấn gọi hàm tăng view */}
                         <div className="play-icon"></div>
                     </button>
                 </div>

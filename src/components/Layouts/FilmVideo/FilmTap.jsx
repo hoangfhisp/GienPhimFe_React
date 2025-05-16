@@ -9,8 +9,8 @@ function FilmTap({data,children,idphim,slugtap,onSelect}){
             setDataTap(data);
         }
 
-
     },[data])
+    
     return(
         <div className="info-tap">
             <div className="tap-title">

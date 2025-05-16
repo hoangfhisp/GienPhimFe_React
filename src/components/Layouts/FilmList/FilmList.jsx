@@ -15,7 +15,7 @@ export default function FilmList({top,page,limit}){
             const result = await phimServices.newPhims(top,page,limit);
             setNewPhimsResult(result.data)
         }
-        fetchApi()
+        fetchApi();
     },[top,page,limit])
 
     return(

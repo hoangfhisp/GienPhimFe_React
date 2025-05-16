@@ -88,3 +88,18 @@ export const searchDienViens = async (tenDV, page = 1, limit = 10) => {
         console.error("Lỗi khi gọi API:", error);
     }
 }
+
+export const searchTheLoaiSlug = async (searchSlug,page,limit) => {
+    try {
+        const res = await request.get('/Phim/TheLoaiSlug', {
+            params: {
+                    searchSlug,
+                    page,
+                    limit 
+                }
+        });
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
