@@ -315,3 +315,149 @@ export const updateNgonNgu = (id, ngonNguData) => {
 export const deleteNgonNgu = (id) => {
     return request.deleteRequest(`/Admin/NgonNgu/Xoa/${id}`).catch(handleError);
 };
+
+export const fetchDaoDiens = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/DaoDien', {
+            params: { page, limit }
+        });
+
+        console.log('API Response DaoDien:', response);
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tải đạo diễn:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách đạo diễn'
+        };
+    }
+};
+
+export const searchDaoDiens = async (tendg, page, limit) => {
+    try {
+        const response = await request.get(`/Admin/DaoDien/search`, {
+            params: {
+                tendg,
+                page,
+                limit
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tìm kiếm đạo diễn:", error);
+        return {
+            status: false,
+            data: [],
+            totalItems: 0,
+            msg: error.message || 'Lỗi khi tìm kiếm đạo diễn'
+        };
+    }
+};
+
+// Lấy metadata để biết các trường cần nhập
+export async function getDaoDienFormFields() {
+    const response = await request.get('/Admin/DaoDien/metadata');
+    return response.fields;
+}
+
+// Thêm đạo diễn
+export const createDaoDien = (daoDienData) => {
+    const isFormData = daoDienData instanceof FormData;
+
+    return request.post('/Admin/DaoDien/Them', daoDienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật đạo diễn
+export const updateDaoDien = (id, daoDienData) => {
+    const isFormData = daoDienData instanceof FormData;
+
+    return request.put(`/Admin/DaoDien/CapNhat/${id}`, daoDienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Xóa đạo diễn
+export const deleteDaoDien = (id) => {
+    return request.deleteRequest(`/Admin/DaoDien/Xoa/${id}`).catch(handleError);
+};
+
+
+export const fetchDienViens = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/DienVien', {
+            params: { page, limit }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tải danh sách diễn viên:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách diễn viên'
+        };
+    }
+};
+
+// Tìm kiếm diễn viên theo từ khóa
+export const searchDienViens = async (tendv, page, limit) => {
+    try {
+        const response = await request.get(`/Admin/DienVien/search`, {
+            params: {
+                tendv,
+                page,
+                limit
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tìm kiếm diễn viên:", error);
+        return {
+            status: false,
+            data: [],
+            totalItems: 0,
+            msg: error.message || 'Lỗi khi tìm kiếm diễn viên'
+        };
+    }
+};
+
+// Lấy metadata để biết các trường cần nhập
+export async function getDienVienFormFields() {
+    const response = await request.get('/Admin/DienVien/metadata');
+    return response.fields;
+}
+
+// Thêm diễn viên
+export const createDienVien = (dienVienData) => {
+    const isFormData = dienVienData instanceof FormData;
+
+    return request.post('/Admin/DienVien/Them', dienVienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật diễn viên
+export const updateDienVien = (id, dienVienData) => {
+    const isFormData = dienVienData instanceof FormData;
+
+    return request.put(`/Admin/DienVien/CapNhat/${id}`, dienVienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Xóa diễn viên
+export const deleteDienVien = (id) => {
+    return request.deleteRequest(`/Admin/DienVien/Xoa/${id}`).catch(handleError);
+};

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as requestTheLoai from '../../../services/Admin/MovieService.jsx';
 import * as requestQuocGia from '../../../services/Admin/MovieService.jsx';
-import * as requestNgonNgu from '../../../services/Admin/NgonNguService.jsx';
+import * as requestNgonNgu from '../../../services/Admin/MovieService.jsx';
 
 import { fetchFilterMovies, searchMovies } from '../../../services/Admin/MovieService';
 import ListPhim from "../AdminList/ListPhim.jsx";

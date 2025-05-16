@@ -7,6 +7,8 @@ export default function Search({ searchType, onClear, children, placeholder, onR
     const [searchTheloais, setSearchTheloais] = useState([]);
     const [searchQuocgias, setSearchQuocgias] = useState([]);
     const [searchNgonNgus, setSearchNgonNgus] = useState([]);
+    const [searchDaoDiens, setSearchDaoDiens] = useState([]);
+    const [searchDienViens, setSearchDienViens] = useState([]);
 
     const debounce = useDebounce(inputValue, 600);
 
@@ -28,6 +30,10 @@ export default function Search({ searchType, onClear, children, placeholder, onR
                 setSearchQuocgias([]);
             } else if (searchType === 'ngonNgu') {
                 setSearchNgonNgus([]);
+            } else if (searchType === 'daoDien') {
+                setSearchDaoDiens([]);
+            } else if (searchType === 'dienVien') {
+                setSearchDienViens([]);
             }
             return;
         }
@@ -40,13 +46,21 @@ export default function Search({ searchType, onClear, children, placeholder, onR
 
                 if (searchType === 'theLoai') {
                     result = await movieServices.searchTheLoais(searchValue, currentPage, itemsPerPage);
-                } else if (searchType === 'quocGia') {
-                    result = await movieServices.searchQuocGias(searchValue, currentPage, itemsPerPage);
-                } else if (searchType === 'ngonNgu') {
-                    result = await movieServices.searchNgonNgus(searchValue, currentPage, itemsPerPage);
-                } else {
-                    throw new Error("Loại tìm kiếm không hỗ trợ");
-                }
+                } else
+                    if (searchType === 'quocGia') {
+                        result = await movieServices.searchQuocGias(searchValue, currentPage, itemsPerPage);
+                    } else
+                        if (searchType === 'ngonNgu') {
+                            result = await movieServices.searchNgonNgus(searchValue, currentPage, itemsPerPage);
+                        } else
+                            if (searchType === 'daoDien') {
+                                result = await movieServices.searchDaoDiens(searchValue, currentPage, itemsPerPage);
+                            } else
+                                if (searchType === 'dienVien') {
+                                    result = await movieServices.searchDienViens(searchValue, currentPage, itemsPerPage);
+                                } else {
+                                    throw new Error("Loại tìm kiếm không hỗ trợ");
+                                }
 
                 onResult?.(result.data, result.totalItems);
                 setPagination(prev => ({

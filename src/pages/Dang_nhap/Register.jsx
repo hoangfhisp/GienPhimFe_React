@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import LoginContainer from '../../components/Login-container/Login-container';
-import { Link, useNavigate } from 'react-router-dom';  // Thêm useNavigate để chuyển hướng sau khi đăng ký thành công
-import { registerUser } from '../../services/User/UserService'; // Import hàm registerUser từ service
+import { Link, useNavigate } from 'react-router-dom';  // Dùng useNavigate để chuyển hướng sau khi đăng ký thành công
+import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 import '../../components/Login-container/Login.scss';
 
-const Register = () => {
+export default function Register() {
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
@@ -33,7 +33,10 @@ const Register = () => {
             const userData = { email, phoneNumber, password };
 
             try {
-                const response = await registerUser(userData); // Gọi API đăng ký
+                const response = await AuthenticationService.register(userData); // Gọi API đăng ký
+
+                // Kiểm tra phản hồi từ API
+                console.log('API Response:', response);
 
                 if (response.status) {
                     // Đăng ký thành công, chuyển hướng đến trang đăng nhập
@@ -159,5 +162,3 @@ const Register = () => {
         </div>
     );
 };
-
-export default Register;

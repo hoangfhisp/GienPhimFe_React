@@ -3,7 +3,7 @@ import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
 import ListNgonNgu from '../../../components/Layouts/AdminList/ListNgonNgu';
 import Search from '../../../components/Layouts/SearchAdmin/Search';
 
-export default function TheLoaiList() {
+export default function NgonNguList() {
     const [searchResult, setSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [pagination, setPagination] = useState({ currentPage: 1, itemsPerPage: 10, totalItems: 0 });

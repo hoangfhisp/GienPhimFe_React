@@ -1,34 +1,40 @@
 import React, { useState } from 'react';
 import LoginContainer from '../../components/Login-container/Login-container';
-import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate thay vì useHistory
-import { loginUser } from '../../services/User/UserService'; // Import hàm loginUser từ UserService
+import { Link, useNavigate } from 'react-router-dom';
+import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 import '../../components/Login-container/Login.scss';
 
-const Login = () => {
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [errorMessage, setErrorMessage] = useState(''); // Để lưu thông báo lỗi khi đăng nhập không thành công
-    const navigate = useNavigate(); // Thay vì useHistory, bạn sử dụng useNavigate để chuyển hướng
+    const navigate = useNavigate(); // Dùng useNavigate để điều hướng
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        event.preventDefault(); // Ngừng hành động mặc định của form
 
-        // Gọi hàm loginUser để đăng nhập
-        const credentials = { email, password, rememberMe };
+        const credentials = {
+            usernameOrEmail: email,
+            password: password,
+            rememberMe: rememberMe,
+        };
+
         try {
-            const response = await loginUser(credentials);
+            // Gọi API đăng nhập từ service
+            const result = await AuthenticationService.login(credentials);
 
-            if (response.status) {
-                // Đăng nhập thành công, chuyển hướng đến trang khác
-                navigate('/dashboard'); // Sử dụng navigate thay vì history.push
+            // Kiểm tra kết quả trả về từ API
+            if (result.status) {
+                // Lưu token vào localStorage khi đăng nhập thành công
+                localStorage.setItem('token', result.token);
+
+                navigate('/Home');
             } else {
-                // Nếu đăng nhập thất bại, hiển thị thông báo lỗi
-                setErrorMessage(response.msg);
+                setErrorMessage(result.msg);
             }
         } catch (error) {
-            console.error('Đăng nhập thất bại:', error);
-            setErrorMessage('Đăng nhập thất bại, vui lòng thử lại!');
+            setErrorMessage(error.message || 'Đã có lỗi xảy ra, vui lòng thử lại');
         }
     };
 
@@ -54,6 +60,7 @@ const Login = () => {
                             required
                         />
 
+                        {/* Input cho Password */}
                         <input
                             type="password"
                             className="login-form-input"
@@ -63,6 +70,7 @@ const Login = () => {
                             placeholder="password"
                             required
                         />
+
                         {/* Hiển thị thông báo lỗi nếu có */}
                         {errorMessage && <div className="login-error-message">{errorMessage}</div>}
 
@@ -125,6 +133,4 @@ const Login = () => {
             </div>
         </div>
     );
-};
-
-export default Login;
+}

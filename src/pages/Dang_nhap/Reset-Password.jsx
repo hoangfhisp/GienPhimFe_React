@@ -1,98 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 import LoginContainer from '../../components/Login-container/Login-container';
-import { Link } from 'react-router-dom';
 import '../../components/Login-container/Login.scss';
 
-
 const ResetPassword = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [code, setCode] = useState(''); // Có thể lấy từ URL nếu cần
-  const [error, setError] = useState('');
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+    const email = queryParams.get('email');
 
-    // Validation đơn giản
-    if (!email || !password || !confirmPassword) {
-      setError('Vui lòng điền đầy đủ thông tin.');
-      return;
-    }
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
-    if (password !== confirmPassword) {
-      setError('Mật khẩu xác nhận không khớp.');
-      return;
-    }
+    useEffect(() => {
+        // Kiểm tra nếu không có token hoặc email trong URL
+        if (!token || !email) {
+            setError('Thông tin không hợp lệ hoặc thiếu.');
+        }
+    }, [token, email]);
 
-    // Gửi dữ liệu đổi mật khẩu (giả lập)
-    console.log('Đổi mật khẩu với:', { email, password, code });
-    setError('');
-    alert('Mật khẩu đã được đổi thành công!');
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-  return (
-    <div className="login-container">
-      <LoginContainer />
-        <div className="login-body">
-            <div className="login-form-container">
-                <div className="login-form-header">
-                <h4 style={{ textAlign: 'center' }}>Đổi lại mật khẩu</h4>
-                </div>
-                <br />
+        // Kiểm tra nếu mật khẩu hoặc xác nhận mật khẩu không hợp lệ
+        if (!newPassword || !confirmPassword) {
+            setError('Mật khẩu không được để trống.');
+            return;
+        }
 
-                <form className="login-form" onSubmit={handleSubmit}>
-                {error && <div className="text-danger" role="alert">{error}</div>}
+        if (newPassword !== confirmPassword) {
+            setError('Mật khẩu mới và xác nhận mật khẩu không trùng khớp.');
+            return;
+        }
 
-                {/* Code ẩn nếu dùng */}
-                <input type="hidden" value={code} onChange={(e) => setCode(e.target.value)} />
+        setError('');
+        setSuccessMessage('');
 
-                {/* Email */}
-                <input
-                    type="email"
-                    className="login-form-input"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="username"
-                    placeholder="Nhập email"
-                    required
-                />
+        try {
+            // Gọi API reset password từ service
+            const response = await AuthenticationService.resetPassword(token, email, newPassword);
+            setSuccessMessage(response.message || 'Mật khẩu đã được thay đổi thành công.');
 
-                {/* Mật khẩu */}
-                <input
-                    type="password"
-                    className="login-form-input"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="Nhập mật khẩu."
-                    required
-                />
+            // Redirect về trang login sau khi reset thành công
+            setTimeout(() => navigate('/login'), 2000);
+        } catch (err) {
+            setError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+        }
+    };
 
-                {/* Xác nhận mật khẩu */}
-                <input
-                    type="password"
-                    className="login-form-input"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    autoComplete="new-password"
-                    placeholder="Xác nhận mật khẩu."
-                    required
-                />
+    return (
+        <div className="login-container">
+            <LoginContainer />
+            <div className="login-body">
+                <div className="login-form-container">
+                    <div className="login-form-header">
+                        <h4 style={{ textAlign: 'center' }}>Đổi lại mật khẩu</h4>
+                    </div>
+                    <br />
 
-                <button type="submit" className="login-form-button">Đổi mật khẩu</button>
-                </form>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        {/* Hiển thị lỗi nếu có */}
+                        {error && <div className="text-danger" role="alert">{error}</div>}
 
-                <div className="login-form-other">
-                <div className="login-term">
-                    <p>Trang này được bảo vệ bởi Google reCAPTCHA để đảm bảo bạn không phải là bot.</p>
-                    <a href="https://www.google.com/recaptcha" target="_blank" rel="noreferrer">Tìm hiểu thêm.</a>
-                </div>
+                        {/* Hiển thị thông báo thành công nếu có */}
+                        {successMessage && <div className="text-success" role="alert">{successMessage}</div>}
+
+                        {/* Mật khẩu mới */}
+                        <input
+                            type="password"
+                            className="login-form-input"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            autoComplete="new-password"
+                            placeholder="Mật khẩu mới"
+                            required
+                        />
+
+                        {/* Xác nhận mật khẩu */}
+                        <input
+                            type="password"
+                            className="login-form-input"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            autoComplete="new-password"
+                            placeholder="Xác nhận mật khẩu"
+                            required
+                        />
+
+                        <button type="submit" className="login-form-button">
+                            Thay đổi mật khẩu
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-  );
+    );
 };
 
 export default ResetPassword;
