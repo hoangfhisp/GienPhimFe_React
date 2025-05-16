@@ -3,9 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import './FilmVideo.scss'
 
 import FilmPanel from './FilmPanel';
-import * as phimServices from '../../../services/User/FilmService.jsx'
 import FilmTap from './FilmTap.jsx';
-import { set } from 'lodash';
+import * as phimServices from '../../../services/User/FilmService.jsx'
 
 function FilmVideo({id,tap}){
     const[isPlaying,setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
@@ -27,10 +26,23 @@ function FilmVideo({id,tap}){
 
     },[id])
 
+    // usserId test
+    const userId = "4b6d0384-5e73-411a-9c9a-5765aef56e9e";
+
     // Lọc danh sách tập có slugtap = tap (params)
     const tapchon = useMemo(() => {
         return dataTapPhim.find(item => item.slugTap === tap);
     },[dataTapPhim,tap])
+
+    // Gọi api xu lý lịch sử nếu slug tập thay đổi
+    useEffect(() => {
+        if(tap == null || userId == null)
+            return;
+        const fetchApiXuLyLichSuXem = async () => {
+            await phimServices.XuLyLichXuXem(id,userId,tap);
+        }
+        fetchApiXuLyLichSuXem();
+    },[tap])
 
     // Hàm lấy tập phim để gắn vào iframe
     useEffect(() => {
@@ -55,8 +67,6 @@ function FilmVideo({id,tap}){
         setIsPlaying(true); 
     }
 
-    
-
     return(
         <>
             <div className="video-container">
@@ -73,7 +83,7 @@ function FilmVideo({id,tap}){
                     </p>
 
 
-                    <button className="play-btn" onClick={() => Views(id,"4b6d0384-5e73-411a-9c9a-5765aef56e9e")}> {/* Khi người dùng ấn gọi hàm tăng view */}
+                    <button className="play-btn" onClick={() => Views(id,userId)}> {/* Khi người dùng ấn gọi hàm tăng view */}
                         <div className="play-icon"></div>
                     </button>
                 </div>

@@ -7,33 +7,36 @@ import './AnimeList.scss'
 import FilmCard from "../FilmCards/FilmCard.jsx";
 import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
+import * as searchServices from '../../../services/User/SearchSevice.jsx'
 
-
-export default function AnimeList({userId,page,limit,webpage,onPagination}){
+export default function AnimeList({userId,timtheo,page,limit,webpage,onPagination}){
     const [listPhimResult,setListPhimResult] = useState([]);
     
 
-        useEffect(() => {
-        const fetchApi = async () => {
-            try {
-                let result;
-                if (userId && webpage == "History"){
-                    result = await phimServices.LichSuXemUser(userId, page, limit);
-                } else {
-                    result = await phimServices.listphim(page, limit);
-                }
-
-                if (result && result.data) {
-                    setListPhimResult(result.data);
-                    onPagination(result.pagination);
-                }
-            } catch (error) {
-                console.error("Lỗi khi tải danh sách phim:", error);
+    useEffect(() => {
+    const fetchApi = async () => {
+        try {
+            let result;
+            if (userId && webpage == "History"){
+                result = await phimServices.LichSuXemUser(userId, page, limit);
+            }else if(webpage == "SearchPhim") {
+                result = await searchServices.searchTheLoaiSlug(timtheo,page,limit)
             }
-        };
+            else {
+                result = await phimServices.listphim(page, limit);
+            }
 
-            fetchApi();
-        }, [webpage,userId, page, limit]);
+            if (result && result.data) {
+                setListPhimResult(result.data);
+                onPagination(result.pagination);
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải danh sách phim:", error);
+        }
+    };
+
+        fetchApi();
+    }, [webpage,userId, page, limit,timtheo]);
 
 
     return(
