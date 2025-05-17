@@ -16,8 +16,6 @@ export const fetchRoles = async (page, limit) => {
             params: { page, limit }
         });
 
-        console.log('API Response Roles:', response);
-
         return response;
 
     } catch (error) {
@@ -48,11 +46,7 @@ export const searchVaiTros = async (tenVT, page = 1, limit = 10) => {
 export const getRoleById = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Lấy thông tin vai trò thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi lấy thông tin vai trò:", error);
         return {
@@ -67,11 +61,7 @@ export const getRoleById = async (id) => {
 export const createRole = async (roleData) => {
     try {
         const response = await axios.post(API_URL, roleData);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Tạo vai trò thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi tạo vai trò:", error);
         return {
@@ -86,11 +76,7 @@ export const createRole = async (roleData) => {
 export const updateRole = async (id, roleData) => {
     try {
         const response = await axios.put(`${API_URL}/${id}`, roleData);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Cập nhật vai trò thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi cập nhật vai trò:", error);
         return {
@@ -105,10 +91,7 @@ export const updateRole = async (id, roleData) => {
 export const deleteRole = async (id) => {
     try {
         const response = await axios.delete(`${API_URL}/${id}`);
-        return {
-            status: response.data?.status || true,
-            msg: response.data?.msg || 'Xóa vai trò thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi xóa vai trò:", error);
         return {

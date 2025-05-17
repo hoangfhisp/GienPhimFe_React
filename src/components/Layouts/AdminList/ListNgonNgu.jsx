@@ -17,6 +17,7 @@ export default function ListNgonNgu({ page, limit, data, pagination, onPageChang
         try {
             const result = await movieServices.fetchNgonNgus(currentPage, currentLimit);
             setListNgonNguResult(result.data);
+            onPageChange(result.pagination);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu ngôn ngữ:", error);
         } finally {
@@ -25,18 +26,14 @@ export default function ListNgonNgu({ page, limit, data, pagination, onPageChang
     };
 
     useEffect(() => {
-        fetchApi();
-        console.log(data);
-    }, [page, limit]);
-
-    useEffect(() => {
-        console.log('Dữ liệu truyền vào ListNgonNgu:', data);
-        if (!data) {
-            return;
+        if (data && data.length > 0) {
+            setListNgonNguResult(data);
+        } else {
+            fetchApi();
         }
-        setListNgonNguResult(data);
-    }, [data])
+    }, [data, limit, page]);
 
+    // Lấy các trường form
     useEffect(() => {
         const fetchFormFields = async () => {
             try {
@@ -152,9 +149,6 @@ export default function ListNgonNgu({ page, limit, data, pagination, onPageChang
                         columns={columns}
                         data={listNgonNguResult}
                         loading={loading}
-                        currentPage={pagination.currentPage}
-                        totalItems={pagination.totalItems}
-                        itemsPerPage={pagination.itemsPerPage}
                         actions={['view', 'edit', 'delete']}
                         onAction={handleAction}
                         onPageChange={onPageChange}

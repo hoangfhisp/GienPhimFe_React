@@ -17,6 +17,7 @@ export default function ListDaoDien({ page, limit, data, pagination, onPageChang
         try {
             const result = await movieServices.fetchDaoDiens(currentPage, currentLimit);
             setListDaoDienResult(result.data);
+            onPageChange(result.pagination);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu đạo diễn:", error);
         } finally {
@@ -25,18 +26,14 @@ export default function ListDaoDien({ page, limit, data, pagination, onPageChang
     };
 
     useEffect(() => {
-        fetchApi();
-        console.log(data);
-    }, [page, limit]);
-
-    useEffect(() => {
-        console.log('Dữ liệu truyền vào ListDaoDien:', data);
-        if (!data) {
-            return;
+        if (data && data.length > 0) {
+            setListDaoDienResult(data);
+        } else {
+            fetchApi();
         }
-        setListDaoDienResult(data);
-    }, [data])
+    }, [data, limit, page]);
 
+    // Lấy các trường form
     useEffect(() => {
         const fetchFormFields = async () => {
             try {
@@ -148,9 +145,6 @@ export default function ListDaoDien({ page, limit, data, pagination, onPageChang
                         columns={columns}
                         data={listDaoDienResult}
                         loading={loading}
-                        currentPage={pagination.currentPage}
-                        totalItems={pagination.totalItems}
-                        itemsPerPage={pagination.itemsPerPage}
                         actions={['view', 'edit', 'delete']}
                         onAction={handleAction}
                         onPageChange={onPageChange}

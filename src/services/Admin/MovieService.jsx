@@ -75,7 +75,7 @@ export const addMovieFromAPI = (apiLink) => {
 export const createMovie = (movieData) => {
     const isFormData = movieData instanceof FormData;
 
-    return request.post('/Admin/Phim', movieData, {
+    return request.post('/Admin/Phim/Them', movieData, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
 };
@@ -84,14 +84,14 @@ export const createMovie = (movieData) => {
 export const updateMovie = (id, movieData) => {
     const isFormData = movieData instanceof FormData;
 
-    return request.put(`/Admin/Phim/${id}`, movieData, {
+    return request.put(`/Admin/Phim/CapNhat/${id}`, movieData, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
 };
 
 // Xóa phim
 export const deleteMovie = (id) => {
-    return request.deleteRequest(`/Admin/Phim/${id}`).catch(handleError);
+    return request.deleteRequest(`/Admin/Phim/Xoa/${id}`).catch(handleError);
 };
 
 // Lấy metadata để biết các trường cần nhập
@@ -171,8 +171,6 @@ export const fetchQuocGias = async (page, limit) => {
         const response = await request.get('/Admin/QuocGia', {
             params: { page, limit }
         });
-
-        console.log('API Response QuocGia:', response);
 
         return response;
 
@@ -460,4 +458,77 @@ export const updateDienVien = (id, dienVienData) => {
 // Xóa diễn viên
 export const deleteDienVien = (id) => {
     return request.deleteRequest(`/Admin/DienVien/Xoa/${id}`).catch(handleError);
+};
+
+// Lấy danh sách tất cả các thẻ tag
+export const fetchTheTags = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/TheTag', {
+            params: { page, limit }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tải thẻ tag:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách thẻ tag'
+        };
+    }
+};
+
+// Tìm kiếm thẻ tag theo từ khóa
+export const searchTheTags = async (tent, page, limit) => {
+    try {
+        const response = await request.get(`/Admin/TheTag/search`, {
+            params: {
+                tent,
+                page,
+                limit
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tìm kiếm thẻ tag:", error);
+        return {
+            status: false,
+            data: [],
+            totalItems: 0,
+            msg: error.message || 'Lỗi khi tìm kiếm thẻ tag'
+        };
+    }
+};
+
+// Lấy metadata để biết các trường cần nhập
+export async function getTheTagFormFields() {
+    const response = await request.get('/Admin/TheTag/metadata');
+    return response.fields;
+}
+
+// Thêm thẻ tag
+export const createTheTag = (theTagData) => {
+    const isFormData = theTagData instanceof FormData;
+
+    return request.post('/Admin/TheTag/Them', theTagData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật thẻ tag
+export const updateTheTag = (id, theTagData) => {
+    const isFormData = theTagData instanceof FormData;
+
+    return request.put(`/Admin/TheTag/CapNhat/${id}`, theTagData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Xóa thẻ tag
+export const deleteTheTag = (id) => {
+    return request.deleteRequest(`/Admin/TheTag/Xoa/${id}`).catch(handleError);
 };

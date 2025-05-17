@@ -2,96 +2,76 @@ import React, { useState, useEffect } from 'react';
 import * as movieServices from "../../../services/Admin/MovieService";
 import useDebounce from "../../../hooks/useDebounce";
 
-export default function Search({ searchType, onClear, children, placeholder, onResult }) {
+export default function Search({ searchType, page, limit, onClear, children, placeholder, onResult, onPagination }) {
     const [inputValue, setInputValue] = useState("");
     const [searchTheloais, setSearchTheloais] = useState([]);
     const [searchQuocgias, setSearchQuocgias] = useState([]);
     const [searchNgonNgus, setSearchNgonNgus] = useState([]);
     const [searchDaoDiens, setSearchDaoDiens] = useState([]);
     const [searchDienViens, setSearchDienViens] = useState([]);
+    const [searchTheTags, setSearchTheTags] = useState([]);
 
     const debounce = useDebounce(inputValue, 600);
-
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 0
-    });
 
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const searchValue = debounce.trim();
 
+        // Nếu input rỗng → reset kết quả
         if (!searchValue) {
-            if (searchType === 'theLoai') {
-                setSearchTheloais([]);
-            } else if (searchType === 'quocGia') {
-                setSearchQuocgias([]);
-            } else if (searchType === 'ngonNgu') {
-                setSearchNgonNgus([]);
-            } else if (searchType === 'daoDien') {
-                setSearchDaoDiens([]);
-            } else if (searchType === 'dienVien') {
-                setSearchDienViens([]);
-            }
+            onResult?.([], 0); // Reset kết quả tìm kiếm
+            onPagination?.({ currentPage: 1, totalPages: 1, totalItems: 0 }); // Reset phân trang
             return;
         }
 
-        const fetchData = async (page = 1) => {
-            const { currentPage, itemsPerPage } = pagination;
+        const fetchData = async () => {
             setLoading(true);
             try {
                 let result;
 
                 if (searchType === 'theLoai') {
-                    result = await movieServices.searchTheLoais(searchValue, currentPage, itemsPerPage);
-                } else
-                    if (searchType === 'quocGia') {
-                        result = await movieServices.searchQuocGias(searchValue, currentPage, itemsPerPage);
-                    } else
-                        if (searchType === 'ngonNgu') {
-                            result = await movieServices.searchNgonNgus(searchValue, currentPage, itemsPerPage);
-                        } else
-                            if (searchType === 'daoDien') {
-                                result = await movieServices.searchDaoDiens(searchValue, currentPage, itemsPerPage);
-                            } else
-                                if (searchType === 'dienVien') {
-                                    result = await movieServices.searchDienViens(searchValue, currentPage, itemsPerPage);
-                                } else {
-                                    throw new Error("Loại tìm kiếm không hỗ trợ");
-                                }
+                    result = await movieServices.searchTheLoais(searchValue, page, limit);
+                } else if (searchType === 'quocGia') {
+                    result = await movieServices.searchQuocGias(searchValue, page, limit);
+                } else if (searchType === 'ngonNgu') {
+                    result = await movieServices.searchNgonNgus(searchValue, page, limit);
+                } else if (searchType === 'daoDien') {
+                    result = await movieServices.searchDaoDiens(searchValue, page, limit);
+                } else if (searchType === 'dienVien') {
+                    result = await movieServices.searchDienViens(searchValue, page, limit);
+                } else if (searchType === 'theTag') {
+                    result = await movieServices.searchTheTags(searchValue, page, limit);
+                } else {
+                    throw new Error("Loại tìm kiếm không hỗ trợ");
+                }
 
                 onResult?.(result.data, result.totalItems);
-                setPagination(prev => ({
-                    ...prev,
-                    currentPage: page,
-                    totalItems: result.pagination.total,
-                    itemsPerPage: result.pagination.limit
-                }));
+                onPagination(result.pagination);
             } catch (err) {
                 console.error(`Lỗi tìm kiếm ${searchType}:`, err);
-                setPagination(prev => ({ ...prev, totalItems: 0 }));
-                onResult?.([]); // Truyền mảng rỗng để reset kết quả nếu có lỗi
+                onResult?.([]);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [debounce, searchType, pagination.currentPage, pagination.itemsPerPage]);
+    }, [debounce, searchType, page, limit]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setPagination(prev => ({ ...prev, currentPage: 1 }));
-        // debounce sẽ tự động gọi useEffect
     };
 
     const handleClear = () => {
         setInputValue('');
         onClear?.();
         setSearchTheloais([]);
-        setPagination({ currentPage: 1, itemsPerPage: 10, totalItems: 0 });
+        setSearchQuocgias([]);
+        setSearchNgonNgus([]);
+        setSearchDaoDiens([]);
+        setSearchDienViens([]);
+        setSearchTheTags([]);
     };
 
     return (

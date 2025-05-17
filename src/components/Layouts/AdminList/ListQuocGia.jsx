@@ -11,11 +11,13 @@ export default function ListQuocGia({ page, limit, data, pagination, onPageChang
     const [cardAction, setCardAction] = useState(null);
     const [formFields, setFormFields] = useState([]);
 
+    //Dùng để tái sử dụng fetchApi
     const fetchApi = async (currentPage = page, currentLimit = limit) => {
         setLoading(true);
         try {
             const result = await movieServices.fetchQuocGias(currentPage, currentLimit);
             setListQuocGiaResult(result.data);
+            onPageChange(result.pagination);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu quốc gia:", error);
         } finally {
@@ -23,20 +25,15 @@ export default function ListQuocGia({ page, limit, data, pagination, onPageChang
         }
     };
 
-    //Dùng để tái sử dụng fetchApi
     useEffect(() => {
-        fetchApi();
-        console.log(data);
-    }, [page, limit]);
-
-    useEffect(() => {
-        console.log('Dữ liệu truyền vào ListQuocGia:', data);
-        if (!data) {
-            return;
+        if (data && data.length > 0) {
+            setListQuocGiaResult(data);
+        } else {
+            fetchApi();
         }
-        setListQuocGiaResult(data);
-    }, [data])
+    }, [data, limit, page]);
 
+    // Lấy các trường form
     useEffect(() => {
         const fetchFormFields = async () => {
             try {
@@ -152,9 +149,6 @@ export default function ListQuocGia({ page, limit, data, pagination, onPageChang
                         columns={columns}
                         data={listQuocGiaResult}
                         loading={loading}
-                        currentPage={pagination.currentPage}
-                        totalItems={pagination.totalItems}
-                        itemsPerPage={pagination.itemsPerPage}
                         actions={['view', 'edit', 'delete']}
                         onAction={handleAction}
                         onPageChange={onPageChange}
@@ -175,5 +169,4 @@ export default function ListQuocGia({ page, limit, data, pagination, onPageChang
             )}
         </>
     );
-
 };

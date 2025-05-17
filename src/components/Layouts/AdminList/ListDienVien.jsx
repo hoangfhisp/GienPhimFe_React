@@ -17,6 +17,7 @@ export default function ListDienVien({ page, limit, data, pagination, onPageChan
         try {
             const result = await movieServices.fetchDienViens(currentPage, currentLimit);
             setListDienVienResult(result.data);
+            onPageChange(result.pagination);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu đạo diễn:", error);
         } finally {
@@ -25,17 +26,12 @@ export default function ListDienVien({ page, limit, data, pagination, onPageChan
     };
 
     useEffect(() => {
-        fetchApi();
-        console.log(data);
-    }, [page, limit]);
-
-    useEffect(() => {
-        console.log('Dữ liệu truyền vào ListDienVien:', data);
-        if (!data) {
-            return;
+        if (data && data.length > 0) {
+            setListDienVienResult(data);
+        } else {
+            fetchApi();
         }
-        setListDienVienResult(data);
-    }, [data])
+    }, [data, limit, page]);
 
     useEffect(() => {
         const fetchFormFields = async () => {
@@ -147,9 +143,6 @@ export default function ListDienVien({ page, limit, data, pagination, onPageChan
                         columns={columns}
                         data={listDienVienResult}
                         loading={loading}
-                        currentPage={pagination.currentPage}
-                        totalItems={pagination.totalItems}
-                        itemsPerPage={pagination.itemsPerPage}
                         actions={['view', 'edit', 'delete']}
                         onAction={handleAction}
                         onPageChange={onPageChange}

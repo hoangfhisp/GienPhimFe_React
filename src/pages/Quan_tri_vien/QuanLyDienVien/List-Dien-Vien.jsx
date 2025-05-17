@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
 import ListDienVien from '../../../components/Layouts/AdminList/ListDienVien';
 import Search from '../../../components/Layouts/SearchAdmin/Search';
+import RenderPagination from '../../../components/Commons/RenderPagination';
 
 export default function DienVienList() {
+    const [paginations, setPaginations] = useState([]);
+    const [currentPage, setCurrentPage] = useState();
     const [searchResult, setSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [pagination, setPagination] = useState({ currentPage: 1, itemsPerPage: 10, totalItems: 0 });
 
     const handleSearchResult = (data) => {
         setSearchResult(data);
@@ -18,10 +20,6 @@ export default function DienVienList() {
         setIsSearching(false);
     };
 
-    const handlePageChange = (newPage) => {
-        setPagination(prev => ({ ...prev, currentPage: newPage }));
-    };
-
     return (
         <div className="wrapper d-flex">
             <AdminBoard username="Admin" />
@@ -31,6 +29,9 @@ export default function DienVienList() {
                 </div>
                 <hr />
                 <Search
+                    onPagination={setPaginations}
+                    page={currentPage}
+                    limit={10}
                     searchType="dienVien"
                     onResult={handleSearchResult}
                     onClear={handleClearSearch}
@@ -42,9 +43,12 @@ export default function DienVienList() {
                 <ListDienVien
                     searchType="dienVien"
                     data={isSearching ? searchResult : null}
-                    pagination={pagination} onPageChange={handlePageChange}
+                    page={currentPage}
+                    limit={10}
+                    onPageChange={setPaginations}
                 />
 
+                <RenderPagination data={paginations} onPageChange={setCurrentPage} />
             </div>
         </div>
     );

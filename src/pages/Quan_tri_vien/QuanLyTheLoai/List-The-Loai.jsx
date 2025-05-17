@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
 import ListTheLoai from '../../../components/Layouts/AdminList/ListTheLoai';
 import Search from '../../../components/Layouts/SearchAdmin/Search';
-import * as movieServices from "../../../services/Admin/MovieService";
+import RenderPagination from '../../../components/Commons/RenderPagination';
 
 export default function TheLoaiList() {
+    const [paginations, setPaginations] = useState([]);
+    const [currentPage, setCurrentPage] = useState();
     const [searchResult, setSearchResult] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [pagination, setPagination] = useState({ currentPage: 1, itemsPerPage: 10, totalItems: 0 });
 
     const handleSearchResult = (data) => {
         setSearchResult(data);
@@ -19,10 +20,6 @@ export default function TheLoaiList() {
         setIsSearching(false);
     };
 
-    const handlePageChange = (newPage) => {
-        setPagination(prev => ({ ...prev, currentPage: newPage }));
-    };
-
     return (
         <div className="wrapper d-flex">
             <AdminBoard username="Admin" />
@@ -32,6 +29,9 @@ export default function TheLoaiList() {
                 </div>
                 <hr />
                 <Search
+                    onPagination={setPaginations}
+                    page={currentPage}
+                    limit={10}
                     searchType="theLoai"
                     onResult={handleSearchResult}
                     onClear={handleClearSearch}
@@ -43,9 +43,13 @@ export default function TheLoaiList() {
                 <ListTheLoai
                     searchType="theLoai"
                     data={isSearching ? searchResult : null}
-                    pagination={pagination} onPageChange={handlePageChange}
+                    page={currentPage}
+                    limit={10}
+                    onPageChange={setPaginations}
+                    pagination={paginations}
                 />
 
+                <RenderPagination data={paginations} onPageChange={setCurrentPage} />
             </div>
         </div>
     );

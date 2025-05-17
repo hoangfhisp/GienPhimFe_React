@@ -11,11 +11,13 @@ export default function ListTheLoai({ page, limit, data, pagination, onPageChang
     const [cardAction, setCardAction] = useState(null);
     const [formFields, setFormFields] = useState([]);
 
+    //Dùng để tái sử dụng fetchApi
     const fetchApi = async (currentPage = page, currentLimit = limit) => {
         setLoading(true);
         try {
             const result = await movieServices.fetchTheLoais(currentPage, currentLimit);
             setListTheLoaiResult(result.data);
+            onPageChange(result.pagination);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu thể loại:", error);
         } finally {
@@ -23,19 +25,13 @@ export default function ListTheLoai({ page, limit, data, pagination, onPageChang
         }
     };
 
-    //Dùng để tái sử dụng fetchApi
     useEffect(() => {
-        fetchApi();
-        console.log(data);
-    }, [page, limit]);
-
-    useEffect(() => {
-        console.log('Dữ liệu truyền vào ListTheLoai:', data);
-        if (!data) {
-            return;
+        if (data && data.length > 0) {
+            setListTheLoaiResult(data);
+        } else {
+            fetchApi();
         }
-        setListTheLoaiResult(data);
-    }, [data])
+    }, [data, limit, page]);
 
     // Lấy các trường form
     useEffect(() => {
@@ -122,7 +118,6 @@ export default function ListTheLoai({ page, limit, data, pagination, onPageChang
         }
     ];
 
-
     return (
         <>
             <div className="mb-4">
@@ -154,9 +149,6 @@ export default function ListTheLoai({ page, limit, data, pagination, onPageChang
                         columns={columns}
                         data={listTheLoaiResult}
                         loading={loading}
-                        currentPage={pagination.currentPage}
-                        totalItems={pagination.totalItems}
-                        itemsPerPage={pagination.itemsPerPage}
                         actions={['view', 'edit', 'delete']}
                         onAction={handleAction}
                         onPageChange={onPageChange}
