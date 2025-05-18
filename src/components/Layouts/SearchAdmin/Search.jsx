@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as movieServices from "../../../services/Admin/MovieService";
 import useDebounce from "../../../hooks/useDebounce";
+import * as AuthenticationService from "../../../services/Admin/AuthenticationService";
 
 export default function Search({ searchType, page, limit, onClear, children, placeholder, onResult, onPagination }) {
     const [inputValue, setInputValue] = useState("");
@@ -10,6 +11,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
     const [searchDaoDiens, setSearchDaoDiens] = useState([]);
     const [searchDienViens, setSearchDienViens] = useState([]);
     const [searchTheTags, setSearchTheTags] = useState([]);
+    const [searchRoles, setSearchRoles] = useState([]);
 
     const debounce = useDebounce(inputValue, 600);
 
@@ -42,6 +44,8 @@ export default function Search({ searchType, page, limit, onClear, children, pla
                     result = await movieServices.searchDienViens(searchValue, page, limit);
                 } else if (searchType === 'theTag') {
                     result = await movieServices.searchTheTags(searchValue, page, limit);
+                } else if (searchType === 'vaiTro') {
+                    result = await AuthenticationService.searchRoles(searchValue, page, limit);
                 } else {
                     throw new Error("Loại tìm kiếm không hỗ trợ");
                 }
@@ -72,6 +76,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
         setSearchDaoDiens([]);
         setSearchDienViens([]);
         setSearchTheTags([]);
+        setSearchRoles([]);
     };
 
     return (

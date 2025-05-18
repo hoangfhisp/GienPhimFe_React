@@ -170,7 +170,7 @@ a {
 }
 
 a:hover {
-    color: #0056b3;
+    //color: #0056b3;
     text-decoration: underline;
 }
 
@@ -11551,6 +11551,7 @@ a.text-secondary:focus {
 
 .text-success {
     color: #28a745 !important;
+    font-weight: bold;
 }
 
 a.text-success:hover,

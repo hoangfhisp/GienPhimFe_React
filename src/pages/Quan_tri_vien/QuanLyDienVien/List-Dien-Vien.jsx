@@ -46,6 +46,7 @@ export default function DienVienList() {
                     page={currentPage}
                     limit={10}
                     onPageChange={setPaginations}
+                    pagination={paginations}
                 />
 
                 <RenderPagination data={paginations} onPageChange={setCurrentPage} />

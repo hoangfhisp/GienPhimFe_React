@@ -58,58 +58,66 @@ export default function Register() {
 
             <div className="login-body">
                 <div className="login-form-container">
-                    <div className="login-form-header">
+                    <div className="login-title">
                         <h4 style={{ textAlign: 'center' }}>Đăng ký tài khoản</h4>
                     </div>
 
                     <form className="login-form" id="registerForm" onSubmit={handleSubmit}>
                         {/* Email */}
-                        <input
-                            type="email"
-                            className="login-form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="username"
-                            placeholder="name@example.com"
-                            required
-                        />
-                        {errors.email && <span className="text-danger">{errors.email}</span>}
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                className={`login-form-input ${email ? 'filled' : ''}`}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="username"
+                                required
+                            />
+                            <label className="floating-label">Email</label>
+                            {errors.email && <span className="text-danger">{errors.email}</span>}
+                        </div>
 
                         {/* Số điện thoại */}
-                        <input
-                            type="tel"
-                            className="login-form-input"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                            autoComplete="tel"
-                            placeholder="phone number"
-                            required
-                        />
-                        {errors.phoneNumber && <span className="text-danger">{errors.phoneNumber}</span>}
+                        <div className="form-group">
+                            <input
+                                type="tel"
+                                className={`login-form-input ${phoneNumber ? 'filled' : ''}`}
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                                autoComplete="tel"
+                                required
+                            />
+                            <label className="floating-label">Số điện thoại</label>
+                            {errors.phoneNumber && <span className="text-danger">{errors.phoneNumber}</span>}
+                        </div>
 
                         {/* Mật khẩu */}
-                        <input
-                            type="password"
-                            className="login-form-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            autoComplete="new-password"
-                            placeholder="password"
-                            required
-                        />
-                        {errors.password && <span className="text-danger">{errors.password}</span>}
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className={`login-form-input ${password ? 'filled' : ''}`}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="off"
+                                required
+                            />
+                            <label className="floating-label">Mật khẩu</label>
+                            {errors.password && <span className="text-danger">{errors.password}</span>}
+                        </div>
 
                         {/* Xác nhận mật khẩu */}
-                        <input
-                            type="password"
-                            className="login-form-input"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            autoComplete="new-password"
-                            placeholder="password"
-                            required
-                        />
-                        {errors.confirmPassword && <span className="text-danger">{errors.confirmPassword}</span>}
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className={`login-form-input ${confirmPassword ? 'filled' : ''}`}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                autoComplete="off"
+                                required
+                            />
+                            <label className="floating-label">Xác nhận mật khẩu</label>
+                            {errors.confirmPassword && <span className="text-danger">{errors.confirmPassword}</span>}
+                        </div>
 
                         {/* Đồng ý điều khoản */}
                         <div className="login-form-help">
@@ -140,6 +148,7 @@ export default function Register() {
                             Đăng Ký
                         </button>
                     </form>
+
 
                     {/* Hiển thị thông báo lỗi từ API */}
                     {errorMessage && <div className="login-error-message">{errorMessage}</div>}

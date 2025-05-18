@@ -44,44 +44,46 @@ export default function Login() {
 
             <div className="login-body">
                 <div className="login-form-container">
-                    <div className="login-form-header">
-                        <h4 style={{ textAlign: 'center', fontSize: "40px"}}>Đăng nhập</h4>
+                    <div className="login-title">
+                        <h4 style={{ textAlign: 'center', fontSize: "40px" }}>Đăng Nhập</h4>
                     </div>
 
                     <form className="login-form" id="account" onSubmit={handleSubmit}>
-                        {/* Input cho Email */}
-                        <input
-                            type="email"
-                            className="login-form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="username"
-                            placeholder="name@example.com"
-                            required
-                        />
+                        {/* Email */}
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                className={`login-form-input ${email ? 'filled' : ''}`}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                            <label className="floating-label">Tên Đăng Nhập</label>
+                        </div>
 
-                        {/* Input cho Password */}
-                        <input
-                            type="password"
-                            className="login-form-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            autoComplete="current-password"
-                            placeholder="password"
-                            required
-                        />
+                        {/* Password */}
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className={`login-form-input ${password ? 'filled' : ''}`}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <label className="floating-label">Mật khẩu</label>
+                        </div>
 
                         {/* Hiển thị thông báo lỗi nếu có */}
                         {errorMessage && <div className="login-error-message">{errorMessage}</div>}
 
                         {/* Nút submit */}
                         <button id="login-submit" type="submit" className="login-form-button">
-                            Đăng nhập
+                            Đăng Nhập
                         </button>
 
                         {/* Liên kết quên mật khẩu */}
                         <Link to="/forgot-password" className="forgot-password-link" id="forgot-password">
-                            Bạn quên mật khẩu?
+                            Bạn Quên Mật Khẩu?
                         </Link>
 
                         <div className="login-form-help">
@@ -93,11 +95,11 @@ export default function Login() {
                                         checked={rememberMe}
                                         onChange={() => setRememberMe(!rememberMe)}
                                     />
-                                    Nhớ tôi
+                                    Nhớ Tôi
                                 </label>
                             </div>
                             <Link to="/help" className="help-link">
-                                Cần trợ giúp?
+                                Cần Trợ Giúp?
                             </Link>
                         </div>
                     </form>
@@ -106,26 +108,26 @@ export default function Login() {
                         {/* Đăng nhập với số điện thoại */}
                         <Link to="/login-phone" className="login-form-button login-phone-button">
                             <i className="fas fa-phone-alt"></i>
-                            <span className="login-phone-text">Đăng nhập với số điện thoại</span>
+                            <span className="login-phone-text">Đăng Nhập Với Số Điện Thoại</span>
                         </Link>
 
                         {/* Đăng nhập với Email */}
                         <Link to="/login-email" className="login-form-button login-email-button">
                             <i className="fas fa-envelope"></i>
-                            <span className="login-email-text">Đăng nhập với Email</span>
+                            <span className="login-email-text">Đăng Nhập Với Email</span>
                         </Link>
 
                         <div className="login-form-signupnow">
                             Mới sử dụng GIENPHIM?
                             <Link to="/register" className="login-form-signupnow-link">
-                                Đăng ký ngay.
+                                Đăng Ký Ngay.
                             </Link>
                         </div>
 
                         <div className="login-term">
                             <p>Trang này được bảo vệ bởi Google reCAPTCHA để đảm bảo bạn không phải là bot.</p>
                             <a href="https://www.google.com/recaptcha" target="_blank" rel="noopener noreferrer">
-                                Tìm hiểu thêm.
+                                Tìm Hiểu Thêm.
                             </a>
                         </div>
                     </div>

@@ -37,11 +37,11 @@ const ForgotPassword = () => {
             <LoginContainer />
             <div className="login-body">
                 <div className="login-form-container">
-                    <div className="login-form-header">
-                        <h4 style={{ textAlign: 'center' }}>Quên / Đổi mật khẩu</h4>
+                    <div className="login-title">
+                        <h3 style={{ textAlign: 'center' }}>Quên / Đổi mật khẩu</h3>
                     </div>
 
-                    <form className="login-form" onSubmit={handleSubmit}>
+                    <form className="login-form" id="passwordResetForm" onSubmit={handleSubmit}>
                         {/* Hiển thị lỗi nếu có */}
                         {error && <div className="text-danger" role="alert">{error}</div>}
 
@@ -49,22 +49,26 @@ const ForgotPassword = () => {
                         {successMessage && <div className="text-success" role="alert">{successMessage}</div>}
 
                         {/* Email input */}
-                        <input
-                            type="email"
-                            className="login-form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoComplete="username"
-                            placeholder="name@example.com"
-                            required
-                        />
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                className={`login-form-input ${email ? 'filled' : ''}`}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="username"
+                                required
+                            />
+                            <label className="floating-label">name@example.com</label>
+                        </div>
 
+                        {/* Nút submit */}
                         <button type="submit" className="login-form-button">
                             Lấy / Đổi Mật Khẩu
                         </button>
 
+                        {/* Liên kết trợ giúp */}
                         <div className="login-form-help">
-                            <Link to="/help" className="help-link">Cần trợ giúp?</Link>
+                            <Link to="/help" className="help-link">Cần Trợ Giúp?</Link>
                         </div>
                     </form>
 

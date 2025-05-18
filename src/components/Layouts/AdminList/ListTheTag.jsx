@@ -33,7 +33,6 @@ export default function ListTheTag({ page, limit, data, pagination, onPageChange
         }
     }, [data, limit, page]);
 
-
     // Lấy các trường form
     useEffect(() => {
         const fetchFormFields = async () => {

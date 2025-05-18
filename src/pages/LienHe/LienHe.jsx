@@ -1,33 +1,31 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import './LienHe.scss'
-
 import Logo from '../../components/Commons/Logo';
 
-function LienHe(){
-    const [linkLienHe,setLinkLienHe] = useState("");
+function LienHe() {
+    const [linkLienHe, setLinkLienHe] = useState("");
 
     const handleLinnk = (type) => {
-        if(type == "zalo"){
+        if (type == "zalo") {
             setLinkLienHe("https://zalo.me/0374687144");
         }
-        if(type == "tele"){
+        if (type == "tele") {
             setLinkLienHe("https://t.me/hoang_nek");
         }
-        if(type == "facebook"){
+        if (type == "facebook") {
             setLinkLienHe("https://www.facebook.com/sh.hoanh/");
         }
-        if(type == "gmail"){
+        if (type == "gmail") {
             setLinkLienHe("mailto:hoangkutehbcd@gmail.com");
         }
-        if(type == "discord"){
+        if (type == "discord") {
             setLinkLienHe("https://discord.gg/NX9RsShC");
         }
     }
 
 
-    return(
+    return (
         <div className="login-container">
             <Logo link={"/Home"}>GIEN PHIM</Logo>
             <div className="login-body">
@@ -72,10 +70,10 @@ function LienHe(){
                     </div>
                 </div>
             </div>
-<           div className="login-overlay">
+            <           div className="login-overlay">
             </div>
         </div>
-        
+
     );
 }
 

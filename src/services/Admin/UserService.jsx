@@ -14,8 +14,6 @@ export const fetchUsers = async (page, limit) => {
             params: { page, limit }
         });
 
-        console.log('API Response Users:', response);
-
         return response;
 
     } catch (error) {
@@ -29,18 +27,13 @@ export const fetchUsers = async (page, limit) => {
     }
 };
 
-export const searchUsers = async (keyword, page, limit) => {
+export const searchUsers = async (tennd, page, limit) => {
     try {
-        const response = await axios.get(`${API_URL}/search`, {
-            params: { keyword, page, limit }
+        const response = await request.get(`/User/search`, {
+            params: { tennd, page, limit }
         });
 
-        return {
-            status: response.data?.status || true,
-            data: response.data?.data || [],
-            pagination: response.data?.pagination || null,
-            msg: response.data?.msg || 'Tìm kiếm người dùng thành công'
-        };
+        return response;
 
     } catch (error) {
         console.error("Lỗi tìm kiếm người dùng:", error);
@@ -69,11 +62,7 @@ export const searchNguoiDungs = async (tenND, page = 1, limit = 10) => {
 export const getUserById = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Lấy thông tin người dùng thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi lấy thông tin người dùng:", error);
         return {
@@ -84,32 +73,10 @@ export const getUserById = async (id) => {
     }
 };
 
-export const createUser = async (userData) => {
-    try {
-        const response = await axios.post(API_URL, userData);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Thêm người dùng thành công'
-        };
-    } catch (error) {
-        console.error("Lỗi thêm người dùng:", error);
-        return {
-            status: false,
-            data: null,
-            msg: error.response?.data?.msg || error.message || 'Lỗi khi thêm người dùng'
-        };
-    }
-};
-
 export const updateUser = async (id, userData) => {
     try {
         const response = await axios.put(`${API_URL}/${id}`, userData);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Cập nhật người dùng thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi cập nhật người dùng:", error);
         return {
@@ -123,10 +90,7 @@ export const updateUser = async (id, userData) => {
 export const deleteUser = async (id) => {
     try {
         const response = await axios.delete(`${API_URL}/${id}`);
-        return {
-            status: response.data?.status || true,
-            msg: response.data?.msg || 'Xóa người dùng thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi xóa người dùng:", error);
         return {
@@ -139,11 +103,7 @@ export const deleteUser = async (id) => {
 export const lockUser = async (lockData) => {
     try {
         const response = await axios.post(`${API_URL}/lock`, lockData);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Khóa tài khoản thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi khóa tài khoản:", error);
         return {
@@ -157,11 +117,7 @@ export const lockUser = async (lockData) => {
 export const unlockUser = async (userId) => {
     try {
         const response = await axios.post(`${API_URL}/unlock/${userId}`);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Mở khóa tài khoản thành công'
-        };
+        return response;
     } catch (error) {
         console.error("Lỗi mở khóa tài khoản:", error);
         return {
@@ -172,24 +128,3 @@ export const unlockUser = async (userId) => {
     }
 };
 
-export const changePassword = async (userId, currentPassword, newPassword) => {
-    try {
-        const response = await axios.post(`${API_URL}/change-password`, {
-            userId,
-            currentPassword,
-            newPassword
-        });
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Đổi mật khẩu thành công'
-        };
-    } catch (error) {
-        console.error("Lỗi đổi mật khẩu:", error);
-        return {
-            status: false,
-            data: null,
-            msg: error.response?.data?.msg || error.message || 'Lỗi khi đổi mật khẩu'
-        };
-    }
-};

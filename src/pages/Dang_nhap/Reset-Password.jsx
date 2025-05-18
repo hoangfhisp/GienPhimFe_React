@@ -58,12 +58,11 @@ const ResetPassword = () => {
             <LoginContainer />
             <div className="login-body">
                 <div className="login-form-container">
-                    <div className="login-form-header">
+                    <div className="login-title">
                         <h4 style={{ textAlign: 'center' }}>Đổi lại mật khẩu</h4>
                     </div>
-                    <br />
 
-                    <form className="login-form" onSubmit={handleSubmit}>
+                    <form className="login-form" id="changePasswordForm" onSubmit={handleSubmit}>
                         {/* Hiển thị lỗi nếu có */}
                         {error && <div className="text-danger" role="alert">{error}</div>}
 
@@ -71,27 +70,32 @@ const ResetPassword = () => {
                         {successMessage && <div className="text-success" role="alert">{successMessage}</div>}
 
                         {/* Mật khẩu mới */}
-                        <input
-                            type="password"
-                            className="login-form-input"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            autoComplete="new-password"
-                            placeholder="Mật khẩu mới"
-                            required
-                        />
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className={`login-form-input ${newPassword ? 'filled' : ''}`}
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                autoComplete="off"
+                                required
+                            />
+                            <label className="floating-label">Mật khẩu mới</label>
+                        </div>
 
                         {/* Xác nhận mật khẩu */}
-                        <input
-                            type="password"
-                            className="login-form-input"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            autoComplete="new-password"
-                            placeholder="Xác nhận mật khẩu"
-                            required
-                        />
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className={`login-form-input ${confirmPassword ? 'filled' : ''}`}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                autoComplete="off"
+                                required
+                            />
+                            <label className="floating-label">Xác nhận mật khẩu</label>
+                        </div>
 
+                        {/* Nút submit */}
                         <button type="submit" className="login-form-button">
                             Thay đổi mật khẩu
                         </button>
