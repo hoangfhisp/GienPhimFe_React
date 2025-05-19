@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+
 
 function RenderPagination({data,onPageChange}){
 
-    console.log(data);
     const handlePageChange = (newPage) => {
             if (onPageChange) {
                 onPageChange(newPage);

@@ -22,9 +22,13 @@ import XemPhim from "../pages/XemPhim/XemPhim.jsx";
 import NotFound from "../pages/NotFound/NotFound.jsx";
 import History from "../pages/History/History.jsx";
 import SearchPhim from "../pages/SearchPhim/SearchPhim.jsx";
-
+import * as authHook from"../hooks/auth.jsx";
+import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 
 export default function AppRoutes() {
+    
+    const userId = authHook.getUserIdFromToken();
+
     return (
         <Routes>
             <Route path="/Home" element={<Home />} />
@@ -33,8 +37,9 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/LienHe" element={<LienHe/>}/>
-            <Route path="/History" element={<History/>}/>
-            <Route path="/SearchPhim/:timtheo" element={<SearchPhim/>}/>
+            {userId && <Route path="/History" element={<History/>}/>}
+            {userId && <Route path="/InfoAccount" element={<InfoAccount/>}/>}
+            <Route path="/SearchPhim/:type/:timtheo" element={<SearchPhim/>}/>
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />

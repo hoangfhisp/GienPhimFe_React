@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import RenderPagination from "../../components/Commons/RenderPagination";
 
 function SearchPhim(){
-    const {timtheo} = useParams();
+    const {type,timtheo} = useParams();
 
     const [pagination,setPagination] = useState([]);
     const [currentPage,setCurrentPage] = useState();
 
+    console.log(type)
     return(
         <>
             <div className="container-main">
@@ -19,7 +20,7 @@ function SearchPhim(){
                 <BoxTitle>Bạn Đang tìm phim theo: {timtheo}</BoxTitle>
                 <br /> <hr />
                 
-                <AnimeList timtheo = {timtheo} page={currentPage} limit={12} webpage={'SearchPhim'} onPagination={setPagination}/>
+                <AnimeList typePhim = {type} timtheo = {timtheo} page={currentPage} limit={18} webpage={'SearchPhim'} onPagination={setPagination}/>
                 
                 <RenderPagination data={pagination} onPageChange={setCurrentPage}/>
             </div>

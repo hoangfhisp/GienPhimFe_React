@@ -3,14 +3,13 @@ import { Link, useParams } from "react-router-dom";
 
 import * as phimServices from '../../../services/User/FilmService.jsx'
 
-function FilmPanel({data,onSelect}){
+function FilmPanel({data,onSelect,nguoiDungId}){
 
     const {id,tap} = useParams();
     const[dataTap,setDataTap] = useState([])
     const[tapTiep,setTapTiep] = useState(""); // Lưu state của slugtap để chuyển tập
     const[checkLikeDislike,setCheckLikeDislike] = useState([]); // Gán giá trị khi check được lượt like của người dùng với bộ phim
 
-    const nguoiDungId = "4b6d0384-5e73-411a-9c9a-5765aef56e9e"; // test thử người dùng
 
     // Hàm handel gọi api xử lý nếu người dùng ấn thích, không thích
     const xuLyLikeDislike = async (id,nguoiDungId,isLike,isDislike) => {
@@ -59,6 +58,10 @@ function FilmPanel({data,onSelect}){
 
     },[id,nguoiDungId])
 
+    // check nút thích active
+    const daThich = Array.isArray(checkLikeDislike) && checkLikeDislike[0]?.luotThichP;
+    const khongThich = Array.isArray(checkLikeDislike) && checkLikeDislike[0]?.luotDislikeP;
+    
     return(
         <div className="control-panel">
     
@@ -67,11 +70,11 @@ function FilmPanel({data,onSelect}){
             </Link>
         
             <Link >
-                <button type="button" style={{background: `${checkLikeDislike[0]?.luotThichP ? 'red' : '#222' }`}} onClick={() => {checkLikeDislike[0]?.luotThichP ? xuLyLikeDislike(id,nguoiDungId,false,false) : xuLyLikeDislike(id,nguoiDungId,true,false)}}>💡 Thích phim</button>
+                <button type="button" style={{background: `${daThich ? 'red' : '#222' }`}} onClick={() => {daThich ? xuLyLikeDislike(id,nguoiDungId,false,false) : xuLyLikeDislike(id,nguoiDungId,true,false)}}>💡 Thích phim</button>
             </Link>
 
             <Link >
-                <button type="button" style={{background: `${checkLikeDislike[0]?.luotDislikeP ? 'red' : '#222' }`}} onClick={() => {checkLikeDislike[0]?.luotDislikeP ? xuLyLikeDislike(id,nguoiDungId,false,false) : xuLyLikeDislike(id,nguoiDungId,false,true)}} >⭐ Không thích</button>
+                <button type="button" style={{background: `${khongThich ? 'red' : '#222' }`}} onClick={() => {khongThich ? xuLyLikeDislike(id,nguoiDungId,false,false) : xuLyLikeDislike(id,nguoiDungId,false,true)}} >⭐ Không thích</button>
             </Link>
         
             <Link to={`/Phim/${id}`}>

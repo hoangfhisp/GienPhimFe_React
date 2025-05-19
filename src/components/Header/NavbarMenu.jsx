@@ -8,6 +8,18 @@ export default function NavbarMenu(){
     const[allTheLoai,setAllTheLoai] = useState([]);
     const[allQuocGia,setAllQuocGia] = useState([]);
 
+    const dataDang = [
+    {
+        idDang: 1,
+        moTaDang: "full",
+        tenDang: "Phim Lẻ"
+    },
+    {
+        idDang: 2,
+        moTaDang: "tap",
+        tenDang: "Phim Bộ"
+    }];
+
     useEffect(() => {
         const fetchApiAllTheLoai = async () => {
             const resultTL = await phimServices.GetAllTheLoai();
@@ -15,6 +27,7 @@ export default function NavbarMenu(){
 
             const resultQG = await phimServices.GetAllQuocGia(1,12);
             setAllQuocGia(resultQG.data);
+
         }
         fetchApiAllTheLoai();
     },[])
@@ -23,10 +36,10 @@ export default function NavbarMenu(){
         <div className="collapse navbar-collapse" id="navbarNav">
             <ul  className="navbar-nav me-auto collapse navbar-collapse">
                 <NavbarSingle link={"/Home"}>TRANG CHỦ</NavbarSingle>
-                <NavbarList>DẠNG PHIM</NavbarList>
-                <NavbarSingle>TOP PHIM</NavbarSingle>
-                <NavbarList data = {allTheLoai}>THỂ LOẠI</NavbarList>
-                <NavbarList data = {allQuocGia}>QUỐC GIA</NavbarList>
+                <NavbarList data={dataDang} type="DangPhim">DẠNG PHIM</NavbarList>
+                <NavbarSingle link={`/SearchPhim/TopPhim/top-phim`} >TOP PHIM</NavbarSingle>
+                <NavbarList data = {allTheLoai} type="TheLoai">THỂ LOẠI</NavbarList>
+                <NavbarList data = {allQuocGia} type="QuocGia">QUỐC GIA</NavbarList>
                 <NavbarSingle link={"/LienHe"}>LIÊN HỆ</NavbarSingle>
             </ul>
         </div>
@@ -34,7 +47,7 @@ export default function NavbarMenu(){
 }
 
 
-function NavbarSingle({children,link}){
+function NavbarSingle({children,link,type}){
     return(
             <li className="nav-item">
                  <Link to={link} className="nav-link @isHome" >{children}</Link>
@@ -42,7 +55,7 @@ function NavbarSingle({children,link}){
     );
 }
 
-function NavbarList({children,data}){
+function NavbarList({children,data,type}){
     const[listNavbar,setListNavbar] = useState([]);
 
     useEffect(() => {
@@ -59,8 +72,8 @@ function NavbarList({children,data}){
             </a>
             <ul className="dropdown-menu bg dropdown-menu-dark dropdown-menu-end">
                 {listNavbar.map((result) => (
-                    <li key={result.theLoaiId || result.quocGiaId }>
-                        <Link className="dropdown-item " to={`/SearchPhim/${result.moTa || result.moTaQG}`} >{result.tenTL || result.tenQG }</Link>
+                    <li key={result.theLoaiId || result.quocGiaId || result.idDang }>
+                        <Link className="dropdown-item " to={`/SearchPhim/${type}/${result.moTa || result.moTaQG || result.moTaDang}`} >{result.tenTL || result.tenQG || result.tenDang }</Link>
                     </li>
                 ))};
             </ul>

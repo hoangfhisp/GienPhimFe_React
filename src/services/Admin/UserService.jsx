@@ -3,10 +3,6 @@ import * as request from "../../untils/Request.jsx";
 import axios from "axios";
 const API_URL = 'http://localhost:5039/api/User';
 
-const handleError = (error) => {
-    console.error('API Error:', error);
-    throw error;
-};
 
 export const fetchUsers = async (page, limit) => {
     try {
@@ -68,19 +64,10 @@ export const searchNguoiDungs = async (tenND, page = 1, limit = 10) => {
 
 export const getUserById = async (id) => {
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
-        return {
-            status: response.data?.status || true,
-            data: response.data,
-            msg: response.data?.msg || 'Lấy thông tin người dùng thành công'
-        };
+        const res = await request.get(`/User/${id}`);
+        return res;
     } catch (error) {
         console.error("Lỗi lấy thông tin người dùng:", error);
-        return {
-            status: false,
-            data: null,
-            msg: error.response?.data?.msg || error.message || 'Lỗi khi lấy thông tin người dùng'
-        };
     }
 };
 

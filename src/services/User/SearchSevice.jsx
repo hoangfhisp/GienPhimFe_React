@@ -103,3 +103,51 @@ export const searchTheLoaiSlug = async (searchSlug,page,limit) => {
         console.error("Lỗi khi gọi API:", error);
     }
 }
+
+export const searchQuocGiaSlug = async (searchSlug,page,limit) => {
+    try {
+        const res = await request.get('/Phim/QuocGiaSlug',{
+            params: {
+                searchSlug,
+                page,
+                limit
+            }
+        });
+
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
+export const searchDangPhimSlug = async (slugTap,page,limit) => {
+    try {
+        const res = await request.get('/Phim/DangPhim',{
+            params: {
+                slugTap,
+                page,
+                limit
+            }
+        });
+
+        return res;
+        
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
+export const searchTopPhim = async (page,limit) => {
+    try {
+        const res = await request.get('/Phim/TopPhim',{
+            params: {
+                page,
+                limit
+            }
+        });
+        
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}

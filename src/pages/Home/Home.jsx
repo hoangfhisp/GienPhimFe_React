@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import 'jwt-decode'
 import './Home.scss'
 
 import BoxTitle from "../../components/Commons/BoxTitle";
@@ -10,15 +10,15 @@ import Notice from "../../components/Layouts/Notice/Notice.jsx";
 import FilmRanking from "../../components/Layouts/FilmRanking";
 import FilmBannerList from "../../components/Layouts/FilmBanners/FilmBannerList.jsx";
 import RenderPagination from '../../components/Commons/RenderPagination.jsx';
-
+import { jwtDecode } from 'jwt-decode';
+import * as authHook from '../../hooks/auth.jsx'
 
 
 
 export default function Home() {
     const [pagination,setPagination] = useState([]);
     const [currentPage,setCurrentPage] = useState();
-
-
+    
     return(
             <div className="container-main">
                 <Notice/>
