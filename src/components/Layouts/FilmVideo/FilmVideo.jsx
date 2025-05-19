@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import './FilmVideo.scss'
 
@@ -6,10 +6,12 @@ import FilmPanel from './FilmPanel';
 import FilmTap from './FilmTap.jsx';
 import * as phimServices from '../../../services/User/FilmService.jsx'
 
-function FilmVideo({id,tap}){
+function FilmVideo({id,tap,userId}){
     const[isPlaying,setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
     const[dataTapPhim,setDataTapPhim] = useState([]); // hàm gắn lấy dữ liệu của 1 list phim
     const[tapPhim,setTapPhim] = useState([]); // hàm gán 1 link của tập phim cụ thể
+    
+    const isFirstRun = useRef(true); // Thêm kiểm soát bằng useRef để chỉ gọi API một lần
 
     // Hàm lấy api id phim. rồi lấy list tập phim
     useEffect(() => {
@@ -26,9 +28,6 @@ function FilmVideo({id,tap}){
 
     },[id])
 
-    // usserId test
-    const userId = "4b6d0384-5e73-411a-9c9a-5765aef56e9e";
-
     // Lọc danh sách tập có slugtap = tap (params)
     const tapchon = useMemo(() => {
         return dataTapPhim.find(item => item.slugTap === tap);
@@ -36,6 +35,11 @@ function FilmVideo({id,tap}){
 
     // Gọi api xu lý lịch sử nếu slug tập thay đổi
     useEffect(() => {
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+
         if(tap == null || userId == null)
             return;
         const fetchApiXuLyLichSuXem = async () => {
@@ -89,7 +93,7 @@ function FilmVideo({id,tap}){
                 </div>
             </div>
 
-            <FilmPanel data={dataTapPhim} idphim = {id} slugtap ={tap} onSelect={() => setIsPlaying(false)}/>
+            <FilmPanel data={dataTapPhim} nguoiDungId={userId} idphim = {id} slugtap ={tap} onSelect={() => setIsPlaying(false)}/>
 
             <div className="tap-container">
                 <FilmTap data={dataTapPhim} idphim = {id} slugtap ={tap} onSelect={() => setIsPlaying(false)}>📺 GIENPHIM Tập</FilmTap>

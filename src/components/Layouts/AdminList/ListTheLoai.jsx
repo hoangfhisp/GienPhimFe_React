@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Table from "../../../components/Table/Table";
 import * as movieServices from "../../../services/Admin/MovieService";
 import Card from '../../../components/Table/Card';
+import { list } from "postcss";
 
 export default function ListTheLoai({ page, limit, data, pagination, onPageChange }) {
     const [listTheLoaiResult, setListTheLoaiResult] = useState([]);

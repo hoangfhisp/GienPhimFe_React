@@ -54,7 +54,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
                 onPagination(result.pagination);
             } catch (err) {
                 console.error(`Lỗi tìm kiếm ${searchType}:`, err);
-                onResult?.([]);
+                onResult?.([]); // Truyền mảng rỗng để reset kết quả nếu có lỗi
             } finally {
                 setLoading(false);
             }
