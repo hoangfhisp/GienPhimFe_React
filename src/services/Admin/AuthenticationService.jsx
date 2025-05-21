@@ -141,3 +141,16 @@ export async function getRoleFormFields() {
     const response = await request.get('/Admin/Role/metadata');
     return response.fields;
 }
+
+export const UpdateUserInfo = async (formData) => {
+    try {
+        const res = await request.put('/User/UserInfoUpdate', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+                });
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
