@@ -23,6 +23,7 @@ html {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
 }
 
 .login-header {
@@ -31,7 +32,7 @@ html {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 100;
 }
 
 .login-header a {
@@ -40,7 +41,7 @@ html {
     margin-left: 60px;
     text-decoration: none;
     text-transform: uppercase;
-    color: #E50914;
+    color: #ff000d;
 }
 
 .login-body {
@@ -587,4 +588,326 @@ html {
     /* Dùng flex-grow để các giá trị kéo giãn sang bên phải */
     text-align: right;
     /* Đảm bảo các giá trị nằm bên phải */
+}
+
+//Phương thức nạp tiền
+.payment-methods-container {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    /* Khoảng cách giữa các mục */
+    margin-left: -6px;
+    margin-right: -6px;
+    row-gap: 12px;
+    font-family: "__League_Spartan_b661ba", "__League_Spartan_Fallback_b661ba", sans-serif;
+    font-weight: 300;
+    line-height: 1;
+    font-style: normal;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+.payment-method {
+    flex: 1 0 50%;
+    /* Mỗi mục sẽ chiếm 50% bề rộng trên màn hình */
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.payment-method-card {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    border: 1px solid black;
+    padding: 15px 23px;
+    transition: all 0.3s ease;
+}
+
+.payment-method-card:hover {
+    border-color: #FCB454;
+}
+
+.payment-method-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
+.payment-method-details {
+    font-family: "__League_Spartan_b661ba", "__League_Spartan_Fallback_b661ba", sans-serif;
+}
+
+.payment-method-name {
+    font-weight: 400;
+    font-size: 16px;
+    color: white;
+}
+
+.payment-method-description {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.no-fee {
+    color: #12CBAB;
+}
+
+.transaction-fee {
+    color: #FFD25F;
+}
+
+/* Các lớp cho tiêu đề */
+.title {
+    text-align: center;
+    font-size: 28px;
+    color: white;
+    padding-bottom: 15px;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Các thuộc tính của các class trong bảng style */
+* {
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+}
+
+//Nhập tiền
+.note-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 16px;
+    margin-bottom: 35px;
+    border: 1px solid transparent;
+
+    .note-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .note-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #E50914;
+            border-radius: 50%;
+            padding: 8px;
+            color: white;
+        }
+
+        .note-title {
+            font-size: 20px;
+            font-weight: 400;
+            color: #FFA725;
+            margin: 0;
+        }
+    }
+
+    .note-body {
+        flex: 1;
+        margin-left: 16px;
+
+        .note-text {
+            font-size: 14px;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.5;
+        }
+    }
+
+    @media (max-width: 640px) {
+        flex-direction: column;
+        gap: 10px;
+
+        .note-body {
+            margin-left: 0;
+        }
+    }
+}
+
+.payment-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #ffffff5c;
+        border: 1px solid #ffffff1f;
+        border-radius: 16px;
+        padding: 0 16px;
+        height: 36px;
+        flex: 1;
+
+        &:hover {
+            border-color: #FCB454;
+        }
+
+        .amount-input {
+            flex: 1; // Thêm dòng này để input chiếm hết phần còn lại
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 14px;
+            padding: 8px 0;
+            height: 100%;
+            min-width: 0; // Fix lỗi input tràn khi bên cạnh có phần tử khác
+
+            &::placeholder {
+                color: #ffffff99;
+            }
+        }
+
+        .currency {
+            color: #ffffff99;
+            font-size: 14px;
+            white-space: nowrap; // Không bị xuống dòng
+            padding-left: 4px;
+        }
+    }
+
+    .submit-btn {
+        padding: 8px 20px;
+        background-color: #E50914;
+        color: white;
+        border: none;
+        border-radius: 36px;
+        font-size: 14px;
+        font-weight: 400;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-left: 8px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: #b5151d;
+            border-color: #b5151d;
+        }
+    }
+
+    @media (max-width: 640px) {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+
+        .submit-btn {
+            width: 100%;
+        }
+
+        .input-group {
+            flex-direction: column;
+        }
+    }
+}
+
+// Loại bỏ nút tăng/giảm số trên input number
+input[type="number"] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+//Tạo giao dịch
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+.submit-GiaoDich-btn {
+    padding: 8px 20px;
+    background-color: #E50914;
+    color: white;
+    border: none;
+    border-radius: 36px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+    height: 36px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.cancel-GiaoDich-btn {
+    background-color: #E50914;
+}
+
+.cancel-GiaoDich-btn:hover {
+    background-color: #b5151d;
+}
+
+.confirm-GiaoDich-btn {
+    background-color: #28a745;
+}
+
+.confirm-GiaoDich-btn:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 640px) {
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .submit-GiaoDich-btn {
+        width: 100%;
+    }
+
+}
+
+.alert {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
 }

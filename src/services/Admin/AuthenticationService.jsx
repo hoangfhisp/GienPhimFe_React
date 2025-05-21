@@ -141,3 +141,145 @@ export async function getRoleFormFields() {
     const response = await request.get('/Admin/Role/metadata');
     return response.fields;
 }
+
+// Lấy metadata để biết các trường cần nhập
+export async function GetUserFormFields() {
+    const response = await request.get('/Admin/QuanTriVienNguoiDung/metadata');
+    return response.fields;
+}
+
+//Api người dùng
+export const fetchUsers = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienNguoiDung', {
+            params: { page, limit }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tải người dùng:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.response?.data?.msg || error.message || 'Lỗi khi tải danh sách người dùng'
+        };
+    }
+};
+
+//Tìm kiếm người dùng
+export const searchUsers = async (tennd, page, limit) => {
+    try {
+        const response = await request.get(`/User/search`, {
+            params: { tennd, page, limit }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi tìm kiếm người dùng:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.response?.data?.msg || error.message || 'Lỗi khi tìm kiếm người dùng'
+        };
+    }
+};
+
+//Lấy id người dùng
+export const getUserById = async (id) => {
+    try {
+        const res = await request.get(`/User/${id}`);
+        return res;
+    } catch (error) {
+        console.error("Lỗi lấy thông tin người dùng:", error);
+    }
+};
+
+// Cập nhật người dùng
+export const updateUser = (id, userData) => {
+    const isFormData = userData instanceof FormData;
+
+    return request.put(`/Admin/QuanTriVienNguoiDung/CapNhat/${id}`, userData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Xóa người dùng
+export const deleteUser = (id) => {
+    return request.deleteRequest(`/Admin/QuanTriVienNguoiDung/Xoa/${id}`).catch(handleError);
+};
+
+//Khoá người dùng
+export const lockUser = async (userLockDto) => {
+    try {
+        const response = await request.post('/Admin/QuanTriVienNguoiDung/lock', userLockDto);
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi khóa người dùng:", error);
+        return {
+            status: false,
+            msg: error.response?.data?.message || error.message || 'Lỗi khi khóa người dùng'
+        };
+    }
+};
+
+//Mở khoá người dùng
+export const unlockUser = async (userId) => {
+    try {
+        const response = await request.post(`/Admin/QuanTriVienNguoiDung/${userId}`);
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi mở khóa người dùng:", error);
+        return {
+            status: false,
+            msg: error.response?.data?.message || error.message || 'Lỗi khi mở khóa người dùng'
+        };
+    }
+};
+
+// Tạo giao dịch nạp tiền
+export const taoGiaoDich = async (napTienDto) => {
+    try {
+        const response = await request.post('/Payment/TaoGiaoDich', napTienDto);
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi tạo giao dịch nạp tiền:", error);
+        throw error;
+    }
+};
+
+// Huỷ giao dịch mới nhất của người dùng
+export const huyGiaoDich = async () => {
+    try {
+        const response = await request.post('/api/Payment/HuyGiaoDich');
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi huỷ giao dịch:", error);
+        throw error;
+    }
+};
+
+// Lấy lịch sử giao dịch của người dùng hiện tại
+export const layLichSuGiaoDich = async () => {
+    try {
+        const response = await request.get('/api/Payment/LichSu');
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi lấy lịch sử giao dịch:", error);
+        throw error;
+    }
+};
+
+// Huỷ giao dịch mới nhất của người dùng
+export const xacNhanChuyenTien = async () => {
+    try {
+        const response = await request.post('/api/Payment/HuyGiaoDich');
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi huỷ giao dịch:", error);
+        throw error;
+    }
+};

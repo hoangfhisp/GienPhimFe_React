@@ -4,13 +4,13 @@ import './Login.scss';
 
 const LoginContainer = () => {
     return (
-      <div className="login-container-background">
-        <div className="login-header">
-          <Link to="/Home">GIENPHIM</Link>
+        <div className="login-container-background">
+            <div className="login-header">
+                <Link to="/Home">GIENPHIM</Link>
+            </div>
+            <div class="login-overlay"></div>
         </div>
-        <div class="login-overlay"></div>
-      </div>
     );
-  };
-  
-  export default LoginContainer;
+};
+
+export default LoginContainer;

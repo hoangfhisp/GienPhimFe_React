@@ -12,6 +12,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
     const [searchDienViens, setSearchDienViens] = useState([]);
     const [searchTheTags, setSearchTheTags] = useState([]);
     const [searchRoles, setSearchRoles] = useState([]);
+    const [searchUsers, setSearchUsers] = useState([]);
 
     const debounce = useDebounce(inputValue, 600);
 
@@ -46,6 +47,8 @@ export default function Search({ searchType, page, limit, onClear, children, pla
                     result = await movieServices.searchTheTags(searchValue, page, limit);
                 } else if (searchType === 'vaiTro') {
                     result = await AuthenticationService.searchRoles(searchValue, page, limit);
+                } else if (searchType === 'nguoiDung') {
+                    result = await AuthenticationService.searchUsers(searchValue, page, limit);
                 } else {
                     throw new Error("Loại tìm kiếm không hỗ trợ");
                 }
@@ -77,6 +80,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
         setSearchDienViens([]);
         setSearchTheTags([]);
         setSearchRoles([]);
+        setSearchUsers([]);
     };
 
     return (

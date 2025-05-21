@@ -8,7 +8,18 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
 
     useEffect(() => {
         if (action === 'edit' || action === 'view' || action === 'delete') {
-            setFormData(data || {});
+            const normalizedData = { ...data };
+            console.log('Data received:', data);
+
+            formFields.forEach(field => {
+                if (field.type === 'select' && field.multiple && Array.isArray(normalizedData[field.name])) {
+                    normalizedData[field.name] = normalizedData[field.name].map(item =>
+                        typeof item === 'object' && item !== null ? item.value : item
+                    );
+                }
+            });
+            console.log('Normalized data:', normalizedData);
+            setFormData(normalizedData || {});
         } else {
             const initialForm = formFields.reduce((acc, field) => {
                 acc[field.name] = field.multiple ? [] : '';
@@ -69,17 +80,25 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                 <label>{field.label}:</label>
                                 <div className="field-value">
                                     {field.type === 'select' && field.multiple ? (
-                                        (field.options
-                                            .filter(opt => (data[field.name] || []).map(String).includes(String(opt.value)))
-                                            .map(opt => opt.label)
-                                            .join(', ')
-                                        )
+                                        (formData[field.name] || [])
+                                            .map(item => {
+                                                // Nếu item là object { value, label } thì lấy label
+                                                if (typeof item === 'object' && item !== null) {
+                                                    return item.label;
+                                                }
+
+                                                // Nếu item là ID, thì tìm trong danh sách options
+                                                const option = field.options.find(opt => opt.value === String(item));
+                                                return option ? option.label : item;
+                                            })
+                                            .filter(label => label != null)
+                                            .join(', ') || 'Null'
                                     ) : field.type === 'select' ? (
-                                        (field.options.find(opt => opt.value === data[field.name])?.label || 'Null')
+                                        (field.options.find(opt => opt.value === formData[field.name])?.label || 'Null')
                                     ) : field.type === 'file' ? (
-                                        data[field.name] ? <img src={data[field.name]} alt={field.label} width={100} /> : 'Null'
+                                        formData[field.name] ? <img src={formData[field.name]} alt={field.label} width={100} /> : 'Null'
                                     ) : (
-                                        data[field.name] || 'Null'
+                                        formData[field.name] || 'Null'
                                     )}
                                 </div>
                             </div>
@@ -116,6 +135,7 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                         onChange={(selected) => handleMultiSelectChange(selected, field.name)}
                                         placeholder={`+ Chọn ${field.label.toLowerCase()}`}
                                     />
+
                                 ) : field.type === 'select' ? (
                                     <Select
                                         name={field.name}

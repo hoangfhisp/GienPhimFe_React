@@ -78,6 +78,11 @@ const AdminBoard = ({ username = 'Admin' }) => {
                         <button id="logout" className="title" onClick={handleLogout}>
                             Đăng xuất
                         </button>
+                        <br />
+                        <br />
+                        <Link to="/Home" className="title">
+                            Trang Chủ
+                        </Link>
                     </div>
                 </div>
 
