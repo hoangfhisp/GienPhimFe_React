@@ -298,3 +298,19 @@ export const xacNhanChuyenTien = async () => {
         throw error;
     }
 };
+
+
+// api nap tien qua VnPay
+export const CreatePaymentVnPay = async (soTien,motaDH) => {
+    try {
+        const res = await request.post('/Payments/Create',{
+            soTien,
+            motaDH,
+            kieuDH: "oder"
+        });
+
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi huỷ giao dịch:", error);
+    }
+}

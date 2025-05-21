@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import LoginContainer from '../../components/Login-container/Login-container';
+import LoginContainer from './src/components/Login-container/Login-container';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import * as AuthenticationService from "../../services/Admin/AuthenticationService";
+import * as AuthenticationService from "./src/services/Admin/AuthenticationService";
 import '../../components/Login-container/Login.scss';
 
 export default function TaoGiaoDichVIB() {
