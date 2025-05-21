@@ -1,4 +1,5 @@
 import * as request from "../../untils/Request.jsx";
+import * as authHook from '../../hooks/auth.jsx';
 
 // Đảm bảo handle lỗi đúng cách
 const handleError = (error) => {
@@ -247,40 +248,64 @@ export const UpdateUserInfo = async (formData) => {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
-                });
+        });
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }
 }
 
-
-// Tạo giao dịch nạp tiền
 export const taoGiaoDich = async (napTienDto) => {
     try {
-        const response = await request.post('/Payment/TaoGiaoDich', napTienDto);
-        return response.data;
+        const token = authHook.getToken();
+
+        if (!token) {
+            throw new Error("Token không có, người dùng chưa đăng nhập!");
+        }
+
+        const response = await request.post('/Payments/TaoGiaoDich', napTienDto, {
+            headers: {
+                Authorization: `Bearer ${token}`  // Thêm token vào header
+            }
+        });
+        // Kiểm tra response để chắc chắn nó có dữ liệu
+        console.log("Response từ API:", response);
+        return response;
+
     } catch (error) {
         console.error("Lỗi khi tạo giao dịch nạp tiền:", error);
-        throw error;
+        throw error; // Ném lỗi lên để xử lý ở nơi gọi
     }
 };
+
 
 // Huỷ giao dịch mới nhất của người dùng
 export const huyGiaoDich = async () => {
     try {
-        const response = await request.post('/api/Payment/HuyGiaoDich');
-        return response.data;
+        const token = authHook.getToken(); // Lấy token từ localStorage
+
+        if (!token) {
+            throw new Error("Token không có, người dùng chưa đăng nhập!");
+        }
+
+        const response = await request.post('/Payments/HuyGiaoDich', {}, {
+            headers: {
+                Authorization: `Bearer ${token}`  // Truyền token vào header
+            }
+        });
+
+        return response;
     } catch (error) {
         console.error("Lỗi khi huỷ giao dịch:", error);
         throw error;
     }
 };
 
+
 // Lấy lịch sử giao dịch của người dùng hiện tại
 export const layLichSuGiaoDich = async () => {
     try {
-        const response = await request.get('/api/Payment/LichSu');
+        const response = await request.get('/api/Payments/LichSu');
         return response.data;
     } catch (error) {
         console.error("Lỗi khi lấy lịch sử giao dịch:", error);
@@ -291,7 +316,7 @@ export const layLichSuGiaoDich = async () => {
 // Huỷ giao dịch mới nhất của người dùng
 export const xacNhanChuyenTien = async () => {
     try {
-        const response = await request.post('/api/Payment/HuyGiaoDich');
+        const response = await request.post('/api/Payments/HuyGiaoDich');
         return response.data;
     } catch (error) {
         console.error("Lỗi khi huỷ giao dịch:", error);

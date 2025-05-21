@@ -12,6 +12,7 @@ export default function NhapTienVIB() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Kiểm tra số tiền hợp lệ
         if (!soTien || isNaN(soTien) || Number(soTien) <= 0) {
             setError('Vui lòng nhập số tiền hợp lệ.');
             return;
@@ -21,15 +22,21 @@ export default function NhapTienVIB() {
             const napTienDto = { soTien: Number(soTien) };
             const result = await AuthenticationService.taoGiaoDich(napTienDto);
 
-            // Xử lý sau khi tạo giao dịch thành công
-            console.log("Giao dịch thành công:", result);
+            // In dữ liệu trả về để kiểm tra
+            console.log("Kết quả trả về từ API:", result);
 
-            // Ví dụ điều hướng sang trang hướng dẫn chuyển khoản:
-            navigate('/HuongDanChuyenKhoan', { state: { giaoDich: result } });
+            // Kiểm tra nếu result có đối tượng giaoDichId
+            if (result && result.giaoDichId) {
+                console.log("Giao dịch thành công với ID:", result.giaoDichId);
+                navigate('/TaoGiaoDichVIB', { state: { giaoDich: result } });
+            } else {
+                setError("Không nhận được thông tin giao dịch.");
+            }
         } catch (err) {
             setError('Có lỗi xảy ra khi tạo giao dịch. Vui lòng thử lại sau.');
         }
     };
+
 
     return (
         <div className="login-container">

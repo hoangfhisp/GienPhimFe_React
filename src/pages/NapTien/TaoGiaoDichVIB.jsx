@@ -1,22 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginContainer from '../../components/Login-container/Login-container';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 import '../../components/Login-container/Login.scss';
 
 export default function TaoGiaoDichVIB() {
     const navigate = useNavigate();
     const location = useLocation();
-    const giaoDich = location.state?.giaoDich;
+    const giaoDich = location.state?.giaoDich;  // Lấy thông tin giao dịch từ location.state
 
     const [loading, setLoading] = useState(!giaoDich?.maQRBase64);
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
+    // Sử dụng useEffect để điều hướng khi không có giaoDich
+    useEffect(() => {
+        if (!giaoDich) {
+            setErrorMsg("Không có thông tin giao dịch. Vui lòng quay lại.");
+            navigate('/NhapTienVIB');  // Điều hướng về trang nhập tiền nếu không có giao dịch
+        }
+    }, [giaoDich, navigate]);  // Chạy khi giaoDich thay đổi
+
     const handleHuyGiaoDich = async () => {
         try {
-            await AuthenticationService.huyGiaoDich();
-            navigate('/PhuongThucNapTien'); // Quay lại bước chọn phương thức
+            if (!giaoDich?.giaoDichId) {
+                setErrorMsg("Không có ID giao dịch để huỷ.");
+                return;
+            }
+
+            await AuthenticationService.huyGiaoDich(giaoDich.giaoDichId);  // Truyền ID giao dịch
+            navigate('/PhuongThucNapTien');  // Quay lại bước chọn phương thức
         } catch (err) {
             setErrorMsg("Không thể huỷ giao dịch. Vui lòng thử lại.");
         }
@@ -24,9 +37,9 @@ export default function TaoGiaoDichVIB() {
 
     const handleXacNhan = async () => {
         try {
-            const result = await AuthenticationService.xacNhanChuyenTien();
+            const result = await AuthenticationService.xacNhanChuyenTien();  // Xác nhận chuyển tiền qua API
             setSuccessMsg("Xác nhận chuyển tiền thành công.");
-            // Optional: chuyển đến trang cảm ơn hoặc reload
+            // Optional: Chuyển đến trang cảm ơn hoặc reload
         } catch (err) {
             setErrorMsg("Không thể xác nhận giao dịch. Vui lòng thử lại.");
         }
@@ -49,7 +62,7 @@ export default function TaoGiaoDichVIB() {
                                 {loading ? (
                                     <p>Đang tạo giao dịch...</p>
                                 ) : (
-                                    <img src={giaoDich.maQRBase64} alt="QR Code" className="qr-code" />
+                                    <img src={giaoDich?.maQRBase64} alt="QR Code" className="qr-code" />
                                 )}
                             </div>
 
