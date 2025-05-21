@@ -9,19 +9,21 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 export default function () {
-    const{phuongthuc} = useParams();
-    const[typePayment,setTypePayment] = useState("");
+    const { phuongthuc } = useParams();
+    const [typePayment, setTypePayment] = useState("");
 
     useEffect(() => {
         setTypePayment(phuongthuc.toLowerCase());
-    },[phuongthuc])
+    }, [phuongthuc])
 
     console.log(phuongthuc);
     return (
         <div className="login-container">
             <LoginContainer />
-            {typePayment === "home" && <PhuongThucThanhToan/>}
-            {typePayment === "vnpay" && <ThanhToan>Thanh toán bằng tài khoản VNPay</ThanhToan>}
+            {typePayment === "home" && <PhuongThucThanhToan />}
+            {typePayment === "vnpay" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản VNPay</ThanhToan>}
+            {typePayment === "vib" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản VIB</ThanhToan>}
+            {typePayment === "momo" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản Momo</ThanhToan>}
         </div>
     );
 }
