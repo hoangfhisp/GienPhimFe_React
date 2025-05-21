@@ -14,7 +14,7 @@ import NgonNguList from '../pages/Quan_tri_vien/QuanLyNgonNgu/List-Ngon-Ngu';
 import DaoDienList from '../pages/Quan_tri_vien/QuanLyDaoDien/List-Dao-Dien';
 import DienVienList from '../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien';
 import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
-import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung';
+import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung.jsx';
 import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";

@@ -6,10 +6,13 @@ import logo from "../../assets/img/logo.png"
 import NavbarMenu from "../Header/NavbarMenu";
 import SearchFilm from "../Layouts/SearchFilm/SearchFilm";
 import * as authHook from "../../hooks/auth.jsx"
+import * as userServices from "../../services/Admin/UserService.jsx"
+import logoDefaultUser from "../../assets/img/LogoDefaultUser.webp"
 
 export default function Header(){
     const[isLogin,setIsLogin] = useState(false);
     const[roleLogin,setRoleLogin] = useState('');
+    const[dataUser,setDataUser] = useState([]);
 
     var userId =authHook.getUserIdFromToken();
     var roleUser = authHook.getRolseUserFromToken();
@@ -22,7 +25,15 @@ export default function Header(){
         setRoleLogin(roleUser);
         setIsLogin(true);
 
+        const fetchApi = async () => {
+            var result = await userServices.getUserById(userId);
+            setDataUser(result);
+        }
+        fetchApi();
+
     },[userId,roleUser]);
+
+    
 
 
     return(
@@ -49,7 +60,7 @@ export default function Header(){
                         <ul className="navbar-nav ms-3">
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown">
-                                    <img src="https://animevietsub.bio/statics/images/user-image.png" alt="logo-login" width="40" className="rounded-circle user-icon" />
+                                    <img src={userId && dataUser?.avatarND ? dataUser.avatarND : logoDefaultUser} alt="logo-login" width="40" className="avatar logologin" />
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end ">
                                     {isLogin && <UserLogin role={roleLogin} onlogins={setIsLogin}/>}
@@ -83,7 +94,8 @@ function UserLogin({onlogins,role,userId}){
     return(
         <>
             <ItemUser link={"/InfoAccount"}>Thông Tin Tài khoản</ItemUser>
-            {role === "Admin" && <ItemUser>Quản Lý Giền Phim</ItemUser>}
+            {role === "Admin" && <ItemUser link={"/Tong-Quan"}>Quản Lý Giền Phim</ItemUser>}
+            {role === "User" && <ItemUser>Nạp Tiền</ItemUser>}
             <ItemUser link={"/History"}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/LienHe"}>Liên Hệ Giền Phim</ItemUser>
             <ItemUser link={'/Home'} onSelect = {() => handleLogout()} >Đăng Xuất</ItemUser>

@@ -240,6 +240,21 @@ export const unlockUser = async (userId) => {
     }
 };
 
+//update user info
+export const UpdateUserInfo = async (formData) => {
+    try {
+        const res = await request.put('/User/UserInfoUpdate', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+                });
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
+
 // Tạo giao dịch nạp tiền
 export const taoGiaoDich = async (napTienDto) => {
     try {

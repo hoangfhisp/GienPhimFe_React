@@ -17,7 +17,7 @@ function InfoAccount(){
 
         const fetchApiUser = async () => {
             const result = await userServices.getUserById(userIdLogin);
-            setDataUser(result.data);
+            setDataUser(result);
         }
 
         fetchApiUser();
