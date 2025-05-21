@@ -22,9 +22,9 @@ import XemPhim from "../pages/XemPhim/XemPhim.jsx";
 import NotFound from "../pages/NotFound/NotFound.jsx";
 import History from "../pages/History/History.jsx";
 import SearchPhim from "../pages/SearchPhim/SearchPhim.jsx";
-import ChonPhuongThucNapTien from "../pages/NapTien/ChonPhuongThuc.jsx";
+import NapTien from "../pages/NapTien/NapTien.jsx";
 import NhapTienVIB from "../pages/NapTien/NhapTienVIB.jsx";
-import TaoGiaoDichVIB from "../pages/NapTien/TaoGiaoDichVIB.jsx";
+import TaoGiaoDichVIB from "../pages/NapTien/NhapTienVIB.jsx";
 import * as authHook from "../hooks/auth.jsx";
 import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 
@@ -34,18 +34,21 @@ export default function AppRoutes() {
 
     return (
         <Routes>
+            {/* Router UI*/}
             <Route path="/Home" element={<Home />} />
             <Route path="/Phim/:id" element={<Phim />} />
             <Route path="/XemPhim/:id/:tap" element={<XemPhim />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/LienHe" element={<LienHe />} />
             {userId && <Route path="/History" element={<History />} />}
             {userId && <Route path="/InfoAccount" element={<InfoAccount />} />}
             <Route path="/SearchPhim/:type/:timtheo" element={<SearchPhim />} />
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/* Router Admin */}
             <Route path="/Tong-Quan" element={<OverviewDashboard />} />
             <Route path="/List-Phim" element={<PhimList />} />
             <Route path="/List-The-Loai" element={<TheLoaiList />} />
@@ -56,11 +59,11 @@ export default function AppRoutes() {
             <Route path="/List-The-Tag" element={<TheTagList />} />
             <Route path="/List-Nguoi-Dung" element={<UserList />} />
             <Route path="/List-Vai-Tro" element={<RoleList />} />
+
             {/* Router nạp tiền */}
-            <Route path="/PhuongThucNapTien" element={<ChonPhuongThucNapTien />} />
+            <Route path="/NapTien/:phuongthuc" element={<NapTien />} />
             <Route path="/NganHangVIB" element={<NhapTienVIB />} />
             <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />
-
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />
         </Routes>

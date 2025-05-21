@@ -84,7 +84,7 @@ function UserLogout(){
     );
 }
 
-function UserLogin({onlogins,role,userId}){
+function UserLogin({onlogins,role}){
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -95,7 +95,7 @@ function UserLogin({onlogins,role,userId}){
         <>
             <ItemUser link={"/InfoAccount"}>Thông Tin Tài khoản</ItemUser>
             {role === "Admin" && <ItemUser link={"/Tong-Quan"}>Quản Lý Giền Phim</ItemUser>}
-            {role === "User" && <ItemUser>Nạp Tiền</ItemUser>}
+            {role === "User" && <ItemUser link={"/NapTien/Home"}>Nạp Tiền</ItemUser>}
             <ItemUser link={"/History"}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/LienHe"}>Liên Hệ Giền Phim</ItemUser>
             <ItemUser link={'/Home'} onSelect = {() => handleLogout()} >Đăng Xuất</ItemUser>

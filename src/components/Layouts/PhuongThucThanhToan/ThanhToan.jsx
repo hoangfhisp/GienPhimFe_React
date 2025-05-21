@@ -1,0 +1,80 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import NotePayMent from "../../Commons/NotePayment";
+import * as authServices from "../../../services/Admin/AuthenticationService.jsx"
+
+
+function ThanhToan({children}){
+
+    const[soTienNap,setSoTienNap] = useState();
+    const[moTaNap,setMoTaNap] = useState("");
+    const[urlPayment,setUrlPayment] = useState("");
+
+    const handleSubmit = (event) => {
+
+        event.preventDefault();
+
+        if(soTienNap < 5000){
+            window.alert("Số tiền không được nhỏ hơn 5.000 VNĐ");
+            return
+        }
+
+        const fetchApiPaymentVnPay = async () => {
+            const result = await authServices.CreatePaymentVnPay(soTienNap,moTaNap);
+            setUrlPayment(result.data);
+            handleOpenUrl(result.data);
+        } 
+
+        fetchApiPaymentVnPay();
+
+    }
+
+    const handleOpenUrl = (url) => {
+        window.open(`${url}`,"_blank");
+    }
+
+    return(
+        <div class="trogiup-body">
+                <div class="login-form-container">
+                    <div class="login-title">
+                        <h4 style={{ textAlign: 'center', fontSize: '28px', color: 'white' }}>
+                            {children}
+                        </h4>
+                        <NotePayMent/>
+                        <form onSubmit={handleSubmit} className="payment-form" style={{ marginTop: '24px' }}>
+
+                            <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>
+                            <InPutInfoPaymMent isrequired type={"text"} onChange={(e) => setMoTaNap(e.target.value)} goiy={"Bạn hãy nhập mô tả đơn hàng"}></InPutInfoPaymMent>
+
+                            <button type="submit" className="submit-btn">Nạp tiền</button>
+                        </form>
+                        <div class="back-link-container">
+                            <Link to="/NapTien/Home" className="back-link">
+                                <i className="fas fa-arrow-left"></i> Trở về
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    );
+}
+
+function InPutInfoPaymMent({type,goiy,result,onChange,children,isrequired}){
+    return(
+        <div className="input-group">
+            <input
+                type={type}
+                className="amount-input"
+                placeholder={goiy}
+                value={result}
+                onChange={onChange}
+                required = {isrequired} 
+            />
+            <span className="currency">{children}</span>
+        </div>
+    );
+}
+
+
+export default ThanhToan;
