@@ -14,8 +14,8 @@ function PhuongThucThanhToan(){
                     </div>
                     <div class="payment-methods-container">
                         <PhuongThuc link={"/NapTien/VnPay"} img={bankingVNPAYImg}>Tài khoản ví điện tử VNPAY</PhuongThuc>
-                        <PhuongThuc  img={bankingVIBImg}>Tài khoản ngân hàng VIB</PhuongThuc>
-                        <PhuongThuc  img={momoImg}>Tài khoản ví điện tử Momo</PhuongThuc>
+                        <PhuongThuc link={"/NapTien/VIB"} img={bankingVIBImg}>Tài khoản ngân hàng VIB</PhuongThuc>
+                        <PhuongThuc link={"/NapTien/Momo"} img={momoImg}>Tài khoản ví điện tử Momo</PhuongThuc>
                     </div>
                     <div class="back-link-container">
                         <Link to="/Home" className="back-link">
