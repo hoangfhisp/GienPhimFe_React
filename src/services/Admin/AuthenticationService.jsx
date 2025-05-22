@@ -255,6 +255,7 @@ export const UpdateUserInfo = async (formData) => {
     }
 }
 
+//Tạo giao dịch vib
 export const taoGiaoDich = async (napTienDto) => {
     try {
         const token = authHook.getToken();
@@ -277,7 +278,6 @@ export const taoGiaoDich = async (napTienDto) => {
         throw error; // Ném lỗi lên để xử lý ở nơi gọi
     }
 };
-
 
 // Huỷ giao dịch mới nhất của người dùng
 export const huyGiaoDich = async () => {
@@ -326,9 +326,9 @@ export const xacNhanChuyenTien = async () => {
 
 
 // api nap tien qua VnPay
-export const CreatePaymentVnPay = async (soTien,motaDH) => {
+export const CreatePaymentVnPay = async (soTien, motaDH) => {
     try {
-        const res = await request.post('/Payments/Create',{
+        const res = await request.post('/Payments/Create', {
             soTien,
             motaDH,
             kieuDH: "oder"
@@ -339,3 +339,27 @@ export const CreatePaymentVnPay = async (soTien,motaDH) => {
         console.error("Lỗi khi huỷ giao dịch:", error);
     }
 }
+
+// Tạo giao dịch MoMo
+export const taoGiaoDichMomo = async (napTienDto) => {
+    try {
+        const token = authHook.getToken();
+        if (!token) throw new Error("Chưa đăng nhập");
+
+        const response = await request.post('/Payments/CreatePaymentUrl',
+            napTienDto,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        return response;
+    } catch (error) {
+        // Bổ sung thông tin lỗi
+        error.customMessage = "Lỗi khi gọi API MoMo";
+        throw error;
+    }
+};

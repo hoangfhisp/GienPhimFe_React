@@ -6,7 +6,6 @@ import * as authServices from "../../../services/Admin/AuthenticationService.jsx
 
 
 function ThanhToan({ children, phuongthuc }) {
-
     const [soTienNap, setSoTienNap] = useState();
     const [moTaNap, setMoTaNap] = useState("");
     const [error, setError] = useState('');
@@ -30,7 +29,7 @@ function ThanhToan({ children, phuongthuc }) {
 
         const fetchApiPaymentVIB = async () => {
             try {
-                const napTienDto = { SoTien: Number(soTienNap) }; // ✅ Chữ S và T viết hoa
+                const napTienDto = { SoTien: Number(soTienNap) };
                 const result = await authServices.taoGiaoDich(napTienDto);
 
                 console.log("Kết quả trả về từ API:", result);
@@ -47,11 +46,41 @@ function ThanhToan({ children, phuongthuc }) {
             }
         };
 
+        const fetchApiPaymentMomo = async () => {
+            try {
+                const napTienDto = {
+                    SoTien: Number(soTienNap), // Cần kiểm tra giá trị này
+                    MoTa: moTaNap
+                };
+
+                console.log("Dữ liệu gửi đến API:", napTienDto);
+
+                const result = await authServices.taoGiaoDichMomo(napTienDto);
+                console.log("Kết quả từ API:", result); // Thêm dòng này để debug
+
+                if (result?.data?.PayUrl) {
+                    handleOpenUrl(result.data.PayUrl);
+                } else {
+                    setError("Không nhận được URL thanh toán MoMo.");
+                }
+            } catch (err) {
+                console.error("Chi tiết lỗi:", { // Log chi tiết hơn
+                    message: err.message,
+                    response: err.response,
+                    stack: err.stack
+                });
+                setError(err.response?.data || err.message);
+            }
+        };
 
         if (phuongthuc === "vnpay")
             fetchApiPaymentVnPay();
+
         else if (phuongthuc === "vib")
             fetchApiPaymentVIB();
+
+        else if (phuongthuc === "momo")
+            fetchApiPaymentMomo();
 
     }
 
@@ -73,6 +102,9 @@ function ThanhToan({ children, phuongthuc }) {
                             <InPutInfoPaymMent isrequired type={"text"} onChange={(e) => setMoTaNap(e.target.value)} goiy={"Bạn hãy nhập mô tả đơn hàng"}></InPutInfoPaymMent></>}
 
                         {phuongthuc === "vib" &&
+                            <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>}
+
+                        {phuongthuc === "momo" &&
                             <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>}
 
                         <button type="submit" className="submit-btn">Nạp tiền</button>
