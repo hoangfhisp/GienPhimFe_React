@@ -20,10 +20,10 @@ export default function () {
     return (
         <div className="login-container">
             <LoginContainer />
-            {typePayment === "home" && <PhuongThucThanhToan />}
-            {typePayment === "vnpay" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản VNPay</ThanhToan>}
+            {typePayment === "home" && <PhuongThucThanhToan/>}
+            {typePayment === "vnpay" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng ví điện tử VNPay</ThanhToan>}
             {typePayment === "vib" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản VIB</ThanhToan>}
-            {typePayment === "momo" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản Momo</ThanhToan>}
+            {typePayment === "momo" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng ví điện tử Momo</ThanhToan>}
         </div>
     );
 }

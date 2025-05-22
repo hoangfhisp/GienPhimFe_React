@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
 
 import NotePayMent from "../../Commons/NotePayment";
 import * as authServices from "../../../services/Admin/AuthenticationService.jsx"
@@ -95,19 +95,21 @@ function ThanhToan({ children, phuongthuc }) {
                     <h4 style={{ textAlign: 'center', fontSize: '28px', color: 'white' }}>
                         {children}
                     </h4>
-                    <NotePayMent />
+                    <NotePayMent/>
                     <form onSubmit={handleSubmit} className="payment-form" style={{ marginTop: '24px' }}>
-                        {phuongthuc === "vnpay" && <>
-                            <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>
-                            <InPutInfoPaymMent isrequired type={"text"} onChange={(e) => setMoTaNap(e.target.value)} goiy={"Bạn hãy nhập mô tả đơn hàng"}></InPutInfoPaymMent></>}
-
-                        {phuongthuc === "vib" &&
-                            <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>}
-
-                        {phuongthuc === "momo" &&
-                            <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>}
-
-                        <button type="submit" className="submit-btn">Nạp tiền</button>
+                        {phuongthuc === "vnpay" && (
+                            <>
+                                <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>
+                                <InPutInfoPaymMent isrequired type={"text"} onChange={(e) => setMoTaNap(e.target.value)} goiy={"Bạn hãy nhập mô tả đơn hàng"}></InPutInfoPaymMent>
+                             </>
+                        )};
+                        {phuongthuc === "vib" && (
+                                <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>
+                        )};
+                        {phuongthuc === "momo" && (
+                                <InPutInfoPaymMent isrequired type={"number"} onChange={(e) => setSoTienNap(e.target.value)} goiy={"Nhập số tiền cần nạp"}>VNĐ</InPutInfoPaymMent>
+                        )};
+                        <button type="submit" className="submit-btn">Nạp tiền</button>s
                     </form>
                     <div class="back-link-container">
                         <Link to="/NapTien/Home" className="back-link">
