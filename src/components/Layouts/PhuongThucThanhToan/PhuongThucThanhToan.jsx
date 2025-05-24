@@ -5,38 +5,30 @@ import momoImg from '../../../assets/img/momo.png';
 
 function PhuongThucThanhToan() {
     return (
-        <div class="trogiup-body">
-                <div class="login-form-container">
-                    <div class="login-title">
+        <>
+            <div className="trogiup-body">
+                <div className="login-form-container">
+                    <div className="login-title">
                         <h4 style={{ textAlign: 'center', fontSize: '28px', color: 'white' }}>
                             Chọn Phương Thức Thanh Toán
                         </h4>
                     </div>
-                    <div class="payment-methods-container">
+                    <div className="payment-methods-container">
                         <PhuongThuc link={"/NapTien/VnPay"} img={bankingVNPAYImg}>Tài khoản ví điện tử VNPAY</PhuongThuc>
                         <PhuongThuc link={"/NapTien/VIB"} img={bankingVIBImg}>Tài khoản ngân hàng VIB</PhuongThuc>
                         <PhuongThuc link={"/NapTien/Momo"} img={momoImg}>Tài khoản ví điện tử Momo</PhuongThuc>
                     </div>
-                    <div class="back-link-container">
+                    <div className="back-link-container">
                         <Link to="/Home" className="back-link">
                             <i className="fas fa-arrow-left"></i> Trở về
                         </Link>
                     </div>
                 </div>
-                <div class="payment-methods-container">
-                    <PhuongThuc link={"/NapTien/VnPay"} img={bankingVNPAYImg}>Tài khoản ví điện tử VNPAY</PhuongThuc>
-                    <PhuongThuc link={"/NapTien/VIB"} img={bankingVIBImg}>Tài khoản ngân hàng VIB</PhuongThuc>
-                    <PhuongThuc link={"/NapTien/Momo"} img={momoImg}>Tài khoản ví điện tử Momo</PhuongThuc>
-                </div>
-                <div class="back-link-container">
-                    <Link to="/Home" className="back-link">
-                        <i className="fas fa-arrow-left"></i> Trở về
-                    </Link>
-                </div>
             </div>
-        </div>
+        </>
     );
 }
+
 
 function PhuongThuc({ children, link, img }) {
     return (
