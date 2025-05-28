@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { Link, useParams,useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 import NotePayMent from "../../Commons/NotePayment";
 import * as authServices from "../../../services/Admin/AuthenticationService.jsx"
+import * as authHooks from "../../../hooks/auth.jsx"
 
 
-function ThanhToan({ children, phuongthuc }) {
+function ThanhToan({ children, phuongthuc}) {
+    const navigate = useNavigate();
+
     const [soTienNap, setSoTienNap] = useState();
     const [moTaNap, setMoTaNap] = useState("");
     const [error, setError] = useState('');
     const [urlPayment, setUrlPayment] = useState("");
-    const navigate = useNavigate();
+    
+    // Lấy id người dùng
+    const userId = authHooks.getUserIdFromToken();
 
+    // Khi ấn submit form sẽ thực hiện chạy handle này
     const handleSubmit = (event) => {
 
         event.preventDefault();
@@ -21,12 +27,15 @@ function ThanhToan({ children, phuongthuc }) {
             return
         }
 
+        // Lấy link thanh toán VnPay từ sever 
         const fetchApiPaymentVnPay = async () => {
-            const result = await authServices.CreatePaymentVnPay(soTienNap, moTaNap);
+            const result = await authServices.CreatePaymentVnPay(userId,soTienNap, moTaNap);
             setUrlPayment(result.data);
             handleOpenUrl(result.data);
+    
         }
 
+        // Lấy link thanh toán Vib từ sever
         const fetchApiPaymentVIB = async () => {
             try {
                 const napTienDto = { SoTien: Number(soTienNap) };
@@ -46,11 +55,12 @@ function ThanhToan({ children, phuongthuc }) {
             }
         };
 
+        // Cấy link thanh toán Momo từ sever 
         const fetchApiPaymentMomo = async () => {
             try {
                 const napTienDto = {
-                    SoTien: Number(soTienNap), // Cần kiểm tra giá trị này
-                    MoTa: moTaNap
+                    soTien: Number(soTienNap), // Cần kiểm tra giá trị này
+                    userId: userId
                 };
 
                 console.log("Dữ liệu gửi đến API:", napTienDto);
@@ -58,8 +68,8 @@ function ThanhToan({ children, phuongthuc }) {
                 const result = await authServices.taoGiaoDichMomo(napTienDto);
                 console.log("Kết quả từ API:", result); // Thêm dòng này để debug
 
-                if (result?.data?.PayUrl) {
-                    handleOpenUrl(result.data.PayUrl);
+                if (result?.payUrl) {
+                    handleOpenUrl(result.payUrl);
                 } else {
                     setError("Không nhận được URL thanh toán MoMo.");
                 }
@@ -84,14 +94,17 @@ function ThanhToan({ children, phuongthuc }) {
 
     }
 
+
+
     const handleOpenUrl = (url) => {
         window.open(`${url}`, "_blank");
     }
 
+
     return (
-        <div class="trogiup-body">
-            <div class="login-form-container">
-                <div class="login-title">
+        <div className="trogiup-body">
+            <div className="login-form-container">
+                <div className="login-title">
                     <h4 style={{ textAlign: 'center', fontSize: '28px', color: 'white' }}>
                         {children}
                     </h4>
@@ -111,7 +124,7 @@ function ThanhToan({ children, phuongthuc }) {
                         )};
                         <button type="submit" className="submit-btn">Nạp tiền</button>s
                     </form>
-                    <div class="back-link-container">
+                    <div className="back-link-container">
                         <Link to="/NapTien/Home" className="back-link">
                             <i className="fas fa-arrow-left"></i> Trở về
                         </Link>

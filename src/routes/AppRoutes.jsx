@@ -26,6 +26,7 @@ import NapTien from "../pages/NapTien/NapTien.jsx";
 import TaoGiaoDichVIB from "../pages/NapTien/TaoGiaoDichVIB.jsx";
 import * as authHook from "../hooks/auth.jsx";
 import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
+import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
 
 export default function AppRoutes() {
 
@@ -46,6 +47,7 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/GoiThanhVien" element={<GoiThanhVien />} />
 
             {/* Router Admin */}
             <Route path="/Tong-Quan" element={<OverviewDashboard />} />
@@ -60,7 +62,7 @@ export default function AppRoutes() {
             <Route path="/List-Vai-Tro" element={<RoleList />} />
 
             {/* Router nạp tiền */}
-            <Route path="/NapTien/:phuongthuc" element={<NapTien />} />
+            {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
             <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />

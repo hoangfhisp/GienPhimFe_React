@@ -5,7 +5,7 @@ import Notice from "../../components/Layouts/Notice/Notice";
 import ProfileContent from "../../components/Layouts/Profile/ProfileContent";
 import ProfileSidebar from "../../components/Layouts/Profile/ProfileSidebar";
 import * as authHook from "../../hooks/auth.jsx"
-import * as userServices from '../../services/Admin/UserService.jsx';
+import * as authServices from '../../services/Admin/AuthenticationService.jsx';
 
 function InfoAccount(){
     const [dataUser,setDataUser] = useState([]);
@@ -16,7 +16,7 @@ function InfoAccount(){
             return;
 
         const fetchApiUser = async () => {
-            const result = await userServices.getUserById(userIdLogin);
+            const result = await authServices.getUserById(userIdLogin);
             setDataUser(result);
         }
 
@@ -28,7 +28,7 @@ function InfoAccount(){
             <Notice/>
             <br /> <hr />
 
-            <div class="profile-container">
+            <div className="profile-container">
                 <ProfileSidebar dataU ={dataUser}/>
                 <ProfileContent dataU ={dataUser}/>
             </div>

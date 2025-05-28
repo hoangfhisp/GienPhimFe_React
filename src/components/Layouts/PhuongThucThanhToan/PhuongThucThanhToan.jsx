@@ -1,9 +1,71 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation,Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import bankingVNPAYImg from '../../../assets/img/vnpay.jpg';
 import bankingVIBImg from '../../../assets/img/banking.png';
 import momoImg from '../../../assets/img/momo.png';
+import ThongBao from "../ThongBao/ThongBao";
+import { formatVND } from "../../../untils/Format";
+import * as authHook from '../../../hooks/auth.jsx'
+import * as authServices from '../../../services/Admin/AuthenticationService.jsx'
 
 function PhuongThucThanhToan() {
+    const location = useLocation();
+
+    const[dataUser,setDataUser] = useState([]);
+    const[isThongBao,setIsThongBao] = useState(false);
+    const[formThongBao,setFormThongBao] = useState({
+        type: 'confirm',
+        title: '',
+        message: '',
+    })
+
+    var userIdLogin = authHook.getUserIdFromToken();
+
+    const queryParams = new URLSearchParams(location.search);
+
+    const status = queryParams.get("status") ; // trả về thông tin thanh toán thành công hay không (Thành công: success ; Thất bại: fail)
+    const txnRef = queryParams.get("txnRef"); // mã đơn hàng thanh toán
+    const code = queryParams.get("code"); // code để check lỗi ghì
+    const amount = Number(queryParams.get("amount"));
+
+    const handleThongBao = (status,data) => {
+        if(status === 'success'){
+            setFormThongBao({
+                type: 'success',
+                title: 'NẠP TIỀN THÀNH CÔNG',
+                message: `Bạn đã nạp thành công ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDuTaiKhoan || 0)}`,
+            })
+        } else if (status === 'fail'){
+            setFormThongBao({
+                type: 'fail',
+                title: 'NẠP TIỀN THẤT BẠI',
+                message: `Bạn đã nạp thất bại ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDuTaiKhoan || 0)}`,
+            })
+        }
+    }
+
+   
+    useEffect(() => {
+        if(status === null || txnRef === null || code === null){
+            setIsThongBao(false);
+            return;
+        }
+        if(userIdLogin == null)
+            return null;
+
+        const fetchApiUser = async () => {
+            const result = await authServices.getUserById(userIdLogin);
+
+            setDataUser(result);
+            handleThongBao(status,result);
+            setIsThongBao(true);
+            window.history.pushState({}, '', location.pathname); // load url không chuyển trang , chỉ dữ path
+        }
+        
+        fetchApiUser();
+    },[status,txnRef,code,userIdLogin])
+
     return (
         <>
             <div className="trogiup-body">
@@ -25,6 +87,16 @@ function PhuongThucThanhToan() {
                     </div>
                 </div>
             </div>
+            {isThongBao &&  
+                <ThongBao 
+                    onClose ={() => setIsThongBao(false)}  
+                    show={isThongBao} 
+                    type={formThongBao.type} 
+                    title={formThongBao.title}
+                    message={formThongBao.message}
+                >
+                </ThongBao>
+            }
         </>
     );
 }
