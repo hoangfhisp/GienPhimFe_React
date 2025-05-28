@@ -55,14 +55,7 @@ export const searchNguoiDungs = async (tenND, page = 1, limit = 10) => {
     }
 }
 
-export const getUserById = async (id) => {
-    try {
-        const res = await request.get(`/User/${id}`);
-        return res;
-    } catch (error) {
-        console.error("Lỗi lấy thông tin người dùng:", error);
-    }
-};
+
 
 export const updateUser = async (id, userData) => {
     try {

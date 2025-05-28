@@ -8,6 +8,7 @@ import FilmCard from "../FilmCards/FilmCard.jsx";
 import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
 import * as searchServices from '../../../services/User/SearchSevice.jsx'
+import { formatDateTime } from "../../../untils/Format.jsx";
 
 export default function AnimeList({ userId, timtheo, page, limit, webpage, onPagination, typePhim }) {
     const [listPhimResult, setListPhimResult] = useState([]);
@@ -80,7 +81,7 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                             {webpage === "History" ? (
                                 <>
                                     <h6>Đã xem tập: {result.slugTapXem} </h6>
-                                    <h6>vào lúc {result.thoiGianXem}</h6>
+                                    <h6>vào lúc {formatDateTime(result.thoiGianXem)}</h6>
                                     <Link to={`/XemPhim/${result.phimId}/${result.slugTapXem}`} className="history-xemtiep">Xem tiếp</Link>
                                 </>
                             ) : (<h6>Lượt xem: {result.luotXemP}</h6>)}

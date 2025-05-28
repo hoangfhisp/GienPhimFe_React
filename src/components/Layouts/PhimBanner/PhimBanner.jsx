@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import './PhimBanner.scss'
 import * as phimServices from '../../../services/User/FilmService.jsx'
 import { Link } from 'react-router-dom';
+import { formatYear } from '../../../untils/Format.jsx';
 
 function PhimBanner({id}){
     const [rating,setRating] = useState("0");
@@ -57,8 +58,8 @@ function PhimBanner({id}){
                                     <span className="reviews"> {`( ${dataPhim.luotThichP + dataPhim.luotDislikeP} )`} Đánh giá</span>
                             </div>
                             <div className="phim-stats">
-                                <span>⏳{dataPhim.thoiLuongP}</span>
-                                <span>📅{dataPhim.ngayPhatHanhP}</span>
+                                <span>⏳ {dataPhim.thoiLuongP}</span>
+                                <span>📅 {formatYear(dataPhim.ngayPhatHanhP)}</span>
                                 <span>👁️ {dataPhim.luotXemP} Lượt xem</span>
                             </div>
                         </div>

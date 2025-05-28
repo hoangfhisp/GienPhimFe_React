@@ -8,7 +8,7 @@ const LoginContainer = () => {
             <div className="login-header">
                 <Link to="/Home">GIENPHIM</Link>
             </div>
-            <div class="login-overlay"></div>
+            <div className="login-overlay"></div>
         </div>
     );
 };

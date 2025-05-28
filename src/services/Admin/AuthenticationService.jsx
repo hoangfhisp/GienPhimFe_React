@@ -189,15 +189,6 @@ export const searchUsers = async (tennd, page, limit) => {
     }
 };
 
-//Lấy id người dùng
-export const getUserById = async (id) => {
-    try {
-        const res = await request.get(`/User/${id}`);
-        return res;
-    } catch (error) {
-        console.error("Lỗi lấy thông tin người dùng:", error);
-    }
-};
 
 // Cập nhật người dùng
 export const updateUser = (id, userData) => {
@@ -326,9 +317,10 @@ export const xacNhanChuyenTien = async () => {
 
 
 // api nap tien qua VnPay
-export const CreatePaymentVnPay = async (soTien, motaDH) => {
+export const CreatePaymentVnPay = async (userId,soTien, motaDH) => {
     try {
-        const res = await request.post('/Payments/Create', {
+        const res = await request.post('/Payments/CreateVnPay', {
+            userId,
             soTien,
             motaDH,
             kieuDH: "oder"
@@ -341,7 +333,7 @@ export const CreatePaymentVnPay = async (soTien, motaDH) => {
 }
 
 // Tạo giao dịch MoMo
-export const taoGiaoDichMomo = async (napTienDto) => {
+export const taoGiaoDichMomo = async (napTienDto,userId) => {
     try {
         const token = authHook.getToken();
         if (!token) throw new Error("Chưa đăng nhập");
@@ -361,5 +353,14 @@ export const taoGiaoDichMomo = async (napTienDto) => {
         // Bổ sung thông tin lỗi
         error.customMessage = "Lỗi khi gọi API MoMo";
         throw error;
+    }
+};
+
+export const getUserById = async (id) => {
+    try {
+        const res = await request.get(`/User/${id}`);
+        return res;
+    } catch (error) {
+        console.error("Lỗi lấy thông tin người dùng:", error);
     }
 };

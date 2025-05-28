@@ -6,8 +6,10 @@ import logo from "../../assets/img/logo.png"
 import NavbarMenu from "../Header/NavbarMenu";
 import SearchFilm from "../Layouts/SearchFilm/SearchFilm";
 import * as authHook from "../../hooks/auth.jsx"
-import * as userServices from "../../services/Admin/UserService.jsx"
+import * as authServices from "../../services/Admin/AuthenticationService.jsx"
 import logoDefaultUser from "../../assets/img/LogoDefaultUser.webp"
+import { formatVND } from "../../untils/Format.jsx";
+import * as managerServices from '../../services/ManagerService.jsx'
 
 export default function Header(){
     const[isLogin,setIsLogin] = useState(false);
@@ -26,14 +28,13 @@ export default function Header(){
         setIsLogin(true);
 
         const fetchApi = async () => {
-            var result = await userServices.getUserById(userId);
+            var result = await authServices.getUserById(userId);
             setDataUser(result);
+            await managerServices.CheckXuLyGoiHetHanUser(userId);
         }
         fetchApi();
 
     },[userId,roleUser]);
-
-    
 
 
     return(
@@ -63,7 +64,7 @@ export default function Header(){
                                     <img src={userId && dataUser?.avatarND ? dataUser.avatarND : logoDefaultUser} alt="logo-login" width="40" className="avatar logologin" />
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end ">
-                                    {isLogin && <UserLogin role={roleLogin} onlogins={setIsLogin}/>}
+                                    {isLogin && <UserLogin data={dataUser} role={roleLogin} onlogins={setIsLogin}/>}
                                     {!isLogin && <UserLogout/>}
                                 </ul>
                             </li>
@@ -84,18 +85,20 @@ function UserLogout(){
     );
 }
 
-function UserLogin({onlogins,role}){
+function UserLogin({onlogins,role,data}){
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         onlogins(false);
     }
 
+    console.log(data)
     return(
         <>
             <ItemUser link={"/InfoAccount"}>Thông Tin Tài khoản</ItemUser>
             {role === "Admin" && <ItemUser link={"/Tong-Quan"}>Quản Lý Giền Phim</ItemUser>}
-            {role === "User" && <ItemUser link={"/NapTien/Home"}>Nạp Tiền</ItemUser>}
+            {role === "User" && <ItemUser link={"/NapTien/Home"} >Nạp Tiền: {formatVND(data.soDuTaiKhoan || 0)}</ItemUser>}
+            <ItemUser link={"/GoiThanhVien"}>Mua Gói Thành Viên</ItemUser>
             <ItemUser link={"/History"}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/LienHe"}>Liên Hệ Giền Phim</ItemUser>
             <ItemUser link={'/Home'} onSelect = {() => handleLogout()} >Đăng Xuất</ItemUser>
