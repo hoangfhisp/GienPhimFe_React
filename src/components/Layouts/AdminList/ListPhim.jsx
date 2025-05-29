@@ -126,6 +126,8 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         { header: "Cập nhật", accessor: "thoiGianCapNhat", render: (row) => new Date(row.thoiGianCapNhat).toLocaleString() }
     ];
 
+    
+
     return (
         <>
             <div className="mb-4">

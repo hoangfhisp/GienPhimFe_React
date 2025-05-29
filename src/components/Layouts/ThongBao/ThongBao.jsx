@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './ThongBao.scss';
 
 
-function ThongBao({ show, onClose, type, title, message ,showButton,btnLabel,onBTNClick ,soNgayOptions = [], onChonSoNgay}){
+function ThongBao({ show, onClose, type, title, message, showButton, btnLabel, onBTNClick, soNgayOptions = [], onChonSoNgay }) {
   const [selectedSoNgay, setSelectedSoNgay] = useState('');
-  
-  if (!show) return null;
 
+  // Khi props soNgayOptions thay đổi, reset lại chọn mặc định
+  useEffect(() => {
+    setSelectedSoNgay("");
+  }, [soNgayOptions]);
+
+  if (!show) return null;
 
   const getIcon = () => {
     switch (type) {
@@ -19,7 +23,8 @@ function ThongBao({ show, onClose, type, title, message ,showButton,btnLabel,onB
   };
 
   const chonSoNgay = () => {
-    return(
+    
+    return (
 
       soNgayOptions.length > 0 && (
         <div className="chon-so-ngay">
@@ -39,29 +44,29 @@ function ThongBao({ show, onClose, type, title, message ,showButton,btnLabel,onB
         </div>
       )
     );
-  } 
+  }
 
-    return(
-        <div className="modal-overlay-tb">
-            <div className={`modal-content-tb ${type}`}>
-                {getIcon()}
-                <h3>{title}</h3>
-                <p>{message}</p>
-                {chonSoNgay()}
-                <div className="modal-buttons-tb">
-                {showButton && (
-                    <button
-                        className="btn-tb confirm"
-                        onClick={onBTNClick}
-                    >
-                        {btnLabel}
-                    </button>
-                )}
-                <button className="btn-tb cancel" onClick={onClose}>Đóng</button>
-                </div>
-            </div>
+  return (
+    <div className="modal-overlay-tb">
+      <div className={`modal-content-tb ${type}`}>
+        {getIcon()}
+        <h3>{title}</h3>
+        <p>{message}</p>
+        {chonSoNgay()}
+        <div className="modal-buttons-tb">
+          {showButton && (
+            <button
+              className="btn-tb confirm"
+              onClick={onBTNClick}
+            >
+              {btnLabel}
+            </button>
+          )}
+          <button className="btn-tb cancel" onClick={onClose}>Đóng</button>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default ThongBao;

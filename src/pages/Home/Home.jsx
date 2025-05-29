@@ -12,13 +12,15 @@ import FilmBannerList from "../../components/Layouts/FilmBanners/FilmBannerList.
 import RenderPagination from '../../components/Commons/RenderPagination.jsx';
 import { jwtDecode } from 'jwt-decode';
 import * as authHook from '../../hooks/auth.jsx'
-
+import * as quangCao from '../../components/Layouts/QuangCao/QuangCao.jsx'
 
 
 export default function Home() {
     const [pagination,setPagination] = useState([]);
     const [currentPage,setCurrentPage] = useState();
     
+    const userId = authHook.getUserIdFromToken();
+
     return(
             <div className="container-main">
                 <Notice/>
@@ -36,7 +38,7 @@ export default function Home() {
                 <RenderPagination data={pagination} onPageChange={setCurrentPage}/>
 
                 <SeeMore>Xem Thêm...</SeeMore>
-
+                <quangCao.QuangCaoNgang userId={userId} src={"https://phimimg.com/upload/vod/20250112-1/fbf0edd755fb8be213f1d59ab1497202.jpg"} href={"https://gienphim-fmd0bneqe9crddfg.canadacentral-01.azurewebsites.net/Phim/Index/1"}></quangCao.QuangCaoNgang>
                 <FilmRanking>Hot Tuần</FilmRanking>
                
             </div>

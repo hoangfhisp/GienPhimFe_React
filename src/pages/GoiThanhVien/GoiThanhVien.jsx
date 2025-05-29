@@ -10,7 +10,7 @@ import ThongBao from '../../components/Layouts/ThongBao/ThongBao.jsx';
 import * as authHooks from '../../hooks/auth.jsx';
 import * as authServices from '../../services/Admin/AuthenticationService.jsx';
 import * as managerServices from '../../services/ManagerService.jsx';
-import { formatVND } from '../../untils/Format.jsx';
+import { formatDate, formatVND } from '../../untils/Format.jsx';
 
 export default function GoiThanhVien() {
     const [dataUser, setDataUser] = useState([]);
@@ -121,7 +121,7 @@ export default function GoiThanhVien() {
         }
 
 
-        const fetchApiXuLyGoiTV = await managerServices.XuLyChiTietMuaGoiTVUser(goi[0]?.luaChonGoiTVId,dataUser.id);
+        const fetchApiXuLyGoiTV = await managerServices.XuLyChiTietMuaGoiTVUser(goi[0]?.luaChonGoiTVId || "",dataUser.id);
         
         const updatedUser = await authServices.getUserById(dataUser.id);
             setDataUser(updatedUser);
@@ -134,15 +134,15 @@ export default function GoiThanhVien() {
             setFormThongBao({
                 show: true,
                 type: 'success',
-                title: `Bạn đã mua gói ${goi[0].goiThanhVien.tenGoiTV} thành công.`,
-                message: `Cảm ơn bạn đã mua gói với số tiền ${formatVND(goi[0].giaGoiTV)} .Tài khoản bạn còn ${formatVND(Number(updatedUser.soDuTaiKhoan))} `,
+                title: `Bạn đã mua gói ${goi[0].goiThanhVien.tenGoiTV || ""} thành công.`,
+                message: `Cảm ơn bạn đã mua gói với số tiền ${formatVND(goi[0].giaGoiTV || "")} .Tài khoản bạn còn ${formatVND(Number(updatedUser.soDuTaiKhoan))} `,
                 buttons: null
             });
         }else{
             setFormThongBao({
                 show: true,
                 type: 'fail',
-                title: `Bạn đã mua gói ${goi[0].goiThanhVien.tenGoiTV} thất bại.`,
+                title: `Bạn đã mua gói ${goi[0].goiThanhVien.tenGoiTV || ""} thất bại.`,
                 message: `${fetchApiXuLyGoiTV.msg} .Tài khoản bạn còn ${formatVND(Number(updatedUser.soDuTaiKhoan))} `,
                 buttons: null
             });
@@ -155,6 +155,7 @@ export default function GoiThanhVien() {
         soNgayMuaGoiRef.current = soNgay;
     };
 
+  
     return (
         <>
             <div className="login-container">
@@ -170,6 +171,28 @@ export default function GoiThanhVien() {
                             <div className="user-name">Tên người dùng: <strong>{dataUser.userName}</strong></div>
                             <div className="balance">Số dư tài khoản: <strong>{formatVND(Number(dataUser.soDuTaiKhoan))}</strong></div>
                             <div className="current-plan">Loại gói hiện tại: <strong>{dataCTGoiTVUser.status ? dataCTGoiTVUser?.goiThanhVien?.tenGoiTV : "Chưa có gói" } {dataCTGoiTVUser.status ? dataCTGoiTVUser?.luaChonGoiTV?.thoiGianSuDung : ""} Ngày</strong></div>
+                            
+                        </div>
+                        <div className="user-info">
+                            <div className="user-name">Ngày Mua: 
+                                <strong>
+                                    {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
+                                        ? formatDate(dataCTGoiTVUser.data[0].ngayBatDau)
+                                        : "Chưa có"}
+                                </strong></div>
+                            <div className="balance">Hết Hạn: 
+                                <strong>
+                                    {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
+                                    ? formatDate(dataCTGoiTVUser.data[0].ngayKetThuc)
+                                    : "Chưa có"}
+                                </strong></div>
+                            <div className="current-plan">Trạng thái gói: 
+                                <strong>
+                                    {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
+                                    ? dataCTGoiTVUser.data[0].trangThai
+                                    : "Chưa có"}
+                                </strong>
+                            </div>
                         </div>
 
                         <div className="plans">

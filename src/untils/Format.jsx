@@ -15,3 +15,7 @@ export function formatDateTime(value){
 export function formatYear(value){
     return dayjs(value).format('YYYY');
 }
+
+export function formatDate(value){
+  return dayjs(value).format('DD/MM/YYYY');
+}

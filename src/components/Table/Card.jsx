@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import './Card.scss';
 
-const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelete }) => {
+const Card = ({ action, data, formFields = [], onClose, onSave, onDelete }) => {
     const [formData, setFormData] = useState({});
 
     useEffect(() => {
@@ -94,11 +94,17 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                             .filter(label => label != null)
                                             .join(', ') || 'Null'
                                     ) : field.type === 'select' ? (
-                                        (field.options.find(opt => opt.value === formData[field.name])?.label || 'Null')
+                                        (() => {
+                                            const val = formData[field.name];
+                                            const value = typeof val === 'object' && val !== null ? val.value : val;
+                                            return field.options.find(opt => String(opt.value) === String(value))?.label || 'Null';
+                                        })()
                                     ) : field.type === 'file' ? (
                                         formData[field.name] ? <img src={formData[field.name]} alt={field.label} width={100} /> : 'Null'
                                     ) : (
-                                        formData[field.name] || 'Null'
+                                        formData[field.name] !== undefined && formData[field.name] !== null
+                                            ? formData[field.name].toString()
+                                            : 'Null'
                                     )}
                                 </div>
                             </div>
@@ -121,7 +127,8 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
 
                                 {field.type === 'textarea' ? (
                                     <textarea
-                                        value={formData[field.name] || ''}
+                                        value={formData[field.name] !== undefined && formData[field.name] !== null ? formData[field.name] : ''}
+
                                         onChange={(e) => handleInputChange(e, field.name)}
                                     />
                                 ) : field.type === 'select' && field.multiple ? (
@@ -129,21 +136,34 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                         isMulti
                                         name={field.name}
                                         options={field.options}
-                                        value={field.options.filter(opt =>
-                                            (formData[field.name] || []).map(String).includes(String(opt.value))
-                                        )}
+                                        value={
+                                            (formData[field.name] || []).map(val => {
+                                                const value = typeof val === 'object' && val !== null ? val.value : val;
+                                                return field.options.find(opt => String(opt.value) === String(value));
+                                            }).filter(Boolean)
+                                        }
                                         onChange={(selected) => handleMultiSelectChange(selected, field.name)}
                                         placeholder={`+ Chọn ${field.label.toLowerCase()}`}
                                     />
+
 
                                 ) : field.type === 'select' ? (
                                     <Select
                                         name={field.name}
                                         options={field.options}
-                                        value={field.options.find(opt => opt.value === formData[field.name]) || null}
+                                        value={
+                                            field.options.find(opt =>
+                                            String(opt.value) === String(
+                                                Array.isArray(formData[field.name])
+                                                ? formData[field.name][0]
+                                                : formData[field.name]
+                                            )
+                                            ) || null
+                                        }
                                         onChange={(selected) => handleSingleSelectChange(selected, field.name)}
                                         placeholder={`-- Chọn ${field.label.toLowerCase()} --`}
-                                    />
+                                        />
+
                                 ) : field.type === 'file' ? (
                                     <>
                                         {formData[field.name] && (
@@ -158,16 +178,17 @@ const Card = ({ action, data, formFields = [], columns, onClose, onSave, onDelet
                                 ) : field.name === 'thoiGianTao' || field.name === 'thoiGianCapNhat' ? (
                                     <input
                                         type="text"
-                                        value={action === 'create' ? getCurrentTime() : formData[field.name] || ''}
+                                        value={action === 'create' ? getCurrentTime() : (formData[field.name] !== undefined && formData[field.name] !== null ? formData[field.name] : '')}
                                         readOnly
                                     />
                                 ) : (
                                     <input
                                         type={field.type || 'text'}
-                                        value={formData[field.name] || ''}
+                                        value={formData[field.name] !== undefined && formData[field.name] !== null ? formData[field.name] : ''}
                                         onChange={(e) => handleInputChange(e, field.name)}
                                     />
                                 )}
+
                             </div>
                         ))}
                         <div className="form-actions">

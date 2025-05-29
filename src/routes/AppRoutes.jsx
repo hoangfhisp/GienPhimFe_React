@@ -31,7 +31,7 @@ import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
 export default function AppRoutes() {
 
     const userId = authHook.getUserIdFromToken();
-
+    const role = authHook.getRolseUserFromToken();
     return (
         <Routes>
             {/* Router UI*/}
@@ -45,25 +45,25 @@ export default function AppRoutes() {
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Register />} />                       
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/GoiThanhVien" element={<GoiThanhVien />} />
+            {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
 
             {/* Router Admin */}
-            <Route path="/Tong-Quan" element={<OverviewDashboard />} />
-            <Route path="/List-Phim" element={<PhimList />} />
-            <Route path="/List-The-Loai" element={<TheLoaiList />} />
-            <Route path="/List-Quoc-Gia" element={<QuocGiaList />} />
-            <Route path="/List-Ngon-Ngu" element={<NgonNguList />} />
-            <Route path="/List-Dao-Dien" element={<DaoDienList />} />
-            <Route path="/List-Dien-Vien" element={<DienVienList />} />
-            <Route path="/List-The-Tag" element={<TheTagList />} />
-            <Route path="/List-Nguoi-Dung" element={<UserList />} />
-            <Route path="/List-Vai-Tro" element={<RoleList />} />
+            {userId && role === 'Admin' && <Route path="/Tong-Quan" element={<OverviewDashboard />} />}
+            {userId && role === 'Admin' && <Route path="/List-Phim" element={<PhimList />} />}
+            {userId && role === 'Admin' && <Route path="/List-The-Loai" element={<TheLoaiList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Quoc-Gia" element={<QuocGiaList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Ngon-Ngu" element={<NgonNguList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Dao-Dien" element={<DaoDienList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Dien-Vien" element={<DienVienList />} />}
+            {userId && role === 'Admin' && <Route path="/List-The-Tag" element={<TheTagList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Nguoi-Dung" element={<UserList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Vai-Tro" element={<RoleList />} />}
 
             {/* Router nạp tiền */}
             {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
-            <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />
+            {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />
         </Routes>
