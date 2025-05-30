@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import '../Layouts/Admin-board/Admin-board.scss';
 import './Card.scss';
 
-const TableRow = memo(({ row, columns, actions, onAction }) => {
+const TableRow = memo(({ row, columns, actions, onAction, hiddenColumns = [] }) => {
     return (
         <tr>
             {columns.map((col, j) => (

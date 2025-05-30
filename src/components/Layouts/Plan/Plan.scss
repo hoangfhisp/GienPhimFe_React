@@ -1,5 +1,5 @@
 .plan {
-    border: 1px solid #ccc;
+    border: 0.05px solid #000000;
     border-radius: 12px;
     padding: 20px;
     width: 260px;
@@ -10,9 +10,16 @@
     font-family: "Roboto", sans-serif;
 }
 
-.plan.recommended {
-    border: 3.5px solid #186cf3;
-    box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
+.plan.green.plan.recommended {
+    border: 3.5px solid #14be41;
+}
+
+.plan.yellow.plan.recommended {
+    border: 3.5px solid #b7af13;
+}
+
+.plan.red.plan.recommended {
+    border: 3.5px solid #b71313;
 }
 
 .plan .label {
@@ -30,10 +37,20 @@
 }
 
 .plan h2 {
-    
     margin: 10px 0;
     font-weight: bold;
-    
+}
+
+.plan.green h2 {
+    color: rgb(0, 190, 0);
+}
+
+.plan.yellow h2 {
+    color: rgb(190, 180, 0);
+}
+
+.plan.red h2 {
+    color: rgb(190, 0, 0);
 }
 
 .price {
@@ -49,7 +66,7 @@
 
 .yearly {
     font-size: 14px;
-    color: #5f6368;
+    color: #cad3db;
     margin-top: 5px;
 }
 
@@ -63,17 +80,35 @@
     padding: 0;
     list-style-type: none;
     margin-top: 15px;
+
     li {
-    margin: 8px 0;
-    padding-left: 20px;
-    position: relative;
+        margin: 8px 0;
+        padding-left: 20px;
+        position: relative;
+        color: #cad3db;
     }
 }
 
 .plan-info li::before {
-    content: '✓';
-    color: #34a853;
+    content: '★';
+    color: #fbbc05;
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.plan.red {
+    background-color: #2F1010;
+}
+
+.plan.green {
+    background-color: #10290E;
+}
+
+.plan.blue {
+    background-color: blue;
+}
+
+.plan.yellow {
+    background-color: #312C15;
 }

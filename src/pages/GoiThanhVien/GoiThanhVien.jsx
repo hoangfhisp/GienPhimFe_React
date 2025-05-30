@@ -19,6 +19,7 @@ export default function GoiThanhVien() {
     const [dataGoiThang, setDataGoiThang] = useState({});
     const [dataGoiNam, setDataGoiNam] = useState({});
     const [selectedPlan, setSelectedPlan] = useState(null);
+    const colorSchemes = ['green', 'yellow', 'red', 'blue'];
     const [formThongBao, setFormThongBao] = useState({
         show: false,
         type: null,
@@ -84,24 +85,22 @@ export default function GoiThanhVien() {
 
 
     const handleCheckGoiDaMua = () => {
-            const selectedNgay = soNgayMuaGoiRef.current;
-            const goi = selectedNgay === 30 ? dataGoiThang[selectedPlan] : dataGoiNam[selectedPlan];
-            if(dataCTGoiTVUser?.luaChonGoiTV?.luaChonGoiTVId !== goi[0]?.luaChonGoiTVId && dataCTGoiTVUser.status === true )
-            {
-                setFormThongBao({
-                    show: true,
-                    type: 'warning',
-                    title: `Bạn đã có gói ${dataCTGoiTVUser?.goiThanhVien?.tenGoiTV}.`,
-                    message: `Bạn có muốn mua gói ${goi[0].goiThanhVien.tenGoiTV} này thay gói ${dataCTGoiTVUser?.goiThanhVien?.tenGoiTV} kia không `,
-                    btnLabel: 'Vẫn mua',
-                    onBTNClick: HandleMuaGoi,
-                    showButton: true,
-                });
-            }else{
-                HandleMuaGoi();
-            }
+        const selectedNgay = soNgayMuaGoiRef.current;
+        const goi = selectedNgay === 30 ? dataGoiThang[selectedPlan] : dataGoiNam[selectedPlan];
+        if (dataCTGoiTVUser?.luaChonGoiTV?.luaChonGoiTVId !== goi[0]?.luaChonGoiTVId && dataCTGoiTVUser.status === true) {
+            setFormThongBao({
+                show: true,
+                type: 'warning',
+                title: `Bạn đã có gói ${dataCTGoiTVUser?.goiThanhVien?.tenGoiTV}.`,
+                message: `Bạn có muốn mua gói ${goi[0].goiThanhVien.tenGoiTV} này thay gói ${dataCTGoiTVUser?.goiThanhVien?.tenGoiTV} kia không `,
+                btnLabel: 'Vẫn mua',
+                onBTNClick: HandleMuaGoi,
+                showButton: true,
+            });
+        } else {
+            HandleMuaGoi();
+        }
     }
-
 
     // Thống check xác nhận mua gói 
     const HandleMuaGoi = async () => {
@@ -121,15 +120,15 @@ export default function GoiThanhVien() {
         }
 
 
-        const fetchApiXuLyGoiTV = await managerServices.XuLyChiTietMuaGoiTVUser(goi[0]?.luaChonGoiTVId || "",dataUser.id);
-        
+        const fetchApiXuLyGoiTV = await managerServices.XuLyChiTietMuaGoiTVUser(goi[0]?.luaChonGoiTVId || "", dataUser.id);
+
         const updatedUser = await authServices.getUserById(dataUser.id);
-            setDataUser(updatedUser);
+        setDataUser(updatedUser);
         const updatrCTGoiTVUser = await managerServices.GetChiTietGoiTVByUser(userId);
-            setDataCTGoiTVUser(updatrCTGoiTVUser);
+        setDataCTGoiTVUser(updatrCTGoiTVUser);
 
 
-        if(fetchApiXuLyGoiTV.status === true){
+        if (fetchApiXuLyGoiTV.status === true) {
 
             setFormThongBao({
                 show: true,
@@ -138,7 +137,7 @@ export default function GoiThanhVien() {
                 message: `Cảm ơn bạn đã mua gói với số tiền ${formatVND(goi[0].giaGoiTV || "")} .Tài khoản bạn còn ${formatVND(Number(updatedUser.soDuTaiKhoan))} `,
                 buttons: null
             });
-        }else{
+        } else {
             setFormThongBao({
                 show: true,
                 type: 'fail',
@@ -155,7 +154,7 @@ export default function GoiThanhVien() {
         soNgayMuaGoiRef.current = soNgay;
     };
 
-  
+
     return (
         <>
             <div className="login-container">
@@ -170,33 +169,33 @@ export default function GoiThanhVien() {
                         <div className="user-info">
                             <div className="user-name">Tên người dùng: <strong>{dataUser.userName}</strong></div>
                             <div className="balance">Số dư tài khoản: <strong>{formatVND(Number(dataUser.soDuTaiKhoan))}</strong></div>
-                            <div className="current-plan">Loại gói hiện tại: <strong>{dataCTGoiTVUser.status ? dataCTGoiTVUser?.goiThanhVien?.tenGoiTV : "Chưa có gói" } {dataCTGoiTVUser.status ? dataCTGoiTVUser?.luaChonGoiTV?.thoiGianSuDung : ""} Ngày</strong></div>
-                            
+                            <div className="current-plan">Loại gói hiện tại: <strong>{dataCTGoiTVUser.status ? dataCTGoiTVUser?.goiThanhVien?.tenGoiTV : "Chưa có gói"} {dataCTGoiTVUser.status ? dataCTGoiTVUser?.luaChonGoiTV?.thoiGianSuDung : ""} Ngày</strong></div>
+
                         </div>
                         <div className="user-info">
-                            <div className="user-name">Ngày Mua: 
+                            <div className="user-name">Ngày Mua:
                                 <strong>
                                     {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
                                         ? formatDate(dataCTGoiTVUser.data[0].ngayBatDau)
                                         : "Chưa có"}
                                 </strong></div>
-                            <div className="balance">Hết Hạn: 
+                            <div className="balance">Hết Hạn:
                                 <strong>
                                     {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
-                                    ? formatDate(dataCTGoiTVUser.data[0].ngayKetThuc)
-                                    : "Chưa có"}
+                                        ? formatDate(dataCTGoiTVUser.data[0].ngayKetThuc)
+                                        : "Chưa có"}
                                 </strong></div>
-                            <div className="current-plan">Trạng thái gói: 
+                            <div className="current-plan">Trạng thái gói:
                                 <strong>
                                     {Array.isArray(dataCTGoiTVUser?.data) && dataCTGoiTVUser.data.length > 0
-                                    ? dataCTGoiTVUser.data[0].trangThai
-                                    : "Chưa có"}
+                                        ? dataCTGoiTVUser.data[0].trangThai
+                                        : "Chưa có"}
                                 </strong>
                             </div>
                         </div>
 
                         <div className="plans">
-                            {dataListGoi.map((res) => (
+                            {dataListGoi.map((res, index) => (
                                 <Plan
                                     key={res.goiTVId}
                                     deXuat={true}
@@ -205,6 +204,7 @@ export default function GoiThanhVien() {
                                     data={res}
                                     onDataGoiThang={(data) => setDataGoiThang(prev => ({ ...prev, [res.goiTVId]: data }))}
                                     onDataGoiNam={(data) => setDataGoiNam(prev => ({ ...prev, [res.goiTVId]: data }))}
+                                    color={colorSchemes[index % colorSchemes.length]} // Gán màu cho button
                                 >
                                     GienPhim {res.tenGoiTV}
                                 </Plan>

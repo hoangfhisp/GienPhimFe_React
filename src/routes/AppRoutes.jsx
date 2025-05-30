@@ -27,6 +27,7 @@ import TaoGiaoDichVIB from "../pages/NapTien/TaoGiaoDichVIB.jsx";
 import * as authHook from "../hooks/auth.jsx";
 import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
+import LichSuGiaoDich from "../pages/LichSuGiaoDich/LichSuGiaoDich.jsx";
 
 export default function AppRoutes() {
 
@@ -45,9 +46,10 @@ export default function AppRoutes() {
             <Route path="/help" element={<Help />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />                       
+            <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
+            {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
 
             {/* Router Admin */}
             {userId && role === 'Admin' && <Route path="/Tong-Quan" element={<OverviewDashboard />} />}
@@ -63,6 +65,8 @@ export default function AppRoutes() {
 
             {/* Router nạp tiền */}
             {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
+            {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
+
             {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
             {/* Thêm route 404 nếu muốn */}
             <Route path="*" element={<NotFound />} />
