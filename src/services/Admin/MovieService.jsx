@@ -18,6 +18,8 @@ export const fetchMovies = async (page, limit) => {
         const response = await request.get('/Admin/Phim', {
             params: { page, limit }
         });
+
+        // Nếu response chứa các URL ảnh đầy đủ, bạn có thể trả về response như bình thường
         return response;
     } catch (error) {
         console.error("Lỗi tải phim:", error);

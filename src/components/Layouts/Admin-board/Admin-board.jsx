@@ -1,15 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Admin-board.scss';
 import backgroundImage from '../../../assets/img/background.jpg';
 import logoImage from '../../../assets/img/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import * as authHook from "../../../hooks/auth.jsx";
+import * as AuthenticationService from '../../../services/Admin/AuthenticationService.jsx';
 
-const AdminBoard = ({ username = 'Admin' }) => {
+const AdminBoard = ({ }) => {
     const [isSidebarActive, setIsSidebarActive] = useState(false);
+    const [isLogin, setIsLogin] = useState(false);
+    const [roleLogin, setRoleLogin] = useState('');
+    const [dataUser, setDataUser] = useState([]);
+    const navigate = useNavigate();
+
+    var userId = authHook.getUserIdFromToken();
+    var roleUser = authHook.getRolseUserFromToken();
+
+    useEffect(() => {
+        if (!userId || !roleUser) {
+            setIsLogin(false);
+            return;
+        }
+        setRoleLogin(roleUser);
+        setIsLogin(true);
+
+        const fetchApi = async () => {
+            var result = await AuthenticationService.getUserById(userId);
+            setDataUser(result);
+        }
+        fetchApi();
+
+    }, [userId, roleUser]);
 
     const handleLogout = () => {
-        alert('Đăng xuất thành công!');
+        // Hiển thị thông báo xác nhận đăng xuất
+        const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất?");
+
+        if (confirmLogout) {
+            // Nếu người dùng xác nhận, xóa access token
+            localStorage.removeItem('accessToken'); // hoặc sessionStorage nếu bạn dùng nó
+            // Thông báo đăng xuất thành công
+            alert("Đăng xuất thành công!");
+            // Chuyển hướng về trang đăng nhập
+            navigate('/login');
+        }
     };
 
     // Hàm toggle để ẩn/hiện sidebar
@@ -74,7 +109,7 @@ const AdminBoard = ({ username = 'Admin' }) => {
                             }}
                         ></div>
                         <h3>Admin</h3>
-                        <h3>{username}</h3>
+                        <h3>{dataUser?.nameND || (dataUser?.userName ? dataUser.userName.split('@')[0] : '')}</h3>
                         <button id="logout" className="title" onClick={handleLogout}>
                             Đăng xuất
                         </button>

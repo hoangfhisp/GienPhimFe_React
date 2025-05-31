@@ -51,6 +51,17 @@ export default function AppRoutes() {
             {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
             {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
 
+            {/* <Route path="/Tong-Quan" element={<OverviewDashboard />} />
+            <Route path="/List-Phim" element={<PhimList />} />
+            <Route path="/List-The-Loai" element={<TheLoaiList />} />
+            <Route path="/List-Quoc-Gia" element={<QuocGiaList />} />
+            <Route path="/List-Ngon-Ngu" element={<NgonNguList />} />
+            <Route path="/List-Dao-Dien" element={<DaoDienList />} />
+            <Route path="/List-Dien-Vien" element={<DienVienList />} />
+            <Route path="/List-The-Tag" element={<TheTagList />} />
+            <Route path="/List-Nguoi-Dung" element={<UserList />} />
+            <Route path="/List-Vai-Tro" element={<RoleList />} /> */}
+
             {/* Router Admin */}
             {userId && role === 'Admin' && <Route path="/Tong-Quan" element={<OverviewDashboard />} />}
             {userId && role === 'Admin' && <Route path="/List-Phim" element={<PhimList />} />}

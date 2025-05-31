@@ -36,7 +36,7 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         setLoading(true);
         try {
             const result = await movieServices.fetchMovies(currentPage, currentLimit);
-            setListPhimResult(result.data);
+            setListPhimResult(result.data);  // Sử dụng dữ liệu trả về trực tiếp từ API
         } catch (error) {
             console.error("Lỗi khi tải phim:", error);
         } finally {
@@ -117,16 +117,45 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
     };
 
     const columns = [
-        { header: "Tên phim", accessor: "tenP", render: row => <div className="ten-phim-cell">{row.tenP}</div> },
-        { header: "Mô tả", accessor: "moTaP", render: row => <div className="ten-phim-cell" style={{ display: `${viewFull ? "block" : "-webkit-box"}` }}>{row.moTaP}</div> },
-        { header: "Thời lượng", accessor: "thoiLuongP", render: (row) => row.thoiLuongP },
-        { header: "Avatar", accessor: "avatarP", render: (row) => <img src={row.avatarP} width={100} alt="avatar" /> },
-        { header: "Poster", accessor: "avatarPoster", render: (row) => <img src={row.avatarPoster} width={100} alt="poster" /> },
-        { header: "Tạo lúc", accessor: "thoiGianTao", render: (row) => new Date(row.thoiGianTao).toLocaleString() },
-        { header: "Cập nhật", accessor: "thoiGianCapNhat", render: (row) => new Date(row.thoiGianCapNhat).toLocaleString() }
+        {
+            header: "Tên phim",
+            accessor: "tenP",
+            render: row => <div className="ten-phim-cell">{row.tenP}</div>
+        },
+        {
+            header: "Mô tả",
+            accessor: "moTaP",
+            render: row => <div className="ten-phim-cell" style={{ display: `${viewFull ? "block" : "-webkit-box"}` }}>{row.moTaP}</div>
+        },
+        {
+            header: "Thời lượng",
+            accessor: "thoiLuongP",
+            render: (row) => row.thoiLuongP
+        },
+        {
+            header: "Avatar",
+            accessor: "avatarP",
+            render: (row) => <img src={row.avatarP} width={100} alt="avatar" />
+        },
+        {
+            header: "Poster",
+            accessor: "avatarPoster",
+            render: (row) => <img src={row.avatarPoster} width={100} alt="poster" />
+        },
+        {
+            header: "Tạo lúc",
+            accessor: "thoiGianTao",
+            render: (row) => new Date(row.thoiGianTao).toLocaleString()
+        },
+        {
+            header: "Cập nhật",
+            accessor: "thoiGianCapNhat",
+            render: (row) => new Date(row.thoiGianCapNhat).toLocaleString()
+        }
     ];
 
-    
+
+
 
     return (
         <>

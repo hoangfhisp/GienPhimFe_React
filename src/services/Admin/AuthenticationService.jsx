@@ -189,12 +189,56 @@ export const searchUsers = async (tennd, page, limit) => {
     }
 };
 
+export const createUser = (id, userData) => {
+    // Kiểm tra xem userData có phải là FormData không
+    const isFormData = userData instanceof FormData;
+
+    let payload;
+
+    if (isFormData) {
+        // Nếu là FormData, thêm ID vào FormData
+        if (!userData.has('id')) {
+            userData.append('id', id);
+        }
+        payload = userData;
+    } else {
+        // Nếu là đối tượng JSON, đảm bảo rằng ID được gắn vào body
+        payload = {
+            ...userData,
+            id: id  // Đảm bảo ID lowercase để match với DTO
+        };
+    }
+
+    // Gửi yêu cầu PUT với URL và body chứa userData
+    return request.put(`/Admin/QuanTriVienNguoiDung/CapNhat/${id}`, payload, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
 
 // Cập nhật người dùng
 export const updateUser = (id, userData) => {
+    // Kiểm tra xem userData có phải là FormData không
     const isFormData = userData instanceof FormData;
 
-    return request.put(`/Admin/QuanTriVienNguoiDung/CapNhat/${id}`, userData, {
+    let payload;
+
+    if (isFormData) {
+        // Nếu là FormData, thêm ID vào FormData
+        if (!userData.has('id')) {
+            userData.append('id', id);
+        }
+        payload = userData;
+    } else {
+        // Nếu là đối tượng JSON, đảm bảo rằng ID được gắn vào body
+        payload = {
+            ...userData,
+            id: id  // Đảm bảo ID lowercase để match với DTO
+        };
+    }
+
+    // Gửi yêu cầu PUT với URL và body chứa userData
+    return request.put(`/Admin/QuanTriVienNguoiDung/CapNhat/${id}`, payload, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
 };
