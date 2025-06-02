@@ -22,8 +22,8 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         return {
             ...listPhimResult,
             theLoaiIds: extractIds(listPhimResult.theLoai, 'theLoaiId'),
-            ngonNguIds: extractIds(listPhimResult.ngonNgu, 'ngonNguId'),
-            quocGiaIds: extractIds(listPhimResult.quocGia, 'quocGiaId'),
+            ngonNguId: listPhimResult.ngonNgu?.[0]?.ngonNguId?.toString() || "",
+            quocGiaId: listPhimResult.quocGia?.[0]?.quocGiaId?.toString() || "",
             daoDienIds: extractIds(listPhimResult.daoDien, 'daoDienId'),
             dienVienIds: extractIds(listPhimResult.dienVien, 'dienVienId'),
             theTagIds: extractIds(listPhimResult.theTag, 'theTagId')
@@ -32,27 +32,51 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
 
     // Hàm chuyển dữ liệu JS object sang đúng định dạng backend (JSON)
     const mapToBackendFormat = (data) => {
-        if (data instanceof FormData) return data; // Nếu là FormData thì giữ nguyên
+        if (data instanceof FormData) return data;
 
         return {
             TenP: data.tenP || "",
             NguonP: data.nguonP || "",
             AvatarP: data.avatarP || "",
+            AvatarPoster: data.avatarPoster || "",
             TenCTSXP: data.tenCTSXP || "",
             ThoiLuongP: data.thoiLuongP || "",
-            AvatarPoster: data.avatarPoster || "",
             MoTaP: data.moTaP || "",
+            SoTapP: data.soTapP || "",
+            NgayPhatHanhP: data.ngayPhatHanhP || null,
+            TraiLerP: data.traiLerP || "",
+            NgonNguId: data.ngonNguId || "",
+            QuocGiaId: data.quocGiaId || "",
+            TheLoaiIds: data.theLoaiIds || [],
+            DaoDienIds: data.daoDienIds || [],
+            DienVienIds: data.dienVienIds || [],
+            TheTagIds: data.theTagIds || [],
             ThoiGianTao: data.thoiGianTao || "",
             ThoiGianCapNhat: data.thoiGianCapNhat || "",
-            PhimId: data.phimId || null,
+            PhimId: data.phimId || null
         };
     };
 
     // Hàm tạo FormData nếu có file upload
     const mapToFormData = (data) => {
         const formData = new FormData();
+
         formData.append("TenP", data.tenP || "");
         formData.append("NguonP", data.nguonP || "");
+        formData.append("TenCTSXP", data.tenCTSXP || "");
+        formData.append("ThoiLuongP", data.thoiLuongP || "");
+        formData.append("MoTaP", data.moTaP || "");
+        formData.append("SoTapP", data.soTapP || "");
+        formData.append("NgayPhatHanhP", data.ngayPhatHanhP || "");
+        formData.append("TraiLerP", data.traiLerP || "");
+
+        formData.append("NgonNguId", parseInt(data.ngonNguId) || 0);
+        formData.append("QuocGiaId", parseInt(data.quocGiaId) || 0);
+
+        (data.theLoaiIds || []).forEach(id => formData.append("TheLoaiIds", id));
+        (data.daoDienIds || []).forEach(id => formData.append("DaoDienIds", id));
+        (data.dienVienIds || []).forEach(id => formData.append("DienVienIds", id));
+        (data.theTagIds || []).forEach(id => formData.append("TheTagIds", id));
 
         if (data.avatarP instanceof File) {
             formData.append("AvatarP", data.avatarP);
@@ -60,22 +84,19 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
             formData.append("AvatarP", data.avatarP || "");
         }
 
-        formData.append("TenCTSXP", data.tenCTSXP || "");
-        formData.append("ThoiLuongP", data.thoiLuongP || "");
-
         if (data.avatarPoster instanceof File) {
             formData.append("AvatarPoster", data.avatarPoster);
         } else {
             formData.append("AvatarPoster", data.avatarPoster || "");
         }
 
-        formData.append("MoTaP", data.moTaP || "");
         formData.append("ThoiGianTao", data.thoiGianTao || "");
         formData.append("ThoiGianCapNhat", data.thoiGianCapNhat || "");
         if (data.phimId) formData.append("PhimId", data.phimId);
 
         return formData;
     };
+
 
     const fetchApi = async (currentPage = page, currentLimit = limit) => {
         setLoading(true);

@@ -132,14 +132,10 @@ const Card = ({ action, data, formFields = [], onClose, onSave, onDelete }) => {
     const handleFileChange = (e, fieldName) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData(prev => ({
-                    ...prev,
-                    [fieldName]: reader.result,
-                }));
-            };
-            reader.readAsDataURL(file);
+            setFormData(prev => ({
+                ...prev,
+                [fieldName]: file,
+            }));
         }
     };
 
