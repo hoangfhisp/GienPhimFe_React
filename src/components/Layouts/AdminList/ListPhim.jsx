@@ -9,7 +9,6 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
     const [listPhimResult, setListPhimResult] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    //
     const [currentMovie, setCurrentMovie] = useState(null);
     const [cardAction, setCardAction] = useState(null);
     const [formFields, setFormFields] = useState([]);
@@ -28,15 +27,61 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
             daoDienIds: extractIds(listPhimResult.daoDien, 'daoDienId'),
             dienVienIds: extractIds(listPhimResult.dienVien, 'dienVienId'),
             theTagIds: extractIds(listPhimResult.theTag, 'theTagId')
-
         };
+    };
+
+    // Hàm chuyển dữ liệu JS object sang đúng định dạng backend (JSON)
+    const mapToBackendFormat = (data) => {
+        if (data instanceof FormData) return data; // Nếu là FormData thì giữ nguyên
+
+        return {
+            TenP: data.tenP || "",
+            NguonP: data.nguonP || "",
+            AvatarP: data.avatarP || "",
+            TenCTSXP: data.tenCTSXP || "",
+            ThoiLuongP: data.thoiLuongP || "",
+            AvatarPoster: data.avatarPoster || "",
+            MoTaP: data.moTaP || "",
+            ThoiGianTao: data.thoiGianTao || "",
+            ThoiGianCapNhat: data.thoiGianCapNhat || "",
+            PhimId: data.phimId || null,
+        };
+    };
+
+    // Hàm tạo FormData nếu có file upload
+    const mapToFormData = (data) => {
+        const formData = new FormData();
+        formData.append("TenP", data.tenP || "");
+        formData.append("NguonP", data.nguonP || "");
+
+        if (data.avatarP instanceof File) {
+            formData.append("AvatarP", data.avatarP);
+        } else {
+            formData.append("AvatarP", data.avatarP || "");
+        }
+
+        formData.append("TenCTSXP", data.tenCTSXP || "");
+        formData.append("ThoiLuongP", data.thoiLuongP || "");
+
+        if (data.avatarPoster instanceof File) {
+            formData.append("AvatarPoster", data.avatarPoster);
+        } else {
+            formData.append("AvatarPoster", data.avatarPoster || "");
+        }
+
+        formData.append("MoTaP", data.moTaP || "");
+        formData.append("ThoiGianTao", data.thoiGianTao || "");
+        formData.append("ThoiGianCapNhat", data.thoiGianCapNhat || "");
+        if (data.phimId) formData.append("PhimId", data.phimId);
+
+        return formData;
     };
 
     const fetchApi = async (currentPage = page, currentLimit = limit) => {
         setLoading(true);
         try {
             const result = await movieServices.fetchMovies(currentPage, currentLimit);
-            setListPhimResult(result.data);  // Sử dụng dữ liệu trả về trực tiếp từ API
+            setListPhimResult(result.data);
         } catch (error) {
             console.error("Lỗi khi tải phim:", error);
         } finally {
@@ -49,9 +94,7 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
     }, [page, limit]);
 
     useEffect(() => {
-        if (!data) {
-            return;
-        }
+        if (!data) return;
         setListPhimResult(data);
     }, [data])
 
@@ -69,7 +112,7 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
     }, []);
 
     const handleAction = (action, listPhimResult) => {
-        if (action == 'view') {
+        if (action === 'view') {
             setViewFull(true);
         }
         setCurrentMovie(normalizeMovieForForm(listPhimResult));
@@ -86,17 +129,26 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         try {
             setLoading(true);
 
-            if (cardAction === 'create') {
-                await movieServices.createMovie(movieData);
+            let backendData;
+            if (movieData.avatarP instanceof File || movieData.avatarPoster instanceof File) {
+                backendData = mapToFormData(movieData);
             } else {
-                const id = movieData.get ? movieData.get("phimId") : movieData.id;
-                await movieServices.updateMovie(id, movieData);
+                backendData = mapToBackendFormat(movieData);
+            }
+
+            console.log("Dữ liệu gửi lên API:", backendData);
+
+            if (cardAction === 'create') {
+                await movieServices.createMovie(backendData);
+            } else {
+                const id = backendData.get ? backendData.get("PhimId") : backendData.PhimId || backendData.phimId || movieData.id;
+                await movieServices.updateMovie(id, backendData);
             }
 
             fetchApi(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
-            console.error("Lỗi khi lưu phim:", error);
+            console.error("Lỗi khi lưu phim:", error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
@@ -153,9 +205,6 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
             render: (row) => new Date(row.thoiGianCapNhat).toLocaleString()
         }
     ];
-
-
-
 
     return (
         <>
