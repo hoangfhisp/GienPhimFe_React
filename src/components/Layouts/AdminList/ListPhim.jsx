@@ -78,25 +78,27 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         (data.dienVienIds || []).forEach(id => formData.append("DienVienIds", id));
         (data.theTagIds || []).forEach(id => formData.append("TheTagIds", id));
 
+        // AvatarP
         if (data.avatarP instanceof File) {
             formData.append("AvatarP", data.avatarP);
         } else {
-            formData.append("AvatarP", data.avatarP || "");
+            formData.append("AvatarPString", data.avatarP || "");
         }
 
+        // AvatarPoster
         if (data.avatarPoster instanceof File) {
             formData.append("AvatarPoster", data.avatarPoster);
         } else {
-            formData.append("AvatarPoster", data.avatarPoster || "");
+            formData.append("AvatarPosterString", data.avatarPoster || "");
         }
 
         formData.append("ThoiGianTao", data.thoiGianTao || "");
         formData.append("ThoiGianCapNhat", data.thoiGianCapNhat || "");
+
         if (data.phimId) formData.append("PhimId", data.phimId);
 
         return formData;
     };
-
 
     const fetchApi = async (currentPage = page, currentLimit = limit) => {
         setLoading(true);
@@ -162,7 +164,10 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
             if (cardAction === 'create') {
                 await movieServices.createMovie(backendData);
             } else {
-                const id = backendData.get ? backendData.get("PhimId") : backendData.PhimId || backendData.phimId || movieData.id;
+                const id = backendData.get
+                    ? backendData.get("PhimId")
+                    : backendData.PhimId || backendData.phimId || currentMovie?.phimId;
+
                 await movieServices.updateMovie(id, backendData);
             }
 
@@ -179,8 +184,10 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         if (!window.confirm(`Bạn chắc chắn muốn xóa phim "${movie.tenP}"?`)) return;
         try {
             setLoading(true);
-            await movieServices.deleteMovie(movie.id);
-            fetchApi(pagination.currentPage);
+            // Dùng phimId thay vì id nếu backend gọi là phimId
+            const phimId = movie.phimId || movie.id; // fallback nếu có id
+            await movieServices.deleteMovie(phimId);
+            await fetchApi(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
