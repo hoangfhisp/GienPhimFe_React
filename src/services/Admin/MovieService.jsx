@@ -624,3 +624,20 @@ export const searchLichSuGiaoDichByNguoiDung = async (nguoiDungName, page = 1, l
         };
     }
 };
+
+export const fetchTopViewedMovies = async (topphim = 5, page = 1, limit = 10) => {
+    try {
+        const response = await request.get('/Phim/TopPhim/LuotXem', {
+            params: { topphim, page, limit }
+        });
+        return response.data;  // trả về data trực tiếp
+    } catch (error) {
+        console.error("Lỗi lấy lượt xem:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: { page, limit, total: 0 },
+            msg: error.message || 'Lỗi lấy lượt xem'
+        };
+    }
+};

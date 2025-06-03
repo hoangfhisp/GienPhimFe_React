@@ -35,6 +35,7 @@ export default function AppRoutes() {
 
     const userId = authHook.getUserIdFromToken();
     const role = authHook.getRolseUserFromToken();
+
     return (
         <Routes>
             {/* Router UI*/}

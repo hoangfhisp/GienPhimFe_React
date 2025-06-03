@@ -55,7 +55,7 @@ html {
 }
 
 .body-main {
-    background-color: #434242;
+    background-color: #ffffff;
     /* #111 */
     margin: 0;
     padding: 0;
@@ -160,16 +160,20 @@ html {
     border-radius: 50%;
     border: 3px solid white;
     margin-bottom: 10px;
-    object-fit: contain; /* Giữ nguyên tỉ lệ, không cắt */
-    background-color: #f0f0f0; /* Tô nền để thấy phần thừa nếu ảnh không vuông */
+    object-fit: contain;
+    /* Giữ nguyên tỉ lệ, không cắt */
+    background-color: #f0f0f0;
+    /* Tô nền để thấy phần thừa nếu ảnh không vuông */
 
 }
-    .logologin{
-        width: 40px;
-        height: 40px;
+
+.logologin {
+    width: 40px;
+    height: 40px;
     margin-top: auto;
     margin-bottom: auto;
-    }
+}
+
 .username {
     font-size: 18px;
     font-weight: bold;
