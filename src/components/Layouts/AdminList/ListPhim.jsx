@@ -22,8 +22,8 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         return {
             ...listPhimResult,
             theLoaiIds: extractIds(listPhimResult.theLoai, 'theLoaiId'),
-            ngonNguIds: extractIds(listPhimResult.ngonNgu, 'ngonNguId'),
-            quocGiaIds: extractIds(listPhimResult.quocGia, 'quocGiaId'),
+            ngonNguId: listPhimResult.ngonNgu?.[0]?.ngonNguId?.toString() || "",
+            quocGiaId: listPhimResult.quocGia?.[0]?.quocGiaId?.toString() || "",
             daoDienIds: extractIds(listPhimResult.daoDien, 'daoDienId'),
             dienVienIds: extractIds(listPhimResult.dienVien, 'dienVienId'),
             theTagIds: extractIds(listPhimResult.theTag, 'theTagId')
@@ -32,46 +32,69 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
 
     // Hàm chuyển dữ liệu JS object sang đúng định dạng backend (JSON)
     const mapToBackendFormat = (data) => {
-        if (data instanceof FormData) return data; // Nếu là FormData thì giữ nguyên
+        if (data instanceof FormData) return data;
 
         return {
             TenP: data.tenP || "",
             NguonP: data.nguonP || "",
             AvatarP: data.avatarP || "",
+            AvatarPoster: data.avatarPoster || "",
             TenCTSXP: data.tenCTSXP || "",
             ThoiLuongP: data.thoiLuongP || "",
-            AvatarPoster: data.avatarPoster || "",
             MoTaP: data.moTaP || "",
+            SoTapP: data.soTapP || "",
+            NgayPhatHanhP: data.ngayPhatHanhP || null,
+            TraiLerP: data.traiLerP || "",
+            NgonNguId: data.ngonNguId || "",
+            QuocGiaId: data.quocGiaId || "",
+            TheLoaiIds: data.theLoaiIds || [],
+            DaoDienIds: data.daoDienIds || [],
+            DienVienIds: data.dienVienIds || [],
+            TheTagIds: data.theTagIds || [],
             ThoiGianTao: data.thoiGianTao || "",
             ThoiGianCapNhat: data.thoiGianCapNhat || "",
-            PhimId: data.phimId || null,
+            PhimId: data.phimId || null
         };
     };
 
     // Hàm tạo FormData nếu có file upload
     const mapToFormData = (data) => {
         const formData = new FormData();
+
         formData.append("TenP", data.tenP || "");
         formData.append("NguonP", data.nguonP || "");
+        formData.append("TenCTSXP", data.tenCTSXP || "");
+        formData.append("ThoiLuongP", data.thoiLuongP || "");
+        formData.append("MoTaP", data.moTaP || "");
+        formData.append("SoTapP", data.soTapP || "");
+        formData.append("NgayPhatHanhP", data.ngayPhatHanhP || "");
+        formData.append("TraiLerP", data.traiLerP || "");
 
+        formData.append("NgonNguId", parseInt(data.ngonNguId) || 0);
+        formData.append("QuocGiaId", parseInt(data.quocGiaId) || 0);
+
+        (data.theLoaiIds || []).forEach(id => formData.append("TheLoaiIds", id));
+        (data.daoDienIds || []).forEach(id => formData.append("DaoDienIds", id));
+        (data.dienVienIds || []).forEach(id => formData.append("DienVienIds", id));
+        (data.theTagIds || []).forEach(id => formData.append("TheTagIds", id));
+
+        // AvatarP
         if (data.avatarP instanceof File) {
             formData.append("AvatarP", data.avatarP);
         } else {
-            formData.append("AvatarP", data.avatarP || "");
+            formData.append("AvatarPString", data.avatarP || "");
         }
 
-        formData.append("TenCTSXP", data.tenCTSXP || "");
-        formData.append("ThoiLuongP", data.thoiLuongP || "");
-
+        // AvatarPoster
         if (data.avatarPoster instanceof File) {
             formData.append("AvatarPoster", data.avatarPoster);
         } else {
-            formData.append("AvatarPoster", data.avatarPoster || "");
+            formData.append("AvatarPosterString", data.avatarPoster || "");
         }
 
-        formData.append("MoTaP", data.moTaP || "");
         formData.append("ThoiGianTao", data.thoiGianTao || "");
         formData.append("ThoiGianCapNhat", data.thoiGianCapNhat || "");
+
         if (data.phimId) formData.append("PhimId", data.phimId);
 
         return formData;
@@ -141,7 +164,10 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
             if (cardAction === 'create') {
                 await movieServices.createMovie(backendData);
             } else {
-                const id = backendData.get ? backendData.get("PhimId") : backendData.PhimId || backendData.phimId || movieData.id;
+                const id = backendData.get
+                    ? backendData.get("PhimId")
+                    : backendData.PhimId || backendData.phimId || currentMovie?.phimId;
+
                 await movieServices.updateMovie(id, backendData);
             }
 
@@ -158,8 +184,10 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
         if (!window.confirm(`Bạn chắc chắn muốn xóa phim "${movie.tenP}"?`)) return;
         try {
             setLoading(true);
-            await movieServices.deleteMovie(movie.id);
-            fetchApi(pagination.currentPage);
+            // Dùng phimId thay vì id nếu backend gọi là phimId
+            const phimId = movie.phimId || movie.id; // fallback nếu có id
+            await movieServices.deleteMovie(phimId);
+            await fetchApi(pagination.currentPage);
             handleCloseCard();
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);

@@ -83,13 +83,14 @@ export const createMovie = (movieData) => {
 };
 
 // Cập nhật phim
-export const updateMovie = (id, movieData) => {
+export const updateMovie = (phimId, movieData) => {
     const isFormData = movieData instanceof FormData;
 
-    return request.put(`/Admin/Phim/CapNhat/${id}`, movieData, {
+    return request.put(`/Admin/Phim/CapNhat/${phimId}`, movieData, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
 };
+
 
 // Xóa phim
 export const deleteMovie = (id) => {

@@ -132,14 +132,10 @@ const Card = ({ action, data, formFields = [], onClose, onSave, onDelete }) => {
     const handleFileChange = (e, fieldName) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData(prev => ({
-                    ...prev,
-                    [fieldName]: reader.result,
-                }));
-            };
-            reader.readAsDataURL(file);
+            setFormData(prev => ({
+                ...prev,
+                [fieldName]: file,
+            }));
         }
     };
 
@@ -321,12 +317,6 @@ const Card = ({ action, data, formFields = [], onClose, onSave, onDelete }) => {
                     <div className="delete-confirm">
                         <h3>Xác nhận xóa</h3>
                         <p>Bạn có chắc muốn xóa bản ghi này?</p>
-                        {data && (
-                            <div className="delete-info">
-                                <p><strong>Tên:</strong> {data.userName || data.nameND || 'N/A'}</p>
-                                <p><strong>Email:</strong> {data.email || 'N/A'}</p>
-                            </div>
-                        )}
                         <div className="form-actions">
                             <button className="delete-btn" onClick={() => onDelete(data)}>
                                 Xóa
