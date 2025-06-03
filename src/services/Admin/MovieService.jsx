@@ -608,10 +608,10 @@ export const fetchLichSuGiaoDichNguoiDung = async (page, limit) => {
 };
 
 // Tìm kiếm lịch sử giao dịch theo ID người dùng
-export const searchLichSuGiaoDichByNguoiDung = async (nguoiDungId, page = 1, limit = 10) => {
+export const searchLichSuGiaoDichByNguoiDung = async (nguoiDungName, page = 1, limit = 10) => {
     try {
         const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich/search', {
-            params: { nguoiDungId, page, limit }
+            params: { nguoiDungName, page, limit }
         });
         return response;
     } catch (error) {
