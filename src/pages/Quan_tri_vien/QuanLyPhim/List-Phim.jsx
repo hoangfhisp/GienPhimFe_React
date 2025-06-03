@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
-import Table from '../../../components/Table/Table';
-import Card from '../../../components/Table/Card';
 import '../../../components/Layouts/Admin-board/Admin-board.scss';
-import Content from '../../../components/Layouts/AdminContent/Content';
-import ListPhim from '../../../components/Layouts/AdminList/ListPhim';
 import LocPhim from '../../../components/Layouts/LocPhim/LocPhim.jsx'
-import { Link } from 'react-router-dom';
 
 export default function PhimList() {
     return (

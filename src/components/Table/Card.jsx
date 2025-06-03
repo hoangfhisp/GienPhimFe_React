@@ -168,7 +168,27 @@ const Card = ({ action, data, formFields = [], onClose, onSave, onDelete }) => {
         }
 
         if (field.type === 'file') {
-            return value ? <img src={value} alt={field.label} width={100} /> : 'Chưa có file';
+            if (!value) return 'Chưa có file';
+
+            const isVideo = typeof value === 'string' && value.endsWith('.mp4');
+            const isImage = typeof value === 'string' && /\.(jpg|jpeg|png|gif|webp)$/i.test(value);
+
+            if (isVideo) {
+                return (
+                    <video width={320} height={180} controls>
+                        <source src={value} type="video/mp4" />
+                        Trình duyệt của bạn không hỗ trợ thẻ video.
+                    </video>
+                );
+            } else if (isImage) {
+                return <img src={value} alt={field.label} width={100} />;
+            } else {
+                return (
+                    <a href={value} target="_blank" rel="noopener noreferrer">
+                        Tải file
+                    </a>
+                );
+            }
         }
 
         if (field.type === 'number') {

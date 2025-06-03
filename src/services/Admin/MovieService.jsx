@@ -97,6 +97,58 @@ export const deleteMovie = (id) => {
     return request.deleteRequest(`/Admin/Phim/Xoa/${id}`).catch(handleError);
 };
 
+// Lấy metadata để biết các trường cần nhập cho tập phim
+export async function getTapPhimFormFields() {
+    const response = await request.get('/Admin/QuanTriVienTapPhim/metadata');
+    return response.fields;
+}
+
+// Lấy danh sách tập phim (có phân trang)
+export const fetchEpisodes = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienTapPhim/TapCuaPhim', {
+            params: { page, limit }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải tập phim:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách tập phim'
+        };
+    }
+};
+
+// Tạo tập phim mới
+export const createEpisode = (episodeData) => {
+    const isFormData = episodeData instanceof FormData;
+    return request.post('/Admin/QuanTriVienTapPhim/Them', episodeData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật tập phim
+export const updateEpisode = async (episodeData) => {
+    try {
+        const response = await request.put(`/Admin/QuanTriVienTapPhim/CapNhat`, episodeData, {
+            headers: {
+                // Browser sẽ tự đặt Content-Type nếu là FormData
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi cập nhật tập phim:", error);
+        throw new Error(error.response?.data?.Msg || 'Lỗi khi cập nhật tập phim');
+    }
+};
+
+// Xóa tập phim
+export const deleteEpisode = (id) => {
+    return request.deleteRequest(`/Admin/QuanTriVienTapPhim/Xoa/${id}`).catch(handleError);
+};
+
 // Lấy metadata để biết các trường cần nhập
 export async function getTheLoaiFormFields() {
     const response = await request.get('/Admin/QuanTriVienTheLoai/metadata');

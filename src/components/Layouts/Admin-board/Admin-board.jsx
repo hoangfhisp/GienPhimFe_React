@@ -133,6 +133,11 @@ const AdminBoard = ({ }) => {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/List-Tap-Phim">
+                            <span className="fa fa-list mr-3"></span> Quản lý tập phim
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/List-The-Loai">
                             <span className="fa fa-tags mr-3"></span> Quản lý thể loại
                         </Link>
