@@ -587,3 +587,40 @@ export const updateTheTag = (id, theTagData) => {
 export const deleteTheTag = (id) => {
     return request.deleteRequest(`/Admin/TheTag/Xoa/${id}`).catch(handleError);
 };
+
+// Lấy danh sách lịch sử giao dịch
+export const fetchLichSuGiaoDichNguoiDung = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich', {
+            params: { page, limit }
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải lịch sử giao dịch:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách lịch sử giao dịch'
+        };
+    }
+};
+
+// Tìm kiếm lịch sử giao dịch theo ID người dùng
+export const searchLichSuGiaoDichByNguoiDung = async (nguoiDungId, page = 1, limit = 10) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich/search', {
+            params: { nguoiDungId, page, limit }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi tìm giao dịch theo người dùng:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: { page, limit, total: 0 },
+            msg: error.message || 'Lỗi khi tìm kiếm giao dịch'
+        };
+    }
+};

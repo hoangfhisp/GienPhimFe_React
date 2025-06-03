@@ -177,6 +177,11 @@ const AdminBoard = ({ }) => {
                             <span className="fa fa-users mr-3"></span> Quản lý người dùng
                         </Link>
                     </li>
+                    <li>
+                        <Link to="/List-Lich-Su-Giao-Dich">
+                            <span className="fa fa-money-bill-wave mr-3"></span> Quản lý giao dịch
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </div>

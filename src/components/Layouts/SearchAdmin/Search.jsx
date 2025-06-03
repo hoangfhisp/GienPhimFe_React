@@ -12,6 +12,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
     const [searchDaoDiens, setSearchDaoDiens] = useState([]);
     const [searchDienViens, setSearchDienViens] = useState([]);
     const [searchTheTags, setSearchTheTags] = useState([]);
+    const [searchLichSuGDs, setSearchLichSuGDs] = useState([]);
     const [searchRoles, setSearchRoles] = useState([]);
     const [searchUsers, setSearchUsers] = useState([]);
 
@@ -52,6 +53,8 @@ export default function Search({ searchType, page, limit, onClear, children, pla
                     result = await AuthenticationService.searchUsers(searchValue, page, limit);
                 } else if (searchType === 'tapPhim') {
                     result = await movieServices.searchMovies(searchValue, page, limit);
+                } else if (searchType === 'lichSuGD') {
+                    result = await movieServices.searchLichSuGiaoDichByNguoiDung(searchValue, page, limit);
                 } else {
                     throw new Error("Loại tìm kiếm không hỗ trợ");
                 }
@@ -85,6 +88,7 @@ export default function Search({ searchType, page, limit, onClear, children, pla
         setSearchRoles([]);
         setSearchUsers([]);
         setSearchPhims([]);
+        setSearchLichSuGDs([]);
     };
 
     return (
