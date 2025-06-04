@@ -8,6 +8,7 @@ import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
 import OverviewDashboard from '../pages/Quan_tri_vien/TongQuan/Tong-Quan';
 import PhimList from '../pages/Quan_tri_vien/QuanLyPhim/List-Phim';
+import TapPhimList from '../pages/Quan_tri_vien/QuanLyTapPhim/List-Tap-Phim';
 import TheLoaiList from '../pages/Quan_tri_vien/QuanLyTheLoai/List-The-Loai';
 import QuocGiaList from '../pages/Quan_tri_vien/QuanLyQuocGia/List-Quoc-Gia';
 import NgonNguList from '../pages/Quan_tri_vien/QuanLyNgonNgu/List-Ngon-Ngu';
@@ -16,6 +17,8 @@ import DienVienList from '../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien';
 import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
 import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung.jsx';
 import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
+import GoiThanhVienList from '../pages/Quan_tri_vien/QuanLyGoiThanhVien/List-Goi-Thanh-Vien';
+import LichSuGiaoDichList from '../pages/Quan_tri_vien/QuanLyLichSuGiaoDich/List-Lich-Su-Giao-Dich';
 import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";
 import XemPhim from "../pages/XemPhim/XemPhim.jsx";
@@ -33,6 +36,7 @@ export default function AppRoutes() {
 
     const userId = authHook.getUserIdFromToken();
     const role = authHook.getRolseUserFromToken();
+
     return (
         <Routes>
             {/* Router UI*/}
@@ -65,6 +69,8 @@ export default function AppRoutes() {
             {/* Router Admin */}
             {userId && role === 'Admin' && <Route path="/Tong-Quan" element={<OverviewDashboard />} />}
             {userId && role === 'Admin' && <Route path="/List-Phim" element={<PhimList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Tap-Phim" element={<TapPhimList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Vai-Tro" element={<RoleList />} />}
             {userId && role === 'Admin' && <Route path="/List-The-Loai" element={<TheLoaiList />} />}
             {userId && role === 'Admin' && <Route path="/List-Quoc-Gia" element={<QuocGiaList />} />}
             {userId && role === 'Admin' && <Route path="/List-Ngon-Ngu" element={<NgonNguList />} />}
@@ -73,6 +79,9 @@ export default function AppRoutes() {
             {userId && role === 'Admin' && <Route path="/List-The-Tag" element={<TheTagList />} />}
             {userId && role === 'Admin' && <Route path="/List-Nguoi-Dung" element={<UserList />} />}
             {userId && role === 'Admin' && <Route path="/List-Vai-Tro" element={<RoleList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Goi-Thanh-Vien" element={<GoiThanhVienList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Lich-Su-Giao-Dich" element={<LichSuGiaoDichList />} />}
+
 
             {/* Router nạp tiền */}
             {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}

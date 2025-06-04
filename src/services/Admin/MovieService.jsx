@@ -97,6 +97,58 @@ export const deleteMovie = (id) => {
     return request.deleteRequest(`/Admin/Phim/Xoa/${id}`).catch(handleError);
 };
 
+// Lấy metadata để biết các trường cần nhập cho tập phim
+export async function getTapPhimFormFields() {
+    const response = await request.get('/Admin/QuanTriVienTapPhim/metadata');
+    return response.fields;
+}
+
+// Lấy danh sách tập phim (có phân trang)
+export const fetchEpisodes = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienTapPhim/TapCuaPhim', {
+            params: { page, limit }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải tập phim:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách tập phim'
+        };
+    }
+};
+
+// Tạo tập phim mới
+export const createEpisode = (episodeData) => {
+    const isFormData = episodeData instanceof FormData;
+    return request.post('/Admin/QuanTriVienTapPhim/Them', episodeData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật tập phim
+export const updateEpisode = async (episodeData) => {
+    try {
+        const response = await request.put(`/Admin/QuanTriVienTapPhim/CapNhat`, episodeData, {
+            headers: {
+                // Browser sẽ tự đặt Content-Type nếu là FormData
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi cập nhật tập phim:", error);
+        throw new Error(error.response?.data?.Msg || 'Lỗi khi cập nhật tập phim');
+    }
+};
+
+// Xóa tập phim
+export const deleteEpisode = (id) => {
+    return request.deleteRequest(`/Admin/QuanTriVienTapPhim/Xoa/${id}`).catch(handleError);
+};
+
 // Lấy metadata để biết các trường cần nhập
 export async function getTheLoaiFormFields() {
     const response = await request.get('/Admin/QuanTriVienTheLoai/metadata');
@@ -534,4 +586,169 @@ export const updateTheTag = (id, theTagData) => {
 // Xóa thẻ tag
 export const deleteTheTag = (id) => {
     return request.deleteRequest(`/Admin/TheTag/Xoa/${id}`).catch(handleError);
+};
+
+// Lấy danh sách lịch sử giao dịch
+export const fetchLichSuGiaoDichNguoiDung = async (page, limit) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich', {
+            params: { page, limit }
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải lịch sử giao dịch:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi khi tải danh sách lịch sử giao dịch'
+        };
+    }
+};
+
+// Tìm kiếm lịch sử giao dịch theo ID người dùng
+export const searchLichSuGiaoDichByNguoiDung = async (nguoiDungName, page = 1, limit = 10) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich/search', {
+            params: { nguoiDungName, page, limit }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi tìm giao dịch theo người dùng:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: { page, limit, total: 0 },
+            msg: error.message || 'Lỗi khi tìm kiếm giao dịch'
+        };
+    }
+};
+
+export const fetchTopViewedMovies = async (topphim = 5, page = 1, limit = 10) => {
+    try {
+        const response = await request.get('/Phim/TopPhim/LuotXem', {
+            params: { topphim, page, limit }
+        });
+        return response.data;  // trả về data trực tiếp
+    } catch (error) {
+        console.error("Lỗi lấy lượt xem:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: { page, limit, total: 0 },
+            msg: error.message || 'Lỗi lấy lượt xem'
+        };
+    }
+};
+
+// Lấy metadata để biết các trường cần nhập
+export async function getGoiThanhVienFormFields() {
+    const response = await request.get('/GoiThanhVien/metadata');
+    return response.fields;
+}
+
+// Thêm gói thành viên
+export const createGoiThanhVien = (goiThanhVienData) => {
+    const isFormData = goiThanhVienData instanceof FormData;
+
+    return request.post('/GoiThanhVien/AddGoiThanhVien', goiThanhVienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Cập nhật gói thành viên (đúng route mới)
+export const updateGoiThanhVien = (id, goiThanhVienData) => {
+    const isFormData = goiThanhVienData instanceof FormData;
+
+    return request.put(`/GoiThanhVien/UpdateGoiThanhVien/${id}`, goiThanhVienData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// Xóa gói thành viên (đúng route mới)
+export const deleteGoiThanhVien = (id) => {
+    return request.deleteRequest(`/GoiThanhVien/DeleteGoiThanhVien/${id}`).catch(handleError);
+};
+
+// Lấy danh sách tất cả gói thành viên
+export const fetchAllGoiThanhVien = async () => {
+    try {
+        const response = await request.get('/GoiThanhVien/GetAllGoiThanhVien');
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải gói thành viên:", error);
+        return {
+            status: false,
+            data: [],
+            msg: error.message || 'Lỗi khi tải danh sách gói thành viên'
+        };
+    }
+};
+
+// ✅ Lấy metadata để biết các trường cần nhập
+export async function getLuaChonGoiTVFormFields() {
+    try {
+        const response = await request.get('/LuaChonGoiTV/metadata');
+        return response.fields;
+    } catch (error) {
+        console.error("Lỗi khi tải metadata LuaChonGoiTV:", error);
+        return [];
+    }
+}
+
+// ✅ Thêm lựa chọn gói thành viên
+export const createLuaChonGoiTV = (luaChonData) => {
+    const isFormData = luaChonData instanceof FormData;
+
+    return request.post('/LuaChonGoiTV/AddLuachonGoiTV', luaChonData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// ✅ Cập nhật lựa chọn gói thành viên
+export const updateLuaChonGoiTV = (id, luaChonData) => {
+    const isFormData = luaChonData instanceof FormData;
+
+    return request.put(`/LuaChonGoiTV/UpdateLuaChonGoiTV/${id}`, luaChonData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// ✅ Xoá lựa chọn gói thành viên
+export const deleteLuaChonGoiTV = (id) => {
+    return request.deleteRequest(`/LuaChonGoiTV/DeleteLuaChonGoiTV/${id}`)
+        .catch(handleError);
+};
+
+// ✅ Lấy tất cả lựa chọn gói thành viên
+export const fetchAllLuaChonGoiTV = async () => {
+    try {
+        const response = await request.get('/LuaChonGoiTV/GetAllLuaChonGoiTV');
+        return response;
+    } catch (error) {
+        console.error("Lỗi tải danh sách LuaChonGoiTV:", error);
+        return {
+            status: false,
+            data: [],
+            msg: error.message || 'Lỗi khi tải danh sách lựa chọn gói TV'
+        };
+    }
+};
+
+// ✅ Lấy lựa chọn gói thành viên theo ID và số ngày
+export const fetchLuaChonGoiTVByIdAndNgay = async (goiTVId, ngay) => {
+    try {
+        const response = await request.get('/LuaChonGoiTV/GetLuaChonGoiTVByIdAndNgay', {
+            params: { goiTVId, ngay }
+        });
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi lấy LuaChonGoiTV theo ID và ngày:", error);
+        return {
+            status: false,
+            data: [],
+            msg: error.message || 'Lỗi khi lấy lựa chọn gói TV'
+        };
+    }
 };

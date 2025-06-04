@@ -182,13 +182,16 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
 
     const handleDelete = async (movie) => {
         if (!window.confirm(`Bạn chắc chắn muốn xóa phim "${movie.tenP}"?`)) return;
+
         try {
             setLoading(true);
-            // Dùng phimId thay vì id nếu backend gọi là phimId
-            const phimId = movie.phimId || movie.id; // fallback nếu có id
+
+            const phimId = movie.phimId || movie.id;
             await movieServices.deleteMovie(phimId);
-            await fetchApi(pagination.currentPage);
-            handleCloseCard();
+
+            handleCloseCard(); // ⬅ Đóng card ngay sau khi xóa
+
+            await fetchApi(pagination.currentPage); // Làm mới danh sách sau khi đóng card
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
         } finally {

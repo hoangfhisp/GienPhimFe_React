@@ -5,12 +5,14 @@ import * as AuthenticationService from "../../../services/Admin/AuthenticationSe
 
 export default function Search({ searchType, page, limit, onClear, children, placeholder, onResult, onPagination }) {
     const [inputValue, setInputValue] = useState("");
+    const [searchPhims, setSearchPhims] = useState([]);
     const [searchTheloais, setSearchTheloais] = useState([]);
     const [searchQuocgias, setSearchQuocgias] = useState([]);
     const [searchNgonNgus, setSearchNgonNgus] = useState([]);
     const [searchDaoDiens, setSearchDaoDiens] = useState([]);
     const [searchDienViens, setSearchDienViens] = useState([]);
     const [searchTheTags, setSearchTheTags] = useState([]);
+    const [searchLichSuGDs, setSearchLichSuGDs] = useState([]);
     const [searchRoles, setSearchRoles] = useState([]);
     const [searchUsers, setSearchUsers] = useState([]);
 
@@ -49,6 +51,10 @@ export default function Search({ searchType, page, limit, onClear, children, pla
                     result = await AuthenticationService.searchRoles(searchValue, page, limit);
                 } else if (searchType === 'nguoiDung') {
                     result = await AuthenticationService.searchUsers(searchValue, page, limit);
+                } else if (searchType === 'tapPhim') {
+                    result = await movieServices.searchMovies(searchValue, page, limit);
+                } else if (searchType === 'lichSuGD') {
+                    result = await movieServices.searchLichSuGiaoDichByNguoiDung(searchValue, page, limit);
                 } else {
                     throw new Error("Loại tìm kiếm không hỗ trợ");
                 }
@@ -81,6 +87,8 @@ export default function Search({ searchType, page, limit, onClear, children, pla
         setSearchTheTags([]);
         setSearchRoles([]);
         setSearchUsers([]);
+        setSearchPhims([]);
+        setSearchLichSuGDs([]);
     };
 
     return (

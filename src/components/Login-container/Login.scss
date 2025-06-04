@@ -57,6 +57,12 @@ html {
     padding-bottom: 2.5%;
 }
 
+.login-error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
 
 .login-title h4 {
     font-size: 3.2rem;
@@ -95,7 +101,7 @@ html {
 .login-form-input:focus,
 .login-form-input:focus-visible {
     outline: none !important;
-    border: 2px solid #eeaf67;
+    border: 0.5px solid #eeaf67 !important;
     box-shadow: 0 0 0 2px rgba(238, 175, 103, 0.2);
 }
 
@@ -112,7 +118,7 @@ html {
 /* Khi focus hoặc có giá trị */
 .login-form-input:focus+.floating-label,
 .login-form-input.filled+.floating-label {
-    top: -28px;
+    top: -25px;
     left: 6px;
     font-size: 1.4rem;
     color: #eeaf67;

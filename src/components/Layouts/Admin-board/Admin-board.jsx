@@ -133,6 +133,11 @@ const AdminBoard = ({ }) => {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/List-Tap-Phim">
+                            <span className="fa fa-list mr-3"></span> Quản lý tập phim
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/List-The-Loai">
                             <span className="fa fa-tags mr-3"></span> Quản lý thể loại
                         </Link>
@@ -163,6 +168,11 @@ const AdminBoard = ({ }) => {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/List-Goi-Thanh-Vien">
+                            <span className="fa fa-ticket-alt mr-3"></span> Quản lý gói thành viên
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/List-Vai-Tro">
                             <span className="fa fa-user-circle mr-3"></span> Quản lý vai trò
                         </Link>
@@ -170,6 +180,11 @@ const AdminBoard = ({ }) => {
                     <li>
                         <Link to="/List-Nguoi-Dung">
                             <span className="fa fa-users mr-3"></span> Quản lý người dùng
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/List-Lich-Su-Giao-Dich">
+                            <span className="fa fa-money-bill-wave mr-3"></span> Quản lý giao dịch
                         </Link>
                     </li>
                 </ul>
