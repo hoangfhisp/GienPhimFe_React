@@ -437,22 +437,3 @@ export const fetchLichSuGiaoDichs = async (nguoiDungId, page, limit) => {
         console.error("Lỗi khi tải lịch sử giao dịch:", error);
     }
 };
-
-// Lấy danh sách lịch sử giao dịch
-export const fetchLichSuGiaoDichNguoiDung = async (page, limit) => {
-    try {
-        const response = await request.get('/Admin/QuanTriVienLichSuGiaoDich', {
-            params: { page, limit }
-        });
-
-        return response;
-    } catch (error) {
-        console.error("Lỗi tải lịch sử giao dịch:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách lịch sử giao dịch'
-        };
-    }
-};

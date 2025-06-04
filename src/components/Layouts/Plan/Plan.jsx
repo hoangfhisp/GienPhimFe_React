@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './Plan.scss';
-import * as managerServices from '../../../services/ManagerService.jsx';
+import * as managerServices from '../../../services/User/ManagerService.jsx';
+
 import { formatVND } from '../../../untils/Format.jsx';
 
 function Plan({ children, deXuat, isRecommended, onSelect, data, onDataGoiThang, onDataGoiNam, color }) {
