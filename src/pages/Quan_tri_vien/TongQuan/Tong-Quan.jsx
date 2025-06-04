@@ -139,15 +139,15 @@ const OverviewDashboard = () => {
     }, []);
 
     const cardData = [
-        { label: 'Tổng phim', count: dashboardData.SoLuongPhim, icon: 'fa-film', link: '/QuanTriVienPhim/QuanLyPhim' },
-        { label: 'Tổng thể loại', count: dashboardData.SoLuongTheLoai, icon: 'fa-tags', link: '/QuanTriVienTheLoai/QuanLyTheLoai' },
-        { label: 'Tổng thẻ tag', count: dashboardData.SoLuongTheTag, icon: 'fa-cogs', link: '/QuanTriVienTheTag/QuanLyTheTag' },
-        { label: 'Tổng quốc gia', count: dashboardData.SoLuongQuocGia, icon: 'fa-globe', link: '/QuanTriVienQuocGia/QuanLyQuocGia' },
-        { label: 'Tổng ngôn ngữ', count: dashboardData.SoLuongNgonNgu, icon: 'fa-language', link: '/QuanTriVienNgonNgu/QuanLyNgonNgu' },
-        { label: 'Tổng đạo diễn', count: dashboardData.SoLuongDaoDien, icon: 'fa-users', link: '/QuanTriVienDaoDien/QuanLyDaoDien' },
-        { label: 'Tổng diễn viên', count: dashboardData.SoLuongDienVien, icon: 'fa-users', link: '/QuanTriVienDienVien/QuanLyDienVien' },
-        { label: 'Tổng người dùng', count: dashboardData.SoLuongNguoiDung, icon: 'fa-users', link: '/QuanTriVienNguoiDung/QuanLyNguoiDung' },
-        { label: 'Tổng vai trò', count: dashboardData.SoLuongVaiTro, icon: 'fa-user-circle', link: '/QuanTriVienVaiTro/QuanLyVaiTro' },
+        { label: 'Tổng phim', count: dashboardData.SoLuongPhim, icon: 'fa-film', link: '/List-Phim' },
+        { label: 'Tổng thể loại', count: dashboardData.SoLuongTheLoai, icon: 'fa-tags', link: '/List-The-Loai' },
+        { label: 'Tổng thẻ tag', count: dashboardData.SoLuongTheTag, icon: 'fa-cogs', link: '/List-The-Tag' },
+        { label: 'Tổng quốc gia', count: dashboardData.SoLuongQuocGia, icon: 'fa-globe', link: '/List-Quoc-Gia' },
+        { label: 'Tổng ngôn ngữ', count: dashboardData.SoLuongNgonNgu, icon: 'fa-language', link: '/List-Ngon-Ngu' },
+        { label: 'Tổng đạo diễn', count: dashboardData.SoLuongDaoDien, icon: 'fa-users', link: '/List-Dao-Dien' },
+        { label: 'Tổng diễn viên', count: dashboardData.SoLuongDienVien, icon: 'fa-users', link: '/List-Dien-Vien' },
+        { label: 'Tổng người dùng', count: dashboardData.SoLuongNguoiDung, icon: 'fa-users', link: '/List-Nguoi-Dung' },
+        { label: 'Tổng vai trò', count: dashboardData.SoLuongVaiTro, icon: 'fa-user-circle', link: '/List-Vai-Tro' },
     ];
 
     return (
@@ -172,6 +172,7 @@ const OverviewDashboard = () => {
                             <Bar dataKey="luotXem" fill="#8884d8" />
                         </BarChart>
                     </ResponsiveContainer>
+                    <hr />
                     <div className="card-container">
                         {cardData.map((card, index) => (
                             <a

@@ -17,6 +17,7 @@ import DienVienList from '../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien';
 import TheTagList from '../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag';
 import UserList from '../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung.jsx';
 import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
+import GoiThanhVienList from '../pages/Quan_tri_vien/QuanLyGoiThanhVien/List-Goi-Thanh-Vien';
 import LichSuGiaoDichList from '../pages/Quan_tri_vien/QuanLyLichSuGiaoDich/List-Lich-Su-Giao-Dich';
 import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";
@@ -78,6 +79,7 @@ export default function AppRoutes() {
             {userId && role === 'Admin' && <Route path="/List-The-Tag" element={<TheTagList />} />}
             {userId && role === 'Admin' && <Route path="/List-Nguoi-Dung" element={<UserList />} />}
             {userId && role === 'Admin' && <Route path="/List-Vai-Tro" element={<RoleList />} />}
+            {userId && role === 'Admin' && <Route path="/List-Goi-Thanh-Vien" element={<GoiThanhVienList />} />}
             {userId && role === 'Admin' && <Route path="/List-Lich-Su-Giao-Dich" element={<LichSuGiaoDichList />} />}
 
 

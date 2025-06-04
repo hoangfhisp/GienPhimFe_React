@@ -168,6 +168,11 @@ const AdminBoard = ({ }) => {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/List-Goi-Thanh-Vien">
+                            <span className="fa fa-ticket-alt mr-3"></span> Quản lý gói thành viên
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/List-Vai-Tro">
                             <span className="fa fa-user-circle mr-3"></span> Quản lý vai trò
                         </Link>

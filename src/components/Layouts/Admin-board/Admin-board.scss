@@ -64,7 +64,7 @@ body {
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #212529;
+    color: #000000;
     text-align: left;
     background-color: #fff;
 }
@@ -74,10 +74,12 @@ body {
 }
 
 hr {
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
+    border: none;
+    border-top: 3px solid black !important;
+    /* đường gạch ngang */
     height: 0;
-    overflow: visible;
+    margin: 1em 0;
+    background-color: black !important;
 }
 
 h1,
