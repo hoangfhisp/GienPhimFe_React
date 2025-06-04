@@ -19,7 +19,7 @@ function ThongBao({ show, onClose, type, title, message, showButton, btnLabel, o
                     <div className="icon">
                         <div className="face2">
                             <div className="eye"></div>
-                            <div class="eye right"></div>
+                            <div class="eye-right"></div>
                             <div class="mouth happy"></div>
                         </div>
                         <div class="shadow move"></div>
@@ -28,9 +28,9 @@ function ThongBao({ show, onClose, type, title, message, showButton, btnLabel, o
             case 'fail':
                 return (
                     <div className="icon">
-                        <div className="face">
+                        <div className="face2">
                             <div className="eye"></div>
-                            <div class="eye right"></div>
+                            <div class="eye-right"></div>
                             <div class="mouth sad"></div>
                         </div>
                         <div class="shadow move"></div>
@@ -41,7 +41,7 @@ function ThongBao({ show, onClose, type, title, message, showButton, btnLabel, o
                     <div className="icon">
                         <div className="face">
                             <div className="eye"></div>
-                            <div className="eye right"></div>
+                            <div className="eye-right"></div>
                             <div className="mouth happy"></div>
                         </div>
                         <div class="shadow scale"></div>
@@ -52,7 +52,7 @@ function ThongBao({ show, onClose, type, title, message, showButton, btnLabel, o
                     <div className="icon">
                         <div className="face">
                             <div className="eye"></div>
-                            <div className="eye right"></div>
+                            <div className="eye-right"></div>
                             <div className="mouth sad"></div>
                         </div>
                         <div class="shadow scale"></div>

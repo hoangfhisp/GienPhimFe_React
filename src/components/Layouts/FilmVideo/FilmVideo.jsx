@@ -6,16 +6,17 @@ import FilmPanel from './FilmPanel';
 import FilmTap from './FilmTap.jsx';
 import * as phimServices from '../../../services/User/FilmService.jsx'
 
-function FilmVideo({id,tap,userId}){
-    const[isPlaying,setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
-    const[dataTapPhim,setDataTapPhim] = useState([]); // hàm gắn lấy dữ liệu của 1 list phim
-    const[tapPhim,setTapPhim] = useState([]); // hàm gán 1 link của tập phim cụ thể
-    
+function FilmVideo({ id, tap, userId }) {
+    const [isPlaying, setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
+    const [dataTapPhim, setDataTapPhim] = useState([]); // hàm gắn lấy dữ liệu của 1 list phim
+    const [tapPhim, setTapPhim] = useState([]); // hàm gán 1 link của tập phim cụ thể
+    const [currentType, setCurrentType] = useState(null);
+
     const isFirstRun = useRef(true); // Thêm kiểm soát bằng useRef để chỉ gọi API một lần
 
     // Hàm lấy api id phim. rồi lấy list tập phim
     useEffect(() => {
-        if(id == null){
+        if (id == null) {
             return;
         }
         const fetchApi = async () => {
@@ -23,15 +24,15 @@ function FilmVideo({id,tap,userId}){
             const danhSachTap = dataTap.tapCuaPhim || [];
             setDataTapPhim(danhSachTap);
         }
-        
+
         fetchApi();
 
-    },[id])
+    }, [id])
 
     // Lọc danh sách tập có slugtap = tap (params)
     const tapchon = useMemo(() => {
         return dataTapPhim.find(item => item.slugTap === tap);
-    },[dataTapPhim,tap])
+    }, [dataTapPhim, tap])
 
     // Gọi api xu lý lịch sử nếu slug tập thay đổi
     useEffect(() => {
@@ -40,44 +41,54 @@ function FilmVideo({id,tap,userId}){
             return;
         }
 
-        if(tap == null || userId == null)
+        if (tap == null || userId == null)
             return;
         const fetchApiXuLyLichSuXem = async () => {
-            await phimServices.XuLyLichXuXem(id,userId,tap);
+            await phimServices.XuLyLichXuXem(id, userId, tap);
         }
         fetchApiXuLyLichSuXem();
-    },[tap])
+    }, [tap])
 
-    // Hàm lấy tập phim để gắn vào iframe
+    // Thiết lập loại mặc định (chính hoặc phụ) sau khi load danh sách tập
     useEffect(() => {
-        if(dataTapPhim === null){
-            return;
-        }
+        if (!currentType && Array.isArray(dataTapPhim) && dataTapPhim.length > 0) {
+            const hasChinh = dataTapPhim.some(tap => tap.linkChinh !== null);
+            const hasPhu = dataTapPhim.some(tap => tap.linkPhu !== null);
 
-        const tapphim = () => {
-            
-            if(tapchon){
-                setTapPhim(tapchon.linkPhu);
+            if (hasChinh) {
+                setCurrentType('chinh');
+            } else if (hasPhu) {
+                setCurrentType('phu');
             }
         }
+    }, [dataTapPhim, currentType]);
+    
+    // Hàm lấy tập phim để gắn vào iframe
+    useEffect(() => {
+        if (!tapchon) return;
 
-        tapphim();
+        if (currentType === 'chinh') {
+            setTapPhim(tapchon.linkChinh);
+        } else {
+            setTapPhim(tapchon.linkPhu);
+        }
 
-    },[tapchon])
+    }, [tapchon, currentType]);
 
+    console.log(tapPhim)
     // Hàm để chạy api update lại số lượt xem khi người dùng xem
-    const Views = async (idphim,nguoiDungId) => {
-        await phimServices.addLuotXem(idphim,nguoiDungId);
-        setIsPlaying(true); 
+    const Views = async (idphim, nguoiDungId) => {
+        await phimServices.addLuotXem(idphim, nguoiDungId);
+        setIsPlaying(true);
     }
 
-    return(
+    return (
         <>
             <div className="video-container">
-            
-                <iframe src={tapPhim} style={{display: isPlaying ? "block" : "none", height : "100%", width: "100%"}} allowFullScreen = {1} loading='lazy'> </iframe>
 
-                <div className="video-overlay" style={{display: isPlaying ? "none" : "block"}}>
+                <iframe src={tapPhim} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
+
+                <div className="video-overlay" style={{ display: isPlaying ? "none" : "block" }}>
                     <p className="warning">WEBSITE CÓ NHIỀU QUẢNG CÁO!</p>
                     <p className="subtext">KHÔNG CÓ QUẢNG CÁO THÌ DUY TRÌ WEBSITE LÀM SAO?!</p>
                     <p className="support-text">
@@ -87,18 +98,50 @@ function FilmVideo({id,tap,userId}){
                     </p>
 
 
-                    <button className="play-btn" onClick={() => Views(id,userId)}> {/* Khi người dùng ấn gọi hàm tăng view */}
+                    <button className="play-btn" onClick={() => Views(id, userId)}> {/* Khi người dùng ấn gọi hàm tăng view */}
                         <div className="play-icon"></div>
                     </button>
                 </div>
             </div>
 
-            <FilmPanel data={dataTapPhim} nguoiDungId={userId} idphim = {id} slugtap ={tap} onSelect={() => setIsPlaying(false)}/>
+            <FilmPanel data={dataTapPhim} nguoiDungId={userId} idphim={id} slugtap={tap} onSelect={() => setIsPlaying(false)} />
 
-            <div className="tap-container">
-                <FilmTap data={dataTapPhim} idphim = {id} slugtap ={tap} onSelect={() => setIsPlaying(false)}>📺 GIENPHIM Tập</FilmTap>
-            </div>
-            
+            {dataTapPhim.some(tap => tap.linkChinh !== null) && (
+                <div className="tap-container">
+                    <FilmTap
+                        type="chinh"
+                        currentType={currentType}
+                        data={dataTapPhim.filter(tap => tap.linkChinh !== null)}
+                        idphim={id}
+                        slugtap={tap}
+                        onSelect={() => {
+                            setCurrentType('chinh');
+                            setIsPlaying(false);
+                        }}
+                    >
+                        📺 GIENPHIM Tập Chính
+                    </FilmTap>
+                </div>
+            )}
+
+            {dataTapPhim.some(tap => tap.linkPhu !== null) && (
+                <div className="tap-container">
+                    <FilmTap
+                        type="phu"
+                        currentType={currentType}
+                        data={dataTapPhim.filter(tap => tap.linkPhu !== null)}
+                        idphim={id}
+                        slugtap={tap}
+                        onSelect={() => {
+                            setCurrentType('phu');
+                            setIsPlaying(false);
+                        }}
+                    >
+                        📺 GIENPHIM Tập Phụ
+                    </FilmTap>
+                </div>
+            )}
+
         </>
     );
 }

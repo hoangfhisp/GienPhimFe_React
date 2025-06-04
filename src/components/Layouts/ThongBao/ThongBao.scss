@@ -171,6 +171,16 @@
     animation: roll 3s ease-in-out infinite;
 }
 
+.eye-right {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #777;
+    border-radius: 50%;
+    top: 40%;
+    left: 68%;
+}
+
 .eye {
     position: absolute;
     width: 5px;
@@ -181,9 +191,6 @@
     left: 20%;
 }
 
-.right {
-    left: 68%;
-}
 
 .mouth {
     position: absolute;

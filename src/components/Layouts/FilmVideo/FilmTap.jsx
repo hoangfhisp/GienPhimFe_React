@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function FilmTap({data,children,idphim,slugtap,onSelect}){
-    const[dataTap,setDataTap] = useState([])
-    
+function FilmTap({ data, children, idphim, slugtap, onSelect,currentType,type }) {
+    const [dataTap, setDataTap] = useState([])
+
     useEffect(() => {
-        if(data){
+        if (data) {
             setDataTap(data);
         }
 
-    },[data])
-    
-    return(
+    }, [data])
+
+    return (
         <div className="info-tap">
             <div className="tap-title">
                 <span>{children}</span>
@@ -19,7 +19,13 @@ function FilmTap({data,children,idphim,slugtap,onSelect}){
             <div className="tap-list" id="tap-list">
 
                 {dataTap.map((result) => (
-                    <Link to={`/XemPhim/${idphim}/${result.slugTap}`} className={`tap ${result.slugTap == slugtap ? 'active' : ''}`} key={result.tapPhimId} onClick={onSelect}>{result.tenTap}</Link>
+
+                    <Link
+                        to={`/XemPhim/${idphim}/${result.slugTap}`}
+                        className={`tap ${result.slugTap === slugtap && currentType === type ? 'active' : ''}`}
+                        key={result.tapPhimId}
+                        onClick={onSelect}
+                    >{result.tenTap}</Link>
                 ))}
 
             </div>

@@ -412,29 +412,21 @@ export const getUserById = async (id) => {
 // Lịch sử giao dịch người dùng
 export const fetchLichSuGiaoDichs = async (nguoiDungId, page, limit) => {
     try {
-        const token = localStorage.getItem('jwtToken');
-        console.log("Token hiện tại: ", token);
-
-        if (!token) {
-            return {
-                status: false,
-                data: [],
-                pagination: null,
-                msg: 'Token không hợp lệ hoặc hết hạn.'
-            };
-        }
-
         const response = await request.get(`/User/LichSuGiaoDich/${nguoiDungId}`, {
             params: { page, limit },
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
         });
 
-        return response;
+        return response;  // <-- Đây là điểm quan trọng
 
     } catch (error) {
         console.error("Lỗi khi tải lịch sử giao dịch:", error);
+        return {
+            status: false,
+            data: [],
+            pagination: null,
+            msg: error.message || 'Lỗi không xác định'
+        };
     }
 };
+
 
