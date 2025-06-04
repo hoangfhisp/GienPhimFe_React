@@ -752,3 +752,17 @@ export const fetchLuaChonGoiTVByIdAndNgay = async (goiTVId, ngay) => {
         };
     }
 };
+
+// add phim bằng api kk phim
+export const AddPhimByApi = async (api) => {
+    try {
+        const res = await request.get('/Phim/kkPhim/LuuDuLieu',{
+            params:{
+                api
+            }
+        })
+        return res;
+        } catch (error) {
+        console.error("Lỗi khi add phim api:", error);
+    }
+}

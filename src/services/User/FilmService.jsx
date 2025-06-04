@@ -139,7 +139,7 @@ export const CheckLikeDislikeUser = async (phimId,nguoiDungId) => {
 // Lấy hết thể loại
 export const GetAllTheLoai = async () => {
     try {
-        const res = await request.get('/TheLoai');
+        const res = await request.get('/Admin/QuanTriVienTheLoai/TheLoai');
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
