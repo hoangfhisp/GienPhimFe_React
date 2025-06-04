@@ -4,6 +4,8 @@ import './FilmCard.scss'
 export default function FilmCard({data}){
     const [dataTheLoai,setDataTheLoai] = useState([]);
     const [dataDienVien,setDataDienVien] = useState([]);
+    const [rating,setRating] = useState([]);
+    
 
     useEffect(() => {
         if(data?.theLoai){
@@ -12,14 +14,19 @@ export default function FilmCard({data}){
         if(data?.dienVien){
             setDataDienVien(data.dienVien);
         }
-    },[dataTheLoai,dataDienVien])
+        const rate = (data.luotThichP + data.luotDislikeP) === 0
+        ? 0
+        : ((data.luotThichP / (data.luotThichP + data.luotDislikeP)) * 10).toFixed(1);
 
+      setRating(isNaN(rate) ? "0" : rate);
+    },[dataTheLoai,dataDienVien])
+    
 
     return(
         <div className="phim-card-box">
                 <h4 className="phim-card-Title">{data.tenP}</h4>
                 <p className="phim-card-Info">
-                    <span>⭐ {(data.luotThichP / (data.luotThichP + data.luotThichP))*100}</span>
+                    <span>⭐ {rating}</span>
                     <span>📺 {data.soTapP} Tập</span>
                     <span>⌛ {data.thoiLuongP}</span>
                     <span>📅 2025</span>

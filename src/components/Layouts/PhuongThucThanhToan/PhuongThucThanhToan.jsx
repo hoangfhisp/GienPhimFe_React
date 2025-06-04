@@ -81,10 +81,16 @@ function PhuongThucThanhToan() {
                         <PhuongThuc link={"/NapTien/Momo"} img={momoImg}>Tài khoản ví điện tử Momo</PhuongThuc>
                     </div>
                     <div className="back-link-container">
+                        <Link to="/LichSuGiaoDich" className="back-link">
+                            <i className="fas fa-arrow-left"></i> Xem lịch sử giao dịch
+                        </Link>
+                    </div>
+                    <div className="back-link-container">
                         <Link to="/Home" className="back-link">
                             <i className="fas fa-arrow-left"></i> Trở về
                         </Link>
                     </div>
+                    
                 </div>
             </div>
             {isThongBao &&  
