@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './QuangCao.scss';
-import * as managerServices from '../../../services/ManagerService.jsx';
+import * as managerServices from '../../../services/User/ManagerService'
 
 export function QuangCaoNgang({ src, href, userId }) {
     const [dataGoiTV, setDataGoiTV] = useState(null);
@@ -15,7 +15,7 @@ export function QuangCaoNgang({ src, href, userId }) {
         const fetchData = async () => {
             try {
                 const result = await managerServices.GetChiTietGoiTVByUser(userId);
-                setDataGoiTV(result?.goiThanhVien );
+                setDataGoiTV(result?.goiThanhVien);
                 setDataCTGoi(result?.data)
             } catch (error) {
                 console.error("Lỗi khi lấy gói thành viên:", error);
@@ -28,15 +28,15 @@ export function QuangCaoNgang({ src, href, userId }) {
     console.log(dataGoiTV); // ✅ debug hợp lý
 
     const isHetHan = () => {
-        if (dataCTGoi.length === 0) return true; 
+        if (dataCTGoi.length === 0) return true;
         const ngayKT = new Date(dataCTGoi[0].ngayKetThuc);
-        return ngayKT < new Date(); 
+        return ngayKT < new Date();
     };
 
 
     return (
         <>
-            {(!dataGoiTV?.slugGoiTV || isHetHan())  && (
+            {(!dataGoiTV?.slugGoiTV || isHetHan()) && (
                 <a href={href} className="quangcao-ngang" target="_blank" rel="noopener noreferrer">
                     <img src={src} alt="Quảng cáo" />
                 </a>

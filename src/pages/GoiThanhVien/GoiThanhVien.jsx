@@ -9,7 +9,7 @@ import Plan from '../../components/Layouts/Plan/Plan.jsx';
 import ThongBao from '../../components/Layouts/ThongBao/ThongBao.jsx';
 import * as authHooks from '../../hooks/auth.jsx';
 import * as authServices from '../../services/Admin/AuthenticationService.jsx';
-import * as managerServices from '../../services/ManagerService.jsx';
+import * as managerServices from '../../services/User/ManagerService';
 import { formatDate, formatVND } from '../../untils/Format.jsx';
 
 export default function GoiThanhVien() {

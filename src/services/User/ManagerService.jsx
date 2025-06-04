@@ -1,4 +1,4 @@
-import * as request from "../untils/Request.jsx";
+import * as request from "../../untils/Request.jsx";
 
 export const getListGoiThanhVien = async () => {
     try {
@@ -20,9 +20,9 @@ export const getAllLuaChonGoiTV = async () => {
     }
 }
 
-export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (goiTVId,ngay) => {
+export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (goiTVId, ngay) => {
     try {
-        const res = await request.get('/LuaChonGoiTV/GetLuaChonGoiTVByIdAndNgay',{
+        const res = await request.get('/LuaChonGoiTV/GetLuaChonGoiTVByIdAndNgay', {
             params: {
                 goiTVId,
                 ngay
@@ -35,13 +35,13 @@ export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (goiTVId,ngay) => {
     }
 }
 
-export const XuLyChiTietMuaGoiTVUser = async (luaChonGoiTVId,userId) => {
+export const XuLyChiTietMuaGoiTVUser = async (luaChonGoiTVId, userId) => {
     try {
-        const res = await request.post('/ChiTietGoiThanhVien/XuLyChiTietMuaGoiTVUser',{
+        const res = await request.post('/ChiTietGoiThanhVien/XuLyChiTietMuaGoiTVUser', {
             luaChonGoiTVId,
             userId
         });
-        
+
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
@@ -51,7 +51,7 @@ export const XuLyChiTietMuaGoiTVUser = async (luaChonGoiTVId,userId) => {
 
 export const CheckXuLyGoiHetHanUser = async (userId) => {
     try {
-        const res = await request.get('/ChiTietGoiThanhVien/CheckXuLyGoiTVHetHan',{
+        const res = await request.get('/ChiTietGoiThanhVien/CheckXuLyGoiTVHetHan', {
             params: {
                 userId
             }
@@ -65,7 +65,7 @@ export const CheckXuLyGoiHetHanUser = async (userId) => {
 
 export const GetChiTietGoiTVByUser = async (userId) => {
     try {
-        const res = await request.get('/ChiTietGoiThanhVien/GetChiTietGoiTVByUser',{
+        const res = await request.get('/ChiTietGoiThanhVien/GetChiTietGoiTVByUser', {
             params: {
                 userId
             }
