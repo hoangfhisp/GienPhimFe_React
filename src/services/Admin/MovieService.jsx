@@ -657,18 +657,18 @@ export const createGoiThanhVien = (goiThanhVienData) => {
     }).catch(handleError);
 };
 
-// Cập nhật gói thành viên (nếu bạn có route update)
+// Cập nhật gói thành viên (đúng route mới)
 export const updateGoiThanhVien = (id, goiThanhVienData) => {
     const isFormData = goiThanhVienData instanceof FormData;
 
-    return request.put(`/GoiThanhVien/CapNhat/${id}`, goiThanhVienData, {
+    return request.put(`/GoiThanhVien/UpdateGoiThanhVien/${id}`, goiThanhVienData, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
 };
 
-// Xóa gói thành viên (nếu có API delete)
+// Xóa gói thành viên (đúng route mới)
 export const deleteGoiThanhVien = (id) => {
-    return request.deleteRequest(`/GoiThanhVien/Xoa/${id}`).catch(handleError);
+    return request.deleteRequest(`/GoiThanhVien/DeleteGoiThanhVien/${id}`).catch(handleError);
 };
 
 // Lấy danh sách tất cả gói thành viên
@@ -704,6 +704,21 @@ export const createLuaChonGoiTV = (luaChonData) => {
     return request.post('/LuaChonGoiTV/AddLuachonGoiTV', luaChonData, {
         headers: isFormData ? {} : { 'Content-Type': 'application/json' }
     }).catch(handleError);
+};
+
+// ✅ Cập nhật lựa chọn gói thành viên
+export const updateLuaChonGoiTV = (id, luaChonData) => {
+    const isFormData = luaChonData instanceof FormData;
+
+    return request.put(`/LuaChonGoiTV/UpdateLuaChonGoiTV/${id}`, luaChonData, {
+        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+    }).catch(handleError);
+};
+
+// ✅ Xoá lựa chọn gói thành viên
+export const deleteLuaChonGoiTV = (id) => {
+    return request.deleteRequest(`/LuaChonGoiTV/DeleteLuaChonGoiTV/${id}`)
+        .catch(handleError);
 };
 
 // ✅ Lấy tất cả lựa chọn gói thành viên

@@ -79,7 +79,9 @@ export default function GoiThanhVienList() {
         try {
             setLoading(true);
 
-            if (cardAction === 'create') {
+            const isCreate = cardAction === 'create';
+
+            if (isCreate) {
                 goiTVData.thoiGianTao = new Date().toISOString();
                 goiTVData.thoiGianCapNhat = new Date().toISOString();
 
@@ -91,9 +93,16 @@ export default function GoiThanhVienList() {
                     console.warn("Unknown creationType:", creationType);
                 }
             } else {
-                // Chỉ cập nhật goiThanhVien, có thể mở rộng nếu muốn update luaChonGoiTV
-                const id = goiTVData.get ? goiTVData.get("goiTVId") : goiTVData.goiTVId;
-                await movieServices.updateGoiThanhVien(id, goiTVData);
+                // Update
+                if (creationType === 'goiThanhVien') {
+                    const id = goiTVData.get ? goiTVData.get("goiTVId") : goiTVData.goiTVId;
+                    await movieServices.updateGoiThanhVien(id, goiTVData);
+                } else if (creationType === 'luaChonGoiTV') {
+                    const id = goiTVData.get ? goiTVData.get("luaChonGoiTVId") : goiTVData.luaChonGoiTVId;
+                    await movieServices.updateLuaChonGoiTV(id, goiTVData);
+                } else {
+                    console.warn("Unknown update creationType:", creationType);
+                }
             }
 
             fetchApi();
@@ -106,11 +115,21 @@ export default function GoiThanhVienList() {
     };
 
     const handleDelete = async (goiTV) => {
-        if (!window.confirm(`Bạn chắc chắn muốn xóa gói thành viên "${goiTV.tenGoiTV}"?`)) return;
+        if (!window.confirm(`Bạn chắc chắn muốn xóa mục này?`)) return;
 
         try {
             setLoading(true);
-            await movieServices.deleteGoiThanhVien(goiTV.goiTVId);
+
+            if (goiTV.luaChonGoiTVId) {
+                // Là LuaChonGoiTV
+                await movieServices.deleteLuaChonGoiTV(goiTV.luaChonGoiTVId);
+            } else if (goiTV.goiTVId) {
+                // Là GoiThanhVien
+                await movieServices.deleteGoiThanhVien(goiTV.goiTVId);
+            } else {
+                console.warn("Không xác định được loại dữ liệu cần xóa.");
+            }
+
             fetchApi();
             handleCloseCard();
         } catch (error) {
