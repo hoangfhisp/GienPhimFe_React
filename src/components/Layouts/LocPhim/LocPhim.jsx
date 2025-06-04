@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import * as requestTheLoai from '../../../services/Admin/MovieService.jsx';
 import * as requestQuocGia from '../../../services/Admin/MovieService.jsx';
 import * as requestNgonNgu from '../../../services/Admin/MovieService.jsx';
-
+import * as movieServices from '../../../services/Admin/MovieService.jsx';
 import { fetchFilterMovies, searchMovies } from '../../../services/Admin/MovieService';
 import ListPhim from "../AdminList/ListPhim.jsx";
 
@@ -21,6 +21,7 @@ const LocPhim = () => {
     const [movies, setMovies] = useState([]);
     const [pagination, setPagination] = useState({ currentPage: 1, itemsPerPage: 10, totalItems: 0 });
     const [loading, setLoading] = useState(false);
+    const [tenPhimApi, setTenPhimApi] = useState('');
 
 
     useEffect(() => {
@@ -124,6 +125,15 @@ const LocPhim = () => {
         fetchData(pagination.currentPage);
     }, [pagination.currentPage]);
 
+    const HandleAddPhimApi = async (valua) => {
+        if (!valua)
+            return;
+        var add = await movieServices.AddPhimByApi(valua);
+        window.alert(add);
+        setTenPhimApi(''); // reset input
+        fetchData(1);
+    }
+
     return (
         <>
             <div className="card mb-4">
@@ -183,7 +193,28 @@ const LocPhim = () => {
                                 ))}
                             </select>
                         </div>
-
+                        <h5 className="card-title mt-4">Thêm phim bằng API</h5>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                HandleAddPhimApi(tenPhimApi);
+                            }}
+                            className="mb-3"
+                        >
+                            <div className="input-group">
+                                <input
+                                    className="form-control"
+                                    name="tenPhimApi"
+                                    type="text"
+                                    placeholder="Nhập tên phim cần thêm..."
+                                    value={tenPhimApi}
+                                    onChange={e => setTenPhimApi(e.target.value)}
+                                />
+                                <button className="btn btn-success" type="submit">
+                                    <i className="fas fa-plus me-2"></i>Thêm phim
+                                </button>
+                            </div>
+                        </form>
                         <div className="col-12">
                             <button onClick={handleLocPhim} className="btn btn-secondary me-2">
                                 <i className="fas fa-filter me-2"></i>Lọc phim
