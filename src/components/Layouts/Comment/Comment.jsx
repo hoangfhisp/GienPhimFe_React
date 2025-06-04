@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import './Comment.scss';
 
 import ReplyComment from './ReplyComment';
-import * as managerServices from '../../../services/ManagerService.jsx'
+import * as managerServices from '../../../services/User/ManagerService.jsx'
 import { formatDateTime } from '../../../untils/Format.jsx';
 import avatarNull from '../../../assets/img/avatar.png'
 
-function Comment({ phimId, userId,roleUser, onShowTB, onformTB }) {
+function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
     const [showRepliesMap, setShowRepliesMap] = useState({});
     const [dataComment, setDataComment] = useState([]);
     const [newComment, setNewComment] = useState([]);
@@ -25,12 +25,12 @@ function Comment({ phimId, userId,roleUser, onShowTB, onformTB }) {
 
         fetchApiComment();
 
-    }, [phimId,roleUser, userId])
+    }, [phimId, roleUser, userId])
 
     //Gọi api lấy comment
     const fetchApiComment = async (pageNumber = 1) => {
         const res = await managerServices.GetCommentByPhim(phimId, pageNumber, 5);
-        setDataComment(res.data ||[]);
+        setDataComment(res.data || []);
         setPage(pageNumber);
         setNewComment("");
         setPagi(res.pagination);
@@ -153,7 +153,7 @@ function Comment({ phimId, userId,roleUser, onShowTB, onformTB }) {
                             <div className="comment-header">
                                 <img src={res.user?.avatarND ? res.user.avatarND : avatarNull} alt={res.user?.nameND ? res.user?.nameND : "Ẩn Danh"} className="comment-avatar" />
                                 <div>
-                                    <strong className={`comment-author ${(res.user?.id === userId ) ? "me":""}`}>{res.user?.nameND ? res.user.nameND : "Ẩn Danh"} {(res.user?.id === userId ) ? "( Bạn )":""}</strong>
+                                    <strong className={`comment-author ${(res.user?.id === userId) ? "me" : ""}`}>{res.user?.nameND ? res.user.nameND : "Ẩn Danh"} {(res.user?.id === userId) ? "( Bạn )" : ""}</strong>
                                     <span className="comment-time">{formatDateTime(res.thoiGianTao)}</span>
                                 </div>
                             </div>
@@ -230,7 +230,7 @@ function Comment({ phimId, userId,roleUser, onShowTB, onformTB }) {
                                 ) : (
                                     <div className="comment-reply">
                                         {res.replies.map((resr) => (
-                                            <ReplyComment key={resr.commentId} phimId={phimId} data={resr}  userId={userId} onformTB={onformTB} onShowTB={onShowTB} fetchApiComment={fetchApiComment} />
+                                            <ReplyComment key={resr.commentId} phimId={phimId} data={resr} userId={userId} onformTB={onformTB} onShowTB={onShowTB} fetchApiComment={fetchApiComment} />
                                         ))}
                                         <button className="comment-reply-toggle" onClick={() => toggleReplies(res.commentId)}>
                                             Ẩn bình luận &uarr;

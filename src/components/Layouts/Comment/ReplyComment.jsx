@@ -2,9 +2,9 @@ import { useState } from 'react';
 import './Comment.scss';
 import avatarNull from '../../../assets/img/avatar.png';
 import { formatDateTime } from '../../../untils/Format';
-import * as managerServices from '../../../services/ManagerService.jsx';
+import * as managerServices from '../../../services/User/ManagerService.jsx';
 
-function ReplyComment({ data, userId,phimId, fetchApiComment,onShowTB,onformTB }) {
+function ReplyComment({ data, userId, phimId, fetchApiComment, onShowTB, onformTB }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editText, setEditText] = useState(data.binhLuan);
 
@@ -25,8 +25,8 @@ function ReplyComment({ data, userId,phimId, fetchApiComment,onShowTB,onformTB }
         try {
             await managerServices.DeleteComment(data.commentId);
             fetchApiComment();
-            
-             const successForm = {
+
+            const successForm = {
                 type: "success",
                 title: "Xóa thành công",
                 message: "Bình luận đã được xóa.",
