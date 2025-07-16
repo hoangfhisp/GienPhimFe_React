@@ -121,6 +121,44 @@ export const fetchEpisodes = async (page, limit) => {
     }
 };
 
+// Lấy danh sách tập phim theo phimId
+export const fetchEpisodesByMovieId = async (phimId) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienTapPhim/TapTheoPhim', {
+            params: {
+                phimId
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách tập phim:", error);
+        throw new Error(error.response?.data?.Msg || 'Lỗi khi lấy danh sách tập phim');
+    }
+};
+
+// Lấy chi tiết một tập phim theo phimId và tapPhimId
+export const fetchEpisodeDetail = async (phimId, tapPhimId) => {
+    try {
+        const response = await request.get('/Admin/QuanTriVienTapPhim/ChiTietTapPhim', {
+            params: {
+                phimId,
+                tapPhimId
+            }
+        });
+
+        return response;
+
+    } catch (error) {
+        console.error("Lỗi khi lấy chi tiết tập phim:", error);
+        return {
+            status: false,
+            data: null,
+            msg: error.response?.data?.Msg || error.message || 'Lỗi khi lấy thông tin tập phim'
+        };
+    }
+};
+
 // Tạo tập phim mới
 export const createEpisode = (episodeData) => {
     const isFormData = episodeData instanceof FormData;
@@ -697,7 +735,7 @@ export async function getLuaChonGoiTVFormFields() {
     }
 }
 
-// ✅ Thêm lựa chọn gói thành viên
+// Thêm lựa chọn gói thành viên
 export const createLuaChonGoiTV = (luaChonData) => {
     const isFormData = luaChonData instanceof FormData;
 
@@ -706,7 +744,7 @@ export const createLuaChonGoiTV = (luaChonData) => {
     }).catch(handleError);
 };
 
-// ✅ Cập nhật lựa chọn gói thành viên
+// Cập nhật lựa chọn gói thành viên
 export const updateLuaChonGoiTV = (id, luaChonData) => {
     const isFormData = luaChonData instanceof FormData;
 
@@ -715,13 +753,13 @@ export const updateLuaChonGoiTV = (id, luaChonData) => {
     }).catch(handleError);
 };
 
-// ✅ Xoá lựa chọn gói thành viên
+// Xoá lựa chọn gói thành viên
 export const deleteLuaChonGoiTV = (id) => {
     return request.deleteRequest(`/LuaChonGoiTV/DeleteLuaChonGoiTV/${id}`)
         .catch(handleError);
 };
 
-// ✅ Lấy tất cả lựa chọn gói thành viên
+// Lấy tất cả lựa chọn gói thành viên
 export const fetchAllLuaChonGoiTV = async () => {
     try {
         const response = await request.get('/LuaChonGoiTV/GetAllLuaChonGoiTV');
@@ -736,7 +774,7 @@ export const fetchAllLuaChonGoiTV = async () => {
     }
 };
 
-// ✅ Lấy lựa chọn gói thành viên theo ID và số ngày
+// Lấy lựa chọn gói thành viên theo ID và số ngày
 export const fetchLuaChonGoiTVByIdAndNgay = async (goiTVId, ngay) => {
     try {
         const response = await request.get('/LuaChonGoiTV/GetLuaChonGoiTVByIdAndNgay', {
@@ -756,13 +794,13 @@ export const fetchLuaChonGoiTVByIdAndNgay = async (goiTVId, ngay) => {
 // add phim bằng api kk phim
 export const AddPhimByApi = async (api) => {
     try {
-        const res = await request.get('/Phim/kkPhim/LuuDuLieu',{
-            params:{
+        const res = await request.get('/Phim/kkPhim/LuuDuLieu', {
+            params: {
                 api
             }
         })
         return res;
-        } catch (error) {
+    } catch (error) {
         console.error("Lỗi khi add phim api:", error);
     }
 }
