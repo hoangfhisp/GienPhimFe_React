@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { useForm, Controller } from 'react-hook-form';
@@ -8,14 +8,13 @@ const Card = ({
     action,
     data,
     formFields = [],
-    dataAllEpisodes = [],
     onClose,
     onSave,
     onDelete,
-    currentPhimId,
-    onEpisodeSelect,
+    episodeOptions = [],
+    selectedEpisodeId,
+    onEpisodeSelect
 }) => {
-    const resolvedPhimId = currentPhimId || data?.phimId;
     const {
         register,
         handleSubmit,
@@ -25,15 +24,6 @@ const Card = ({
         setValue,
         formState: { isSubmitting }
     } = useForm({ defaultValues: {} });
-
-    const tapPhimOptions = useMemo(() => {
-        return dataAllEpisodes
-            .filter(ep => String(ep.phimId) === String(resolvedPhimId))
-            .map(ep => ({
-                value: String(ep.tapId),
-                label: ep.tenTap || 'Không rõ tên tập'
-            }));
-    }, [dataAllEpisodes, resolvedPhimId]);
 
     useEffect(() => {
         const processed = {};
@@ -53,21 +43,8 @@ const Card = ({
             processed[field.name] = value;
         });
 
-        if (data?.tapPhimId) {
-            processed.selectedEpisode = data.tapPhimId;
-        }
-
         reset(processed);
     }, [data, formFields, reset]);
-
-    const handleEpisodeChange = async (selectedOption) => {
-        if (selectedOption) {
-            setValue('selectedEpisode', selectedOption.value); // Giữ lại selected
-            if (onEpisodeSelect) {
-                await onEpisodeSelect(selectedOption.value);
-            }
-        }
-    };
 
     const onSubmit = async (formData) => {
         await onSave(formData);
@@ -105,75 +82,6 @@ const Card = ({
         }
     };
 
-    return (
-        <div className="card-overlay">
-            <div className="card-modal">
-                {action === 'view' ? (
-                    <div className="view-mode">
-                        <h3>Xem chi tiết</h3>
-                        {formFields.map(field => (
-                            <div key={field.name} className="form-group">
-                                <label><strong>{field.label}:</strong></label>
-                                <div>{getDisplayValue(field, data?.[field.name])}</div>
-                            </div>
-                        ))}
-                        <div className="form-actions">
-                            <button type="button" className="cancel-btn" onClick={onClose}>Đóng</button>
-                        </div>
-                    </div>
-                ) : (
-                    <form onSubmit={handleSubmit(onSubmit)} className="edit-form">
-                        <h3>{action === 'edit' ? 'Chỉnh sửa' : 'Thêm mới'}</h3>
-
-                        {tapPhimOptions.length > 0 && (
-                            <div className="form-group">
-                                <label>Chọn tập phim:</label>
-                                <Controller
-                                    name="selectedEpisode"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={tapPhimOptions}
-                                            value={tapPhimOptions.find(opt => opt.value === field.value) || null}
-                                            onChange={(opt) => {
-                                                field.onChange(opt?.value);
-                                                handleEpisodeChange(opt);
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </div>
-                        )}
-
-                        {formFields.map(field => (
-                            <div key={field.name} className="form-group">
-                                <label>{field.label}</label>
-                                {renderField(field)}
-                            </div>
-                        ))}
-
-                        <div className="form-actions">
-                            <button type="submit" className="save-btn" disabled={isSubmitting}>Lưu</button>
-                            {action === 'edit' && data?.tapId && (
-                                <button
-                                    type="button"
-                                    className="delete-btn"
-                                    onClick={() => {
-                                        if (window.confirm('Bạn có chắc chắn muốn xóa không?')) {
-                                            onDelete(data);
-                                        }
-                                    }}
-                                >Xóa</button>
-                            )}
-                            <button type="button" className="cancel-btn" onClick={onClose}>Đóng</button>
-                        </div>
-                    </form>
-                )}
-            </div>
-        </div>
-    );
-
     function renderField(field) {
         if (field.type === 'select') {
             const options = field.options || [];
@@ -200,7 +108,14 @@ const Card = ({
                 />
             );
         } else if (field.type === 'checkbox') {
-            return <input type="checkbox" {...register(field.name)} checked={watch(field.name)} />;
+            return (
+                <input
+                    type="checkbox"
+                    {...register(field.name)}
+                    checked={watch(field.name) || false}
+                    onChange={(e) => setValue(field.name, e.target.checked)}
+                />
+            );
         } else if (field.type === 'file') {
             return <input type="file" onChange={(e) => setValue(field.name, e.target.files[0])} />;
         } else if (field.type === 'textarea') {
@@ -209,18 +124,93 @@ const Card = ({
             return <input type={field.type || 'text'} {...register(field.name)} />;
         }
     }
+
+    return (
+        <div className="card-overlay">
+            <div className="card-modal">
+                {action === 'view' && (
+                    <div className="view-mode">
+                        <h3>Xem chi tiết</h3>
+                        {formFields.map(field => (
+                            <div key={field.name} className="form-group">
+                                <label><strong>{field.label}:</strong></label>
+                                <div>{getDisplayValue(field, data?.[field.name])}</div>
+                            </div>
+                        ))}
+                        <div className="form-actions">
+                            <button type="button" className="cancel-btn" onClick={onClose}>Đóng</button>
+                        </div>
+                    </div>
+                )}
+
+                {(action === 'edit' || action === 'create') && (
+                    <form onSubmit={handleSubmit(onSubmit)} className="edit-form">
+                        <h3>{action === 'edit' ? 'Chỉnh sửa' : 'Thêm mới'}</h3>
+
+                        {(action === 'edit' || action === 'create') && episodeOptions.length > 0 && (
+                            <div className="form-group">
+                                <label>Chọn tập phim</label>
+                                <Select
+                                    options={episodeOptions}
+                                    value={episodeOptions.find(opt => opt.value === selectedEpisodeId) || null}
+                                    onChange={(opt) => {
+                                        if (opt) onEpisodeSelect(opt.value);
+                                    }}
+                                    placeholder="Chọn tập cần chỉnh sửa"
+                                    isClearable
+                                />
+                            </div>
+                        )}
+
+                        {formFields.map(field => (
+                            <div key={field.name} className="form-group">
+                                <label>{field.label}</label>
+                                {renderField(field)}
+                            </div>
+                        ))}
+
+                        <div className="form-actions">
+                            <button type="submit" className="save-btn" disabled={isSubmitting}>
+                                {isSubmitting ? 'Đang lưu...' : 'Lưu'}
+                            </button>
+                            <button type="button" className="cancel-btn" onClick={onClose}>Đóng</button>
+                        </div>
+                    </form>
+                )}
+
+                {action === 'delete' && (
+                    <div className="delete-confirm">
+                        <h3>Xác nhận xóa</h3>
+                        <p>Bạn có chắc chắn muốn xóa tập phim <strong>{data?.tenTap}</strong> không?</p>
+                        <div className="form-actions">
+                            <button
+                                className="delete-btn"
+                                onClick={() => onDelete(data)}
+                                disabled={isSubmitting}
+                            >
+                                Xóa
+                            </button>
+                            <button type="button" className="cancel-btn" onClick={onClose}>
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 Card.propTypes = {
-    action: PropTypes.oneOf(['view', 'edit', 'create', 'delete']).isRequired,
+    action: PropTypes.oneOf(['view', 'edit', 'create']).isRequired,
     data: PropTypes.object,
     formFields: PropTypes.array,
-    dataAllEpisodes: PropTypes.array,
     onClose: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     onDelete: PropTypes.func,
-    currentPhimId: PropTypes.string,
-    onEpisodeSelect: PropTypes.func,
+    episodeOptions: PropTypes.array,
+    selectedEpisodeId: PropTypes.string,
+    onEpisodeSelect: PropTypes.func
 };
 
 export default Card;

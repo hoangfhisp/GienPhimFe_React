@@ -11,7 +11,10 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
     const [formFields, setFormFields] = useState([]);
     const [viewFull, setViewFull] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
-    const [allEpisodesForSelectedMovie, setAllEpisodesForSelectedMovie] = useState([]);
+
+    // Episode management states
+    const [episodeOptions, setEpisodeOptions] = useState([]);
+    const [selectedEpisodeId, setSelectedEpisodeId] = useState(null);
 
     const normalizeEpisodeForForm = useCallback((episode) => {
         return {
@@ -19,21 +22,6 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
             phimId: episode.phimId?.toString() || "",
         };
     }, []);
-
-    const mapToBackendFormat = (data) => {
-        if (data instanceof FormData) return data;
-        return {
-            TapPhimId: data.tapPhimId || null,
-            PhimId: data.phimId || "",
-            TenTap: data.tenTap || "",
-            SlugTap: data.slugTap || "",
-            TenFile: data.tenFile || "",
-            LinkChinh: data.linkChinh || "",
-            LinkPhu: data.linkPhu || "",
-            ThoiGianTao: data.thoiGianTao || "",
-            ThoiGianCapNhat: data.thoiGianCapNhat || ""
-        };
-    };
 
     const mapToFormData = useCallback((data) => {
         const formData = new FormData();
@@ -92,23 +80,28 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
             console.log('Normalized episode data:', normalizedData);
 
             setCurrentEpisode({ ...normalizedData, phimId });
+            setSelectedEpisodeId(tapPhimId);
         } catch (error) {
             console.error("Lỗi khi lấy chi tiết tập phim:", error);
-            console.error('Error details:', {
-                message: error.message,
-                response: error.response,
-                config: error.config
-            });
         } finally {
             setLoading(false);
         }
     }, [normalizeEpisodeForForm]);
 
+    // Format episodes thành options cho Select component
+    const formatEpisodeOptions = useCallback((episodes, phimId) => {
+        return episodes
+            .filter(ep => String(ep.phimId) === String(phimId))
+            .map(ep => ({
+                value: String(ep.tapId),
+                label: ep.tenTap || 'Không rõ tên tập'
+            }));
+    }, []);
+
     const handleEpisodeSelect = useCallback(async (tapPhimId) => {
         console.log('--- handleEpisodeSelect called ---');
         const phimId = currentEpisode?.phimId || selectedMovie;
-        console.log('Current phimId:', phimId, 'from:',
-            currentEpisode?.phimId ? 'currentEpisode' : 'selectedMovie');
+        console.log('Current phimId:', phimId);
         console.log('Selected tapPhimId:', tapPhimId);
 
         if (!phimId || !tapPhimId) {
@@ -119,6 +112,19 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
         await fetchEpisodeDetail(phimId, tapPhimId);
     }, [currentEpisode?.phimId, selectedMovie, fetchEpisodeDetail]);
 
+    const prepareEpisodeOptionsForMovie = useCallback(async (phimId) => {
+        if (!phimId) return [];
+
+        console.log('Fetching episodes for phimId:', phimId);
+        const episodes = await fetchEpisodesByMovieId(phimId);
+        console.log('Fetched episodes:', episodes);
+
+        const options = formatEpisodeOptions(episodes, phimId);
+        console.log('Formatted episode options:', options);
+
+        setEpisodeOptions(options);
+        return episodes;
+    }, [fetchEpisodesByMovieId, formatEpisodeOptions]);
 
     useEffect(() => {
         if (data && data.length > 0) {
@@ -153,14 +159,9 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
         if (action === 'edit') {
             // Nếu episodeOrMovie là tập phim (edit tập phim)
             phimId = episodeOrMovie.phimId || selectedMovie;
-            console.log('Edit mode - phimId:', phimId, 'from:',
-                episodeOrMovie.phimId ? 'episodeOrMovie' : 'selectedMovie');
         } else {
             // Trường hợp khác (view hoặc create)
             phimId = episodeOrMovie.phimId || episodeOrMovie?.tapPhims?.[0]?.phimId || selectedMovie;
-            console.log('Other action - phimId:', phimId, 'from:',
-                episodeOrMovie.phimId ? 'episodeOrMovie' :
-                    episodeOrMovie?.tapPhims?.[0]?.phimId ? 'tapPhims[0]' : 'selectedMovie');
         }
 
         if (!phimId) {
@@ -168,26 +169,28 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
             return;
         }
 
-        console.log('Fetching episodes for phimId:', phimId);
-        const episodes = await fetchEpisodesByMovieId(phimId);
-        console.log('Fetched episodes:', episodes);
+        // Prepare episode options cho movie này
+        await prepareEpisodeOptionsForMovie(phimId);
 
         const normalizedData = normalizeEpisodeForForm(
             episodeOrMovie.tapPhims?.[0] ? { ...episodeOrMovie.tapPhims[0], phimId } : episodeOrMovie
         );
-        console.log('Normalized data:', normalizedData);
 
         setSelectedMovie(phimId);
-        setAllEpisodesForSelectedMovie(episodes);
         setCurrentEpisode(normalizedData);
-    }, [fetchEpisodesByMovieId, normalizeEpisodeForForm, selectedMovie]);
 
+        // Set selected episode ID cho Card component
+        const currentEpisodeId = normalizedData.tapPhimId || normalizedData.tapId;
+        setSelectedEpisodeId(currentEpisodeId ? String(currentEpisodeId) : null);
+    }, [prepareEpisodeOptionsForMovie, normalizeEpisodeForForm, selectedMovie]);
 
     const handleCloseCard = useCallback(() => {
         setViewFull(false);
         setCardAction(null);
         setCurrentEpisode(null);
-        setAllEpisodesForSelectedMovie([]);
+        setEpisodeOptions([]);
+        setSelectedEpisodeId(null);
+        setSelectedMovie(null);
     }, []);
 
     const handleSave = useCallback(async (episodeData) => {
@@ -214,17 +217,24 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
         }
     }, [cardAction, currentEpisode, fetchApi, handleCloseCard, mapToFormData, pagination.currentPage]);
 
-    const handleDelete = useCallback(async (episode) => {
+    // FIX: Hàm xóa riêng biệt cho tập phim
+    const handleDeleteEpisode = useCallback(async (episode) => {
+        console.log('--- handleDeleteEpisode called ---');
+        console.log('Episode to delete:', episode);
+
         if (!window.confirm(`Bạn chắc chắn muốn xóa tập phim "${episode.tenTap}"?`)) return;
 
         try {
             setLoading(true);
             const tapPhimId = episode.tapPhimId || episode.id;
+            console.log('Deleting episode with ID:', tapPhimId);
+
             await movieServices.deleteEpisode(tapPhimId);
             handleCloseCard();
             await fetchApi(pagination.currentPage);
         } catch (error) {
             console.error("Lỗi khi xóa tập phim:", error);
+            alert(`Lỗi khi xóa: ${error.response?.data?.Msg || error.message}`);
         } finally {
             setLoading(false);
         }
@@ -320,11 +330,11 @@ export default function ListTapPhim({ page, limit, data, pagination, onPageChang
                     action={cardAction}
                     data={currentEpisode}
                     formFields={formFields}
-                    dataAllEpisodes={allEpisodesForSelectedMovie}
-                    currentPhimId={currentEpisode?.phimId || selectedMovie}
+                    episodeOptions={episodeOptions}
+                    selectedEpisodeId={selectedEpisodeId}
                     onClose={handleCloseCard}
                     onSave={handleSave}
-                    onDelete={handleDelete}
+                    onDelete={handleDeleteEpisode}
                     onEpisodeSelect={handleEpisodeSelect}
                 />
             )}
