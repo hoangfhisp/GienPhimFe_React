@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const request = axios.create({
-    baseURL: 'http://localhost:5039/api',
+    baseURL: process.env.GIENPHIM_BE_API_URL,
     withCredentials: true
 })
 
