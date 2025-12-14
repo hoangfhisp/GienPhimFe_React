@@ -1,17 +1,18 @@
 import * as request from "../../untils/Request.jsx";
 
-export const searchphim = async (tenp) => {
+export const searchphim = async (keyword) => {
     try {
-        const res = await request.get('/Search', {
+        const res = await request.get('/Phim/Search', {
             params: {
-                tenp,
+                keyword,
                 page: 1,
                 limit: 3
 
             }
         });
+        
         return res;
-
+        
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }

@@ -2,7 +2,7 @@ import * as request from "../../untils/Request.jsx";
 
 export const listphim = async (page, limit) => {
     try {
-        const res = await request.get('/phim', {
+        const res = await request.get('/phim/GetAllPhims', {
             params: {
                 page,
                 limit
@@ -15,11 +15,10 @@ export const listphim = async (page, limit) => {
     }
 }
 
-export const listTopLuotXemPhim = async (topphim,page,limit) =>{
+export const listTopLuotXemPhim = async (page,limit) =>{
     try {
-        const res = await request.get('/phim/TopPhim/LuotXem',{
+        const res = await request.get('/phim/GetTopViewPhims',{
             params:{
-                topphim, // Lấy top 5,... phim thì điền 5,...
                 page,
                 limit
             }
@@ -33,7 +32,7 @@ export const listTopLuotXemPhim = async (topphim,page,limit) =>{
 
 export const phim = async (id) =>{
     try {
-        const res = await request.get(`/phim/${id}`);
+        const res = await request.get(`/Phim/GetById/${id}`);
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
@@ -41,11 +40,10 @@ export const phim = async (id) =>{
     
 }
 
-export const newPhims = async (topphim,page,limit) => {
+export const newPhims = async (page,limit) => {
     try {
-        const res = await request.get('/phim/TopPhim/NewPhim',{
+        const res = await request.get('/phim/GetNewPhims',{
             params:{
-                topphim,
                 page,
                 limit
             }
