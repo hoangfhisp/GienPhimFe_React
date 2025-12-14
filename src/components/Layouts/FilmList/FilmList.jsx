@@ -7,16 +7,16 @@ import './FilmList.scss'
 import FilmItem from './FilmItem.jsx'
 import * as phimServices from '../../../services/User/FilmService.jsx'
 
-export default function FilmList({top,page,limit}){
+export default function FilmList({page,limit}){
     const[newPhimsResult,setNewPhimsResult] = useState([]);
 
     useEffect(() => {
         const  fetchApi = async () => {
-            const result = await phimServices.newPhims(top,page,limit);
+            const result = await phimServices.newPhims(page,limit);
             setNewPhimsResult(result.data)
         }
         fetchApi();
-    },[top,page,limit])
+    },[page,limit])
 
     return(
         <Swiper

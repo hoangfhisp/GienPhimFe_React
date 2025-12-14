@@ -24,7 +24,11 @@ export default function SearchFilm(){
         const fetchApi = async () => {
             
             const  result = await searchServices.searchphim(debounce);
-            setSearchResult(result.data)
+            if(result.status == true){
+                setSearchResult(result.data)
+            }else{
+                setShowResult(false);
+            }
         }
         fetchApi();
     },[debounce])

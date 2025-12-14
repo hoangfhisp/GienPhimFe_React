@@ -1,9 +1,13 @@
 import axios from "axios";
 
 const request = axios.create({
-    baseURL: 'http://localhost:5039/api',
-    withCredentials: true
-})
+    baseURL: process.env.REACT_APP_GIENPHIM_BE_API_URL,
+    withCredentials: true,
+    validateStatus: function (status) {
+        // Cho phép 200 và 404 đi qua then
+        return status >= 200 && status < 300 || status === 404;
+    }
+});
 
 export const get = async (path, options = {}) => { 
     const respones = await request.get(path,options);

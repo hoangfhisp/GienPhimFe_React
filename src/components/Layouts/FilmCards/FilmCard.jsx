@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './FilmCard.scss'
+import { formatYear } from '../../../untils/Format';
 
 export default function FilmCard({data}){
     const [dataTheLoai,setDataTheLoai] = useState([]);
@@ -8,11 +9,11 @@ export default function FilmCard({data}){
     
 
     useEffect(() => {
-        if(data?.theLoai){
-            setDataTheLoai(data.theLoai);
+        if(data?.theLoais){
+            setDataTheLoai(data.theLoais);
         }
-        if(data?.dienVien){
-            setDataDienVien(data.dienVien);
+        if(data?.dienViens){
+            setDataDienVien(data.dienViens);
         }
         const rate = (data.luotThichP + data.luotDislikeP) === 0
         ? 0
@@ -28,22 +29,22 @@ export default function FilmCard({data}){
                 <p className="phim-card-Info">
                     <span>⭐ {rating}</span>
                     <span>📺 {data.soTapP} Tập</span>
-                    <span>⌛ {data.thoiLuongP}</span>
-                    <span>📅 2025</span>
+                    <span>⌛ {data.thuoiLuongP}</span>
+                    <span>📅 {formatYear(data.ngayPhatHanhP)}</span>
                 </p>
                 <div className='phim-card-description'>
                     <h5>🎬 {data.moTaP}</h5>
                     <p>Studio:
-                       <span>Haicudi</span> 
+                       <span>{data.tenCTSXP}</span> 
                     </p>
                     <p>Thể Loại:
                         {dataTheLoai.map((result) => (
-                            <span>{result.tenTL}</span>
+                            <span>{result}</span>
                         ))}
                     </p>
                     <p>Diễn viên:
                     {dataDienVien.map((result) => (
-                            <span>{result.tenDV}</span>
+                            <span>{result}</span>
                         ))}
                     </p>
                 </div>

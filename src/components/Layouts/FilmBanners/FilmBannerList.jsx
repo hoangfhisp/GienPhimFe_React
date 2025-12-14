@@ -9,7 +9,7 @@ import * as phimServices from "../../../services/User/FilmService.jsx"
 import FilmBanner from "./FilmBanner";
 import './FilmBanners.scss'
 
-export default function FilmBannerList({top,page,limit}){
+export default function FilmBannerList({page,limit}){
     const [listMostViewsPhimResult,setListMostViewsPhimResult] = useState([]); // top lượt xem phim
 
 
@@ -17,7 +17,7 @@ export default function FilmBannerList({top,page,limit}){
             
             const fetchApi = async () => {
                 
-                const result = await phimServices.listTopLuotXemPhim(top,page,limit);
+                const result = await phimServices.listTopLuotXemPhim(page,limit);
                 setListMostViewsPhimResult(result.data);
             }
     
@@ -38,8 +38,8 @@ export default function FilmBannerList({top,page,limit}){
             loop={true}>
                 {listMostViewsPhimResult.map((result) => (
                     <SwiperSlide key={result.phimId}>
-                                <FilmBanner  data={result}/>
-                            </SwiperSlide>
+                        <FilmBanner  data={result}/>
+                    </SwiperSlide>
                 ))}
             </Swiper>
         </div>

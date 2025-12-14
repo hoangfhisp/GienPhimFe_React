@@ -17,7 +17,7 @@ import * as quangCao from '../../components/Layouts/QuangCao/QuangCao.jsx'
 
 export default function Home() {
     const [pagination,setPagination] = useState([]);
-    const [currentPage,setCurrentPage] = useState();
+    const [currentPage,setCurrentPage] = useState(1);
     
     const userId = authHook.getUserIdFromToken();
 
@@ -27,9 +27,9 @@ export default function Home() {
 
                 <BoxTitle>New Phim</BoxTitle>
 
-                <FilmList top={20} page={1} limit={20}/>
+                <FilmList  page={1} limit={20}/>
 
-                <FilmBannerList top={8} page={1} limit={10}></FilmBannerList>
+                <FilmBannerList page={1} limit={10}></FilmBannerList>
 
                 <br /><hr />
                 <BoxTitle>Đề Cử</BoxTitle>
