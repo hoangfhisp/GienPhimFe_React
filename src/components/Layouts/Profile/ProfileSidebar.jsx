@@ -8,7 +8,7 @@ function ProfileSidebar({dataU}){
 
     return(
         <div className="profile-sidebar">
-            <img src={dataU?.avatarND ? dataU?.avatarND : logouser} alt="Avatar" className ="avatar" />
+            <img src={dataU?.avatarND ? format.formatURLImage(dataU?.avatarND) : logouser} alt="Avatar" className ="avatar" />
                 <h2 className="lable-username">{dataU?.nameND ? dataU?.nameND : "Tên chưa cập nhật"}</h2>
                 <p className="join-date">Tham Gia: <br /> {format.formatDateTime(dataU?.thoiGianTao || 0)}</p>
             <div className="btn-update">

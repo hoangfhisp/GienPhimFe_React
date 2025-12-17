@@ -9,7 +9,7 @@ function SearchPhim(){
     const {type,timtheo} = useParams();
 
     const [pagination,setPagination] = useState([]);
-    const [currentPage,setCurrentPage] = useState();
+    const [currentPage,setCurrentPage] = useState(1);
 
     console.log(type)
     return(

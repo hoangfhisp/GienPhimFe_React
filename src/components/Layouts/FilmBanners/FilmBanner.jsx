@@ -33,7 +33,7 @@ export default function FilmBanner({data}){
                 <hr />
                 <div className="info-banner">
                         <span className="tag-banner">⭐ {rating}</span>
-                    <span>⏳ {data.thoiLuongP}</span>
+                    <span>⏳ {data.thuoiLuongP}</span>
                     <span>📅 { formatYear(data.ngayPhatHanhP)}</span>
                 </div>
                 <p>{data.moTaP}</p>

@@ -20,8 +20,8 @@ function FilmVideo({ id, tap, userId }) {
             return;
         }
         const fetchApi = async () => {
-            const dataTap = await phimServices.phim(id);
-            const danhSachTap = dataTap.tapCuaPhim || [];
+            const dataTap = await phimServices.tapPhims(id);
+            const danhSachTap = dataTap.data || [];
             setDataTapPhim(danhSachTap);
         }
 
@@ -43,11 +43,13 @@ function FilmVideo({ id, tap, userId }) {
 
         if (tap == null || userId == null)
             return;
+
+        var xuLyLichSuXemData = {phimId: id, userId, tapVuaXem: tap}
         const fetchApiXuLyLichSuXem = async () => {
-            await phimServices.XuLyLichXuXem(id, userId, tap);
+            await phimServices.XuLyLichSuXem(xuLyLichSuXemData);
         }
         fetchApiXuLyLichSuXem();
-    }, [tap])
+    }, [tap, id, userId])
 
     // Thiết lập loại mặc định (chính hoặc phụ) sau khi load danh sách tập
     useEffect(() => {
@@ -78,6 +80,9 @@ function FilmVideo({ id, tap, userId }) {
     console.log(tapPhim)
     // Hàm để chạy api update lại số lượt xem khi người dùng xem
     const Views = async (idphim, nguoiDungId) => {
+        if(nguoiDungId == null){
+            nguoiDungId = null;
+        }
         await phimServices.addLuotXem(idphim, nguoiDungId);
         setIsPlaying(true);
     }
@@ -86,7 +91,7 @@ function FilmVideo({ id, tap, userId }) {
         <>
             <div className="video-container">
 
-                <iframe src={tapPhim} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
+                <iframe src={tapPhim} title={`Xem phim - Tập ${tap}`} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
 
                 <div className="video-overlay" style={{ display: isPlaying ? "none" : "block" }}>
                     <p className="warning">WEBSITE CÓ NHIỀU QUẢNG CÁO!</p>

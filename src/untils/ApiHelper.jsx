@@ -1,35 +1,34 @@
 import axios from "axios";
-import { isTokenExpired } from "./jwtHelper";
-import { refreshToken as refreshTokenApi } from "./authService";
+import { isTokenExpired } from "../hooks/auth";
+import { refreshToken as refreshTokenApi } from "../services/Auth/AuthService";
+import env from "../config/Config";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+const apiPrivate = axios.create({
+  baseURL: env.API_URL,
   headers: {
-    "Content-Type": "application/json"
-  }
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
 });
 
-// ================= REQUEST INTERCEPTOR =================
-api.interceptors.request.use(
+// ================= REQUEST =================
+apiPrivate.interceptors.request.use(
   async (config) => {
-    let token = localStorage.getItem("jwt_token");
-    const refresh = localStorage.getItem("refresh_token");
+    let token = localStorage.getItem("token");
+    const refresh = localStorage.getItem("rf_token");
 
-    // Token hết hạn → refresh
     if (token && isTokenExpired(token)) {
-      console.warn("⚠️ Token hết hạn, đang refresh...");
-
       if (!refresh) {
+        localStorage.clear();
         window.location.href = "/login";
         return Promise.reject("No refresh token");
       }
 
-      const refreshResult = await refreshTokenApi(refresh);
+      const res = await refreshTokenApi(refresh);
 
-      if (refreshResult.status && refreshResult.data?.token) {
-        token = refreshResult.data.token;
-        localStorage.setItem("jwt_token", token);
-        console.log("✅ Token mới đã được lưu");
+      if (res?.data?.token) {
+        token = res.data.token;
+        localStorage.setItem("token", token);
       } else {
         localStorage.clear();
         window.location.href = "/login";
@@ -46,38 +45,32 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ================= RESPONSE INTERCEPTOR =================
-api.interceptors.response.use(
+// ================= RESPONSE =================
+apiPrivate.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    const refresh = localStorage.getItem("refresh_token");
+    const refresh = localStorage.getItem("rf_token");
 
-    // 401 → thử refresh rồi gọi lại request
-    if (
-      error.response?.status === 401 &&
-      refresh &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && refresh && !originalRequest._retry) {
       originalRequest._retry = true;
-      console.warn("⚠️ 401 → thử refresh lại token");
 
-      const refreshResult = await refreshTokenApi(refresh);
+      const res = await refreshTokenApi(refresh);
 
-      if (refreshResult.status && refreshResult.data?.token) {
-        const newToken = refreshResult.data.token;
-        localStorage.setItem("jwt_token", newToken);
+      if (res?.data?.token) {
+        const newToken = res.data.token;
+        localStorage.setItem("token", newToken);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return api(originalRequest);
-      } else {
-        localStorage.clear();
-        window.location.href = "/login";
+        return apiPrivate(originalRequest);
       }
+
+      localStorage.clear();
+      window.location.href = "/login";
     }
 
     return Promise.reject(error);
   }
 );
 
-export default api;
+export default apiPrivate;

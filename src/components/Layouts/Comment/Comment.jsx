@@ -3,7 +3,7 @@ import './Comment.scss';
 
 import ReplyComment from './ReplyComment';
 import * as managerServices from '../../../services/User/ManagerService.jsx'
-import { formatDateTime } from '../../../untils/Format.jsx';
+import { formatDateTime, formatURLImage } from '../../../untils/Format.jsx';
 import avatarNull from '../../../assets/img/avatar.png'
 
 function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
@@ -151,7 +151,7 @@ function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
                     dataComment.map((res) => (
                         <div key={res.commentId} className="comment-item">
                             <div className="comment-header">
-                                <img src={res.user?.avatarND ? res.user.avatarND : avatarNull} alt={res.user?.nameND ? res.user?.nameND : "Ẩn Danh"} className="comment-avatar" />
+                                <img src={res.user?.avatarND ? formatURLImage(res.user.avatarND) : avatarNull} alt={res.user?.nameND ? res.user?.nameND : "Ẩn Danh"} className="comment-avatar" />
                                 <div>
                                     <strong className={`comment-author ${(res.user?.id === userId) ? "me" : ""}`}>{res.user?.nameND ? res.user.nameND : "Ẩn Danh"} {(res.user?.id === userId) ? "( Bạn )" : ""}</strong>
                                     <span className="comment-time">{formatDateTime(res.thoiGianTao)}</span>

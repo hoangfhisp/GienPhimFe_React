@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 
 import * as authServices from "../../../services/Admin/AuthenticationService.jsx"
+import { formatURLImage } from "../../../untils/Format.jsx";
 
 function ProfileContent({dataU}) {
 
@@ -54,7 +55,7 @@ function ProfileContent({dataU}) {
         fomdata.append("nameND",formData.nameND)
         fomdata.append("gioiTinh",formData.gioiTinh)
         fomdata.append("moTa",formData.moTa)
-        fomdata.append("avatarND",formData.avatarND)
+        fomdata.append("avatarND",formatURLImage(formData.avatarND))
         fomdata.append("phoneNumber",formData.phoneNumber)
 
         const fetchApiUpdate = async () => {

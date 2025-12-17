@@ -14,20 +14,16 @@ export default function Login() {
     const handleSubmit = async (event) => {
         event.preventDefault(); // Ngừng hành động mặc định của form
 
-        const credentials = {
-            usernameOrEmail: email,
-            password: password,
-            rememberMe: rememberMe,
-        };
 
         try {
             // Gọi API đăng nhập từ service
-            const result = await AuthenticationService.login(credentials);
+            const result = await AuthenticationService.login(email,password);
 
             // Kiểm tra kết quả trả về từ API
             if (result.status) {
                 // Lưu token vào localStorage khi đăng nhập thành công
-                localStorage.setItem('token', result.token);
+                localStorage.setItem('token', result.data.token);
+                localStorage.setItem('rf_token', result.data.refreshToken);
 
                 navigate('/Home');
             } else {
