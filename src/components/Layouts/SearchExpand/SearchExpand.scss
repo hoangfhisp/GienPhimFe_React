@@ -1,0 +1,79 @@
+$icon-size: 44px;
+$main-color: rgba(255, 255, 255, 0.18);
+
+.search {
+    * {
+        outline: none;
+        box-sizing: border-box;
+    }
+}
+
+.search__wrapper {
+    position: relative;
+}
+
+/* input mặc định thu nhỏ, focus sẽ mở rộng */
+.search__field {
+    width: $icon-size;
+    height: $icon-size;
+
+    color: transparent;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+
+    padding: 0 ($icon-size) 0 14px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+
+    cursor: pointer;
+    background: transparent;
+
+    transition: all 0.3s ease-in-out;
+
+    &::placeholder {
+        color: transparent;
+    }
+
+    &:focus {
+        border-color: rgba(255, 255, 255, 0.85);
+        width: 320px; // bạn chỉnh theo NavBar
+        color: #ffffff;
+        cursor: text;
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        ~.search__icon {
+            background-color: transparent;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+    }
+}
+
+.search__icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    width: $icon-size;
+    height: $icon-size;
+
+    border: none;
+    border-radius: 999px;
+
+    font-size: 16px;
+    display: grid;
+    place-items: center;
+
+    background-color: $main-color;
+    color: #fff;
+
+    pointer-events: none; // giống mẫu: chỉ click được khi focus input
+    transition: background-color 0.2s ease-in-out;
+
+    &:active {
+        transform: translateY(1px);
+    }
+}
