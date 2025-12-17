@@ -1,4 +1,5 @@
 // src/services/User/UserService.jsx
+import apiHelper from "../../untils/ApiHelper.jsx";
 import axios from 'axios';
 
 const API_URL = 'http://localhost:5039/api/User';
@@ -68,3 +69,17 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
         };
     }
 };
+
+
+export const getWalletByUserId = async (userId) => {
+    try {
+        const res = await apiHelper.get('/Wallet/GetWalletByUserId',{
+            params:{
+                userId,
+            }
+        },true);
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}

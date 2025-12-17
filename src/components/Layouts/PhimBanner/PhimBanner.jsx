@@ -15,9 +15,10 @@ function PhimBanner({id}){
         }
 
         const fetchApi = async () => {
-            const result = await phimServices.phim(id);
-            setDataPhim(result.data);
-            setDataTap(result.tapCuaPhim);
+            const resultPhim = await phimServices.phim(id);
+            const resultTapPhim = await phimServices.tapPhims(id);
+            setDataPhim(resultPhim.data);
+            setDataTap(resultTapPhim.data);
         }
         fetchApi();
     },[id])
@@ -58,7 +59,7 @@ function PhimBanner({id}){
                                     <span className="reviews"> {`( ${dataPhim.luotThichP + dataPhim.luotDislikeP} )`} Đánh giá</span>
                             </div>
                             <div className="phim-stats">
-                                <span>⏳ {dataPhim.thoiLuongP}</span>
+                                <span>⏳ {dataPhim.thuoiLuongP}</span>
                                 <span>📅 {formatYear(dataPhim.ngayPhatHanhP)}</span>
                                 <span>👁️ {dataPhim.luotXemP} Lượt xem</span>
                             </div>

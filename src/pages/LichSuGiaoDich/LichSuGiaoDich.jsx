@@ -4,6 +4,7 @@ import Table from "../../components/Table/Table";
 import * as AuthenticationService from "../../services/Admin/AuthenticationService.jsx";
 import LoginContainer from '../../components/Login-container/Login-container';
 import * as authHook from "../../hooks/auth.jsx";
+import * as userService from '../../services/User/UserService.jsx';
 import '../../components/Login-container/Login.scss';
 import RenderPagination from '../../components/Commons/RenderPagination.jsx';
 
@@ -38,7 +39,10 @@ export default function LichSuGiaoDich() {
             if (!nguoiDungId) {
                 throw new Error("Không tìm thấy nguoiDungId");
             }
-            const result = await AuthenticationService.fetchLichSuGiaoDichs(nguoiDungId, currentPage, currentLimit);
+            const walletResponse = await userService.getWalletByUserId(nguoiDungId);
+            const walletId = walletResponse?.data.walletId;
+
+            const result = await AuthenticationService.fetchLichSuGiaoDichs(walletId, currentPage, currentLimit);
 
             if (result.status) {
                 setLichSuGiaoDichResult(result.data);
@@ -58,21 +62,24 @@ export default function LichSuGiaoDich() {
 
     
     const columns = [
+        { header: "Loại Giao Dịch", accessor: "loaiGiaoDich" },
+        { header: "Mô Tả", accessor: "moTa" },
         {
-            header: "Thời gian giao dịch",
-            accessor: "thoiGianGD",
-            render: row => new Date(row.thoiGianGD).toLocaleString()
+            header: "Thời Gian Giao Dịch",
+            accessor: "ngayGiaoDich",
+            render: row => new Date(row.ngayGiaoDich).toLocaleString()
         },
         {
-            header: "Số tiền",
-            accessor: "soTienGD",
-            render: row => row.soTienGD?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || ''
+            header: "Số Tiền Thay Đổi",
+            accessor: "soTienThayDoi",
+            render: row => row.soTienThayDoi?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || ''
         },
-        { header: "Nội dung", accessor: "noiDungGD" },
-        { header: "Mô tả", accessor: "moTaGD" },
-        { header: "Phương thức", accessor: "phuongThucGD" },
-        { header: "Trạng thái", accessor: "trangThaiGD" },
-        { header: "Mã đơn hàng", accessor: "maDonHang" }
+        {
+            header: "Số Tiền Sau Giao Dịch",
+            accessor: "soDuSauGiaoDich",
+            render: row => row.soDuSauGiaoDich?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) || ''
+        },
+        { header: "Trạng thái", accessor: "trangThai" },
     ];
 
 

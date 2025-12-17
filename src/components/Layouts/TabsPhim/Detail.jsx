@@ -12,8 +12,8 @@ function Detail({data,dataTap}){
             const tapmoi = dataTap.length > 0 ? dataTap[dataTap.length - 1].tenFile : null;
             setTapMoiNhat(tapmoi)
         }
-        if(data?.theLoai){
-            setDataTheLoai(data.theLoai);
+        if(data?.theLoais){
+            setDataTheLoai(data.theLoais);
         }
         if(data?.quocGia){
             setDataQuocGia(data.quocGia);
@@ -33,8 +33,8 @@ function Detail({data,dataTap}){
                 <strong>Thể loại:</strong> 
 
                 {dataTheLoai.map((result) => (
-                    <span className="genres" key={result.theLoaiId}>
-                            <span>{result.tenTL }</span>
+                    <span className="genres" key={result}>
+                            <span>{result }</span>
                     </span>
                 ))}
 
@@ -42,17 +42,13 @@ function Detail({data,dataTap}){
 
             <div className="phim-info-index detail-item">
                 <strong>Quốc gia:</strong> 
-
-                {dataQuocGia.map((result) => (
-                    <span className="country" key={result.quocGiaId}>
-                        <span>{result.tenQG}</span>
-                    </span>
-                ))}
-
+                <span className="country">
+                    <span>{dataQuocGia}</span>
+                </span>
             </div>
 
             <div className="phim-info-index detail-item">
-                <strong>Thời lượng:</strong> {data.thoiLuongP}
+                <strong>Thời lượng:</strong> {data.thuoiLuongP}
             </div>
 
             <div className ="phim-info-index detail-item">

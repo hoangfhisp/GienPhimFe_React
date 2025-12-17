@@ -22,7 +22,7 @@ export default function NavbarMenu(){
 
     useEffect(() => {
         const fetchApiAllTheLoai = async () => {
-            const resultTL = await phimServices.GetAllTheLoai();
+            const resultTL = await phimServices.GetAllTheLoai(1,20);
             setAllTheLoai(resultTL.data);
 
             const resultQG = await phimServices.GetAllQuocGia(1,12);

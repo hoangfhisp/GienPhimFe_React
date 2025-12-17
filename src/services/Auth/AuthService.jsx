@@ -6,10 +6,7 @@ export const refreshToken = async (refreshToken) => {
       refreshToken
     });
 
-    return {
-      status: true,
-      data: res.data
-    };
+    return res;
   } catch (e) {
     return {
       status: false,

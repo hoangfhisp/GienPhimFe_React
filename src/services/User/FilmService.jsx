@@ -1,4 +1,5 @@
 import * as request from "../../untils/Request.jsx";
+import apiHelper from "../../untils/ApiHelper.jsx";
 
 export const listphim = async (page, limit) => {
     try {
@@ -14,6 +15,21 @@ export const listphim = async (page, limit) => {
         console.error("Lỗi khi gọi API:", error);
     }
 }
+
+export const tapPhims = async (phimId) => {
+    try {
+        const res = await request.get('/TapPhim/GetByPhimId', {
+            params: {
+                phimId
+            }
+        });
+        return res;
+
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
 
 export const listTopLuotXemPhim = async (page,limit) =>{
     try {
@@ -56,11 +72,11 @@ export const newPhims = async (page,limit) => {
 
 
 
-export const addLuotXem = async(phimId,nguoiDungId) => {
+export const addLuotXem = async(phimId,userId) => {
     try {
-        const res = await request.post('/LuotXem/AddLuotXem',{
+        const res = await request.post('/FilmView/Create',{
             phimId,
-            nguoiDungId
+            userId
         });
         return res;
     } catch (error) {
@@ -72,27 +88,25 @@ export const addLuotXem = async(phimId,nguoiDungId) => {
 // Gọi api lấy lịch sử xem của user đó
 export const LichSuXemUser = async (userId,page,limit) => {
     try {
-        const res = await request.get('/LichSuXem/LichSuXem',{
+        const res = await apiHelper.get('/LichSuXem/GetLichSuXemByUserId',{
             params:{
                 userId,
                 page,
                 limit
             }
-        });
-        return res;
+        },true);
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }
 }
 
 // Gọi api xử lý Lưu lịch sử người dùng xem
-export const XuLyLichXuXem = async (phimId,userId,tapPhim) => {
+export const XuLyLichSuXem = async (xulyLichSuXemData) => {
     try {
-        const res = await request.post('/LichSuXem/XuLyLichSuXem',{
-            phimId,
-            userId,
-            tapPhim
-        });
+        const res = await apiHelper.post('/LichSuXem/XuLyLichSuXem',
+           xulyLichSuXemData
+        ,{},true);
 
         return res;
     } catch (error) {
@@ -135,9 +149,14 @@ export const CheckLikeDislikeUser = async (phimId,nguoiDungId) => {
 
 //THỂ LOẠI
 // Lấy hết thể loại
-export const GetAllTheLoai = async () => {
+export const GetAllTheLoai = async (page,limit) => {
     try {
-        const res = await request.get('/Admin/QuanTriVienTheLoai/TheLoai');
+        const res = await request.get('/TheLoai/GetAllTheLoais',{
+            params: {
+                page,
+                limit
+            }
+        });
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
@@ -148,7 +167,7 @@ export const GetAllTheLoai = async () => {
 // Lấy hết quốc gia
 export const GetAllQuocGia = async (page,limit) => {
     try {
-        const res = await request.get('/QuocGiaPhim/AllQuocGia',{
+        const res = await request.get('/QuocGia/GetAllQuocGias',{
             params: {
                 page,
                 limit

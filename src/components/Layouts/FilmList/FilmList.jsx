@@ -27,7 +27,10 @@ export default function FilmList({page,limit}){
             {newPhimsResult.map((result) => (
                 
                     <SwiperSlide>
-                        <Tippy content = {result.tenP}
+                        <Tippy content = {
+                            <span style={{ color: "#fff", fontSize: "14px", fontWeight: 500 }}>
+                                {result.tenP}
+                            </span>} 
                         >
                             <div className="film-list" id="film-list">
                                 <FilmItem key={result.phimId} data={result}/>

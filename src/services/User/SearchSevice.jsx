@@ -140,12 +140,24 @@ export const searchDangPhimSlug = async (slugTap,page,limit) => {
 
 export const searchTopPhim = async (page,limit) => {
     try {
-        const res = await request.get('/Phim/TopPhim',{
+        const res = await request.get('/Phim/GetTopViewPhims',{
             params: {
                 page,
                 limit
             }
         });
+        
+        return res;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+    }
+}
+
+export const searchFilterPhims = async (data,page,limit) => {
+    try {
+        const res = await request.post(`/Phim/FilterPhims?page=${page}&limit=${limit}`,
+            data
+        );
         
         return res;
     } catch (error) {

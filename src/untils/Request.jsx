@@ -1,32 +1,22 @@
-import axios from "axios";
+import apiHelper from "./ApiHelper";
+import publicRequest from "./PublicRequest";
 
-const request = axios.create({
-    baseURL: process.env.REACT_APP_GIENPHIM_BE_API_URL,
-    withCredentials: true,
-    validateStatus: function (status) {
-        // Cho phép 200 và 404 đi qua then
-        return status >= 200 && status < 300 || status === 404;
-    }
-});
+export const get = (url, options = {}, auth = false) =>
+  auth
+    ? apiHelper.get(url, { ...options, auth }).then(res => res.data)
+    : publicRequest.get(url, options).then(res => res.data);
 
-export const get = async (path, options = {}) => { 
-    const respones = await request.get(path,options);
-    return respones.data ;
-}
+export const post = (url, data = {}, options = {}, auth = false) =>
+  auth
+    ? apiHelper.post(url, data, { ...options, auth }).then(res => res.data)
+    : publicRequest.post(url, data, options).then(res => res.data);
 
-export const post = async (path, data = {}, options = {}) => {
-    const response = await request.post(path, data, options);
-    return response.data;
-};
+export const put = (url, data = {}, options = {}, auth = false) =>
+  auth
+    ? apiHelper.put(url, data, { ...options, auth }).then(res => res.data)
+    : publicRequest.put(url, data, options).then(res => res.data);
 
-export const put = async (path, data, options = {}) => {
-    const response = await request.put(path, data, options);
-    return response.data;
-};
-
-export const deleteRequest = async (path, options = {}) => {
-    const response = await request.delete(path, options);
-    return response.data;
-};
-
-export default request;
+export const deleteRequest = (url, options = {}, auth = false) =>
+  auth
+    ? apiHelper.delete(url, { ...options, auth }).then(res => res.data)
+    : publicRequest.delete(url, options).then(res => res.data);

@@ -22,10 +22,16 @@ const ForgotPassword = () => {
         setSuccessMessage(''); // Clear any previous success messages
 
         try {
+            const type = "fg_password";
             // Gọi API forgotPassword từ service
-            const response = await AuthenticationService.forgotPassword(email);
+            const response = await AuthenticationService.forgotPassword(email,type);
             // Khi thành công, hiển thị thông báo thành công
-            setSuccessMessage(response.message || 'Yêu cầu đổi mật khẩu đã được gửi.');
+            if(response.status === true){
+                setSuccessMessage(response.message || 'Yêu cầu đổi mật khẩu đã được gửi.');
+            }else{
+                setError(response.msg || 'Có lỗi xảy ra. Vui lòng thử lại.')
+            }
+            
         } catch (err) {
             // Nếu có lỗi, hiển thị thông báo lỗi
             setError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');

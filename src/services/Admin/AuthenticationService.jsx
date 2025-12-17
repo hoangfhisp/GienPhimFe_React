@@ -1,5 +1,6 @@
 import * as request from "../../untils/Request.jsx";
 import * as authHook from '../../hooks/auth.jsx';
+import apiHelper from "../../untils/ApiHelper.jsx";
 
 // Đảm bảo handle lỗi đúng cách
 const handleError = (error) => {
@@ -18,9 +19,12 @@ export const register = async (userData) => {
 }
 
 // API Đăng nhập
-export const login = async (credentials) => {
+export const login = async (account,password) => {
     try {
-        const response = await request.post('/User/login', credentials);
+        const response = await request.post('/Auth/LoginUserToken', {
+            account,
+            password
+        });
         return response;  // Trả về thông tin đăng nhập (thường có token nếu thành công)
     } catch (error) {
         throw error.response ? error.response.data : error.message;
@@ -37,9 +41,12 @@ export const logout = async () => {
 }
 
 // API Forgot Password
-export const forgotPassword = async (email) => {
+export const forgotPassword = async (email,type) => {
     try {
-        const response = await request.post('/User/forgot-password', { email });
+        const response = await request.post('/Auth/ForgotPassword', {
+            email,
+            type 
+        });
         return response;  // Trả về kết quả gửi email thành công
     } catch (error) {
         handleError(error);
@@ -402,7 +409,11 @@ export const taoGiaoDichMomo = async (napTienDto, userId) => {
 
 export const getUserById = async (id) => {
     try {
-        const res = await request.get(`/User/${id}`);
+        const res = await request.get(`/User/GetUserByUserId`,{
+            params:{
+                UserId: id
+            }
+        });
         return res;
     } catch (error) {
         console.error("Lỗi lấy thông tin người dùng:", error);
@@ -410,13 +421,13 @@ export const getUserById = async (id) => {
 };
 
 // Lịch sử giao dịch người dùng
-export const fetchLichSuGiaoDichs = async (nguoiDungId, page, limit) => {
+export const fetchLichSuGiaoDichs = async (walletId, page, limit) => {
     try {
-        const response = await request.get(`/User/LichSuGiaoDich/${nguoiDungId}`, {
-            params: { page, limit },
-        });
+        const response = await apiHelper.get(`/Wallet/GetWalletTransactionByWalletId`, {
+            params: { walletId, page, limit },
+        },true);
 
-        return response;  // <-- Đây là điểm quan trọng
+        return response.data;  // <-- Đây là điểm quan trọng
 
     } catch (error) {
         console.error("Lỗi khi tải lịch sử giao dịch:", error);
