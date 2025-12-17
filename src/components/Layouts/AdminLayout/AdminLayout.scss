@@ -1,0 +1,118 @@
+// AdminLayout.scss
+$sidebarWidth: 250px;
+$headerHeight: 301px;
+
+.AdminLayout {
+    min-height: 100vh;
+    display: flex;
+}
+
+/* cột bên phải */
+.AdminLayout__main {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    background: #f7fafc;
+}
+
+/* background-header: KHÔNG fixed nữa */
+.BackgroundHeader {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: $headerHeight;
+    z-index: 0;
+
+    background: linear-gradient(90deg,
+            rgba(255, 150, 113, 1) 0%,
+            rgba(247, 110, 110, 1) 100%);
+}
+
+/* nav-bar nằm trên background */
+.NavBar {
+    position: relative;
+    z-index: 1;
+
+    height: $headerHeight;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+    margin-top: 24px;
+    color: #fff;
+}
+
+.NavBar__title {
+    font-weight: 800;
+    color: #ffffff;
+    font-size: 32px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+.NavBar__title--center {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    /* đổi 40% -> 50% nếu bạn muốn đúng giữa tuyệt đối */
+    transform: translate(-50%, -50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.NavBar__searchBottom {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+}
+
+.NavBar__searchBottom .SearchExpand {
+    width: 420px;
+    max-width: 90vw;
+}
+
+.NavBar__right {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.NavBar__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.NavBar__name {
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: normal;
+}
+
+.NavBar__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    object-fit: cover;
+}
+
+/* content: ĐẨY XUỐNG DƯỚI HEADER */
+.AdminLayout__content {
+    position: relative;
+    z-index: 1;
+
+    padding: 24px;
+
+    /* Kéo content lên để nằm trong vùng header */
+    margin-top: -5px;
+    /* chỉnh 120~200 tuỳ bạn thấy đẹp */
+}

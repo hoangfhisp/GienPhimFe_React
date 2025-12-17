@@ -220,7 +220,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="file"] {
-    background: #3c4855;
+    background: #343a40;
     border: none;
     padding: 8px;
     border-radius: 5px;
@@ -230,7 +230,7 @@ input[type="file"] {
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-    outline: 2px solid #00aaff;
+    outline: 2.5px solid #000000;
 }
 
 /* Giới tính */

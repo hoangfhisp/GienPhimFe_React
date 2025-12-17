@@ -150,29 +150,15 @@ export async function getRoleFormFields() {
     return response.fields;
 }
 
-// Lấy metadata để biết các trường cần nhập
-export async function GetUserFormFields() {
-    const response = await request.get('/Admin/QuanTriVienNguoiDung/metadata');
-    return response.fields;
-}
-
 //Api người dùng
 export const fetchUsers = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/QuanTriVienNguoiDung', {
-            params: { page, limit }
+        const res = await request.get("/User/GetListUser", {
+            params: { page, limit },
         });
-
-        return response;
-
+        return res;
     } catch (error) {
-        console.error("Lỗi tải người dùng:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.response?.data?.msg || error.message || 'Lỗi khi tải danh sách người dùng'
-        };
+        console.error("Lỗi lấy danh sách user:", error);
     }
 };
 
@@ -224,35 +210,18 @@ export const createUser = (id, userData) => {
 
 
 // Cập nhật người dùng
-export const updateUser = (id, userData) => {
-    // Kiểm tra xem userData có phải là FormData không
-    const isFormData = userData instanceof FormData;
-
-    let payload;
-
-    if (isFormData) {
-        // Nếu là FormData, thêm ID vào FormData
-        if (!userData.has('id')) {
-            userData.append('id', id);
-        }
-        payload = userData;
-    } else {
-        // Nếu là đối tượng JSON, đảm bảo rằng ID được gắn vào body
-        payload = {
-            ...userData,
-            id: id  // Đảm bảo ID lowercase để match với DTO
-        };
-    }
-
-    // Gửi yêu cầu PUT với URL và body chứa userData
-    return request.put(`/Admin/QuanTriVienNguoiDung/CapNhat/${id}`, payload, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateInfoUser = async (formData) => {
+    // formData: FormData (đã append trong NguoiDungForm)
+    return await request.put("/User/UpdateInfoUser", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
 };
 
 // Xóa người dùng
-export const deleteUser = (id) => {
-    return request.deleteRequest(`/Admin/QuanTriVienNguoiDung/Xoa/${id}`).catch(handleError);
+export const deleteUser = async (userId) => {
+    return await request.deleteRequest("/User/DeleteUser", {
+        params: { userId }, // backend nhận [FromQuery] DeleteUserRequestDTO { UserId }
+    });
 };
 
 //Khoá người dùng
