@@ -1,8 +1,14 @@
 import * as request from "../../untils/Request.jsx";
+import apiHelper from "../../untils/ApiHelper.jsx";
 
-export const getListGoiThanhVien = async () => {
+export const getListGoiThanhVien = async (page,limit) => {
     try {
-        const res = await request.get('/GoiThanhVien/GetAllGoiThanhVien');
+        const res = await request.get('/MembershipPlan/GetAllMembershipPlans',{
+            params:{
+                page,
+                limit
+            }
+        });
         return res;
 
     } catch (error) {
@@ -20,12 +26,14 @@ export const getAllLuaChonGoiTV = async () => {
     }
 }
 
-export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (goiTVId, ngay) => {
+export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (planId, day,page,limit) => {
     try {
-        const res = await request.get('/LuaChonGoiTV/GetLuaChonGoiTVByIdAndNgay', {
+        const res = await request.get('/PlanOption/GetPlanOptionsByPlanIdAnDay', {
             params: {
-                goiTVId,
-                ngay
+                planId,
+                day,
+                page,
+                limit
             }
         });
         return res;
@@ -35,14 +43,14 @@ export const GetLuaChonGTVByGoiTVIdAndNgayAsync = async (goiTVId, ngay) => {
     }
 }
 
-export const XuLyChiTietMuaGoiTVUser = async (luaChonGoiTVId, userId) => {
+export const XuLyChiTietMuaGoiTVUser = async (optionId, userId) => {
     try {
-        const res = await request.post('/ChiTietGoiThanhVien/XuLyChiTietMuaGoiTVUser', {
-            luaChonGoiTVId,
+        const res = await apiHelper.post('/UserMembership/Create', {
+            optionId,
             userId
-        });
+        },{}, true);
 
-        return res;
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }
@@ -65,13 +73,13 @@ export const CheckXuLyGoiHetHanUser = async (userId) => {
 
 export const GetChiTietGoiTVByUser = async (userId) => {
     try {
-        const res = await request.get('/ChiTietGoiThanhVien/GetChiTietGoiTVByUser', {
+        const res = await apiHelper.get('/UserMembership/CurrentMembership', {
             params: {
                 userId
             }
-        });
+        },true);
 
-        return res;
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }
