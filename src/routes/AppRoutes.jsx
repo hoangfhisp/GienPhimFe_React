@@ -8,6 +8,7 @@ import ForgotPassword from '../pages/Dang_nhap/Forgot-password';
 import ResetPassword from '../pages/Dang_nhap/Reset-Password';
 import TongQuan from '../pages/Quan_tri_vien/TongQuan/Tong-Quan';
 import AdminLayout from "../components/Layouts/AdminLayout/AdminLayout.jsx";
+import WatchPartyLayout from "../components/Layouts/WatchPartyLayout/WatchPartyLayout";
 import ListPhim from "../pages/Quan_tri_vien/QuanLyPhim/List-Phim";
 import ListTapPhim from "../pages/Quan_tri_vien/QuanLyTapPhim/List-Tap-Phim";
 import ListQuocGia from "../pages/Quan_tri_vien/QuanLyQuocGia/List-Quoc-Gia";
@@ -95,6 +96,7 @@ export default function AppRoutes() {
             </Route>
 
             <Route path="/List-Vai-Tro" element={<RoleList />} /> */}
+            <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />
 
             {/* Router Admin */}
             {userId && role === "Admin" && (

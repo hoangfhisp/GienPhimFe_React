@@ -1,0 +1,103 @@
+.WatchPartyLayout {
+    display: flex;
+    height: 100vh;
+    background: #f6f8fb;
+}
+
+.WatchPartyLayout__player {
+    flex: 3;
+    min-width: 0;
+    padding: 16px;
+}
+
+.WatchPartyLayout__chat {
+    width: 420px;
+    max-width: 420px;
+    padding: 16px 16px 16px 0;
+}
+
+.PlayerBox,
+.ChatBox {
+    height: 100%;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.PlayerBox__header,
+.ChatBox__header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.PlayerBox__title,
+.ChatBox__title {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.PlayerBox__sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #777;
+}
+
+.PlayerBox__content {
+    flex: 1;
+    padding: 16px;
+}
+
+.PlayerPlaceholder {
+    height: 100%;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.ChatBox__messages {
+    flex: 1;
+    padding: 12px 14px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.Msg {
+    background: #f3f5ff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.ChatBox__input {
+    padding: 12px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+}
+
+.ChatInput {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+}
+
+.ChatSendBtn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #5e72e4;
+    color: #fff;
+}

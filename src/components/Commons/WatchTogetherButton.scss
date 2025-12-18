@@ -1,0 +1,14 @@
+.WatchTogetherButton {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #5e72e4, #825ee4);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
