@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 
 import './FilmInfo.scss'
+import { formatURLImage } from '../../../untils/Format';
 
 function FilmInfo({data,onSelect}){
     return (
         <Link to={`/Phim/${data.phimId}`} className="phim-list-info" onClick={onSelect}>
-            <img src= {data.avatarPoster} className="phim-avatar" alt={data.tenP}/>
+            <img src= {formatURLImage(data.avatarPoster)} className="phim-avatar" alt={data.tenP}/>
             <div className="phim-info">
                 <p className="phim-title">
                     {data.tenP}

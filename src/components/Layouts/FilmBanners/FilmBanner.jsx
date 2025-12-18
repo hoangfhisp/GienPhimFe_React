@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { formatYear } from "../../../untils/Format";
+import { formatURLImage, formatYear } from "../../../untils/Format";
 
 export default function FilmBanner({data}){
     const [dataPhim,setDataPhim] = useState([]);
@@ -24,7 +24,7 @@ export default function FilmBanner({data}){
         
         <div className="banner" 
             style={{
-                background: `url(${data.avatarP}) center/cover no-repeat`,
+                background: `url(${formatURLImage(data.avatarP)}) center/cover no-repeat`,
         }}>
             <div className="overlay-banner"></div>
             <div className="content-banner">

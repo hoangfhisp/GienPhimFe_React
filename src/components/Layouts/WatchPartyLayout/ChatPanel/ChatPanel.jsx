@@ -1,51 +1,71 @@
-import "./ChatPanel.scss";
+import { useEffect, useState, useRef } from "react";
+import * as signalR from "@microsoft/signalr";
+import env from "../../../../config/Config";
 
-export default function ChatPanel() {
-    // MOCK trạng thái quyền
-    const canChat = true;   // sau này lấy từ GroupMember
-    const isMuted = false; // sau này lấy từ GroupMember
+export default function ChatPanel({ userId, groupId }) {
+    const [messages, setMessages] = useState([]);
+    const inputRef = useRef();
+    const connectionRef = useRef(null);
+    const messagesEndRef = useRef(null);
+
+    // Scroll xuống cuối khi có tin nhắn mới
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    useEffect(() => {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(env.SIGNALR_URL)
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(() => {
+                console.log("SignalR connected");
+                return connection.invoke("JoinRoom", groupId);
+            })
+            .catch(err => console.error("SignalR connection error:", err));
+
+        connection.on("ReceiveMessage", (msg) => {
+            setMessages(prev => [...prev, msg]);
+        });
+
+        connectionRef.current = connection;
+
+        return () => {
+            if (connectionRef.current) connectionRef.current.stop();
+        };
+    }, [groupId]);
+
+    const sendMessage = () => {
+        if (!inputRef.current.value || !connectionRef.current) return;
+        connectionRef.current.invoke("SendMessage", groupId, userId, inputRef.current.value)
+            .catch(err => console.error(err));
+        inputRef.current.value = "";
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") sendMessage();
+    };
 
     return (
-        <div className="ChatPanel">
-            {/* Header */}
-            <div className="ChatPanel__header">
-                <div className="ChatPanel__title">Chat</div>
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+                {messages.map((m, idx) => (
+                    <div key={idx}>
+                        <b>{m.userId}:</b> {m.text} <span style={{ fontSize: '0.8em', color: '#666' }}>{new Date(m.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                ))}
+                <div ref={messagesEndRef} />
             </div>
-
-            {/* Messages */}
-            <div className="ChatPanel__messages">
-                {/* Mock messages */}
-                <div className="ChatMessage">
-                    👋 Chào mừng bạn vào phòng xem phim
-                </div>
-
-                <div className="ChatMessage ChatMessage--system">
-                    📌 Chủ phòng đã tạo phòng
-                </div>
-
-                <div className="ChatMessage">
-                    UserA: Phim này hay ghê 😆
-                </div>
-            </div>
-
-            {/* Input */}
-            <div className="ChatPanel__input">
+            <div style={{ display: "flex", marginTop: 4 }}>
                 <input
-                    type="text"
-                    className="ChatInput"
-                    placeholder={
-                        !canChat || isMuted
-                            ? "Bạn không thể chat trong phòng này"
-                            : "Nhập tin nhắn..."
-                    }
-                    disabled={!canChat || isMuted}
+                    ref={inputRef}
+                    placeholder="Nhập tin nhắn..."
+                    onKeyPress={handleKeyPress}
+                    style={{ flex: 1, padding: 6 }}
                 />
-                <button
-                    className="ChatSendBtn"
-                    disabled={!canChat || isMuted}
-                >
-                    Gửi
-                </button>
+                <button onClick={sendMessage} style={{ marginLeft: 4 }}>Gửi</button>
             </div>
         </div>
     );

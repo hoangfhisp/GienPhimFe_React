@@ -8,7 +8,7 @@ import FilmCard from "../FilmCards/FilmCard.jsx";
 import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
 import * as searchServices from '../../../services/User/SearchSevice.jsx'
-import { formatDateTime } from "../../../untils/Format.jsx";
+import { formatDateTime, formatURLImage } from "../../../untils/Format.jsx";
 
 export default function AnimeList({ userId, timtheo, page, limit, webpage, onPagination, typePhim }) {
     const [listPhimResult, setListPhimResult] = useState([]);
@@ -82,7 +82,7 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                         <div className="anime-item">
                             <div className="episode-label">{result.soTapP} Tập</div>
                             <Link to={`/Phim/${result.phimId}`}>
-                                <img src={result.avatarPoster} alt={result.tenP} />
+                                <img src={formatURLImage(result.avatarPoster)} alt={result.tenP} />
                                 <p ><strong>{result.tenP}</strong></p>
                             </Link>
                             {webpage === "History" ? (
