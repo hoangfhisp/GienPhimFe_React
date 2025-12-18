@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import './PhimBanner.scss'
 import * as phimServices from '../../../services/User/FilmService.jsx'
 import { Link } from 'react-router-dom';
-import { formatYear } from '../../../untils/Format.jsx';
 import WatchTogetherButton from "../../Commons/WatchTogetherButton";
 import CreateChatGroupModal from "../../Modal/CreateChatGroupModal";
 import { formatURLImage, formatYear } from '../../../untils/Format.jsx';
@@ -50,7 +49,7 @@ function PhimBanner({ id }) {
                 <div className="container-phim">
                     <div className="phim-info-banner">
                         <div className="phim-poster">
-                            <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt="kk"/>
+                            <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt="kk" />
                             <Link to={`/XemPhim/${dataPhim.phimId}/${dataTap?.[0]?.slugTap ?? ''}`} className="phim-watch-btn">XEM PHIM</Link>
                         </div>
                         <WatchTogetherButton onClick={() => setOpenModal(true)} />

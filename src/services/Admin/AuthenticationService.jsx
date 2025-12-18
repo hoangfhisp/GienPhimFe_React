@@ -1,6 +1,8 @@
 import * as request from "../../untils/Request.jsx";
 import * as authHook from '../../hooks/auth.jsx';
+import apiPublic from "../../untils/PublicRequest";
 import apiHelper from "../../untils/ApiHelper.jsx";
+import * as requests from "../../untils/Requests.jsx";
 
 // Đảm bảo handle lỗi đúng cách
 const handleError = (error) => {
@@ -11,7 +13,7 @@ const handleError = (error) => {
 // API Đăng ký
 export const register = async (userData) => {
     try {
-        const response = await request.post('/User/register', userData);
+        const response = await request.post("/User/RegisterUser", userData);
         return response;  // Trả về kết quả đăng ký (thường có token nếu thành công)
     } catch (error) {
         throw error.response ? error.response.data : error.message;
@@ -19,7 +21,7 @@ export const register = async (userData) => {
 }
 
 // API Đăng nhập
-export const login = async (account,password) => {
+export const login = async (account, password) => {
     try {
         const response = await request.post('/Auth/LoginUserToken', {
             account,
@@ -41,27 +43,16 @@ export const logout = async () => {
 }
 
 // API Forgot Password
-export const forgotPassword = async (email,type) => {
-    try {
-        const response = await request.post('/Auth/ForgotPassword', {
-            email,
-            type 
-        });
-        return response;  // Trả về kết quả gửi email thành công
-    } catch (error) {
-        handleError(error);
-    }
-}
+export const forgotPassword = async (email, type) => {
+    const res = await apiPublic.post("/Auth/ForgotPassword", { email, type });
+    return res.data; // {status, msg, data}
+};
 
 // API Reset Password
-export const resetPassword = async (token, email, newPassword) => {
-    try {
-        const response = await request.post('/User/reset-password', { token, email, newPassword });
-        return response;  // Trả về kết quả reset mật khẩu thành công
-    } catch (error) {
-        handleError(error);
-    }
-}
+export const resetPassword = async (payload) => {
+    const res = await request.post("/Auth/ResetPassword", payload);
+    return res.data;
+};
 
 // API Change Password
 export const changePassword = async (userId, currentPassword, newPassword) => {
@@ -255,16 +246,17 @@ export const unlockUser = async (userId) => {
 //update user info
 export const UpdateUserInfo = async (formData) => {
     try {
-        const res = await request.put('/User/UserInfoUpdate', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const res = await requests.put(
+            "/User/UpdateInfoUser",
+            formData,
+            {},
+            true
+        );
         return res;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }
-}
+};
 
 //Tạo giao dịch vib
 export const taoGiaoDich = async (napTienDto) => {
@@ -344,7 +336,7 @@ export const CreatePaymentVnPay = async (userId, soTien, motaDH) => {
             soTien,
             motaDH,
             kieuDH: "order"
-        },{}, true);
+        }, {}, true);
 
         return res.data;
     } catch (error) {
@@ -378,8 +370,8 @@ export const taoGiaoDichMomo = async (napTienDto, userId) => {
 
 export const getUserById = async (id) => {
     try {
-        const res = await request.get(`/User/GetUserByUserId`,{
-            params:{
+        const res = await request.get(`/User/GetUserByUserId`, {
+            params: {
                 UserId: id
             }
         });
@@ -394,7 +386,7 @@ export const fetchLichSuGiaoDichs = async (walletId, page, limit) => {
     try {
         const response = await apiHelper.get(`/Wallet/GetWalletTransactionByWalletId`, {
             params: { walletId, page, limit },
-        },true);
+        }, true);
 
         return response.data;  // <-- Đây là điểm quan trọng
 

@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-
 import Home from "../pages/Home/Home";
 import Register from '../pages/Dang_nhap/Register';
 import Help from '../pages/Dang_nhap/Help';
@@ -34,6 +33,7 @@ import * as authHook from "../hooks/auth.jsx";
 import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
 import LichSuGiaoDich from "../pages/LichSuGiaoDich/LichSuGiaoDich.jsx";
+import AdminGuard from "../components/AdminGuard/AdminGuard";
 
 export default function AppRoutes() {
 
@@ -99,7 +99,7 @@ export default function AppRoutes() {
             <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />
 
             {/* Router Admin */}
-            {userId && role === "Admin" && (
+            <Route element={<AdminGuard />}>
                 <Route path="/admin" element={<AdminLayout />}>
                     <Route path="Tong-Quan" element={<TongQuan />} />
                     <Route path="List-Quoc-Gia" element={<ListQuocGia />} />
@@ -114,7 +114,7 @@ export default function AppRoutes() {
                     <Route path="List-Goi-Thanh-Vien" element={<ListGoiThanhVien />} />
                     <Route path="Bot" element={<ListBot />} />
                 </Route>
-            )}
+            </Route>
             {/* {userId && role === 'Admin' && <Route path="/List-Goi-Thanh-Vien" element={<GoiThanhVienList />} />}
             {userId && role === 'Admin' && <Route path="/List-Lich-Su-Giao-Dich" element={<LichSuGiaoDichList />} />} */}
 

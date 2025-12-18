@@ -26,6 +26,7 @@
     flex-direction: column;
     gap: 6px;
     padding: 8px 14px 16px;
+    flex: 1;
 }
 
 .Sidebar__item {
@@ -102,4 +103,33 @@
     height: 8px;
     border-radius: 999px;
     background: rgba(0, 0, 0, 0.25);
+}
+
+.Sidebar__footer {
+    padding: 10px 14px 16px;
+    border-top: 1px solid rgba(136, 152, 170, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* 2 nút dưới cùng dùng lại style Sidebar__item nên chỉ cần tinh chỉnh */
+.Sidebar__item--footer {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+/* màu đỏ nhẹ cho nút đăng xuất */
+.Sidebar__item--danger {
+    color: #e03131;
+
+    .Sidebar__icon svg {
+        color: rgba(224, 49, 49, 0.85);
+    }
+
+    &:hover {
+        background: rgba(224, 49, 49, 0.12);
+    }
 }
