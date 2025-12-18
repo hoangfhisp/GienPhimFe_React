@@ -30,24 +30,22 @@ export default function Register() {
 
         if (Object.keys(newErrors).length === 0) {
             // Gửi dữ liệu đăng ký nếu không có lỗi
-            const userData = { email, phoneNumber, password };
+            const userData = { email, phoneNumber, password, confirmPassword };
 
             try {
-                const response = await AuthenticationService.register(userData); // Gọi API đăng ký
+                const res = await AuthenticationService.register(userData);
 
-                // Kiểm tra phản hồi từ API
-                console.log('API Response:', response);
+                console.log("API Response:", res);
 
-                if (response.status) {
-                    // Đăng ký thành công, chuyển hướng đến trang đăng nhập
-                    navigate('/login'); // Sử dụng navigate để chuyển hướng đến trang login
+                if (res?.status) {
+                    setErrorMessage("");        // xoá thông báo cũ
+                    navigate("/login");
                 } else {
-                    // Nếu đăng ký thất bại, hiển thị thông báo lỗi
-                    setErrorMessage(response.msg);
+                    setErrorMessage(res?.msg || "Đăng ký thất bại");
                 }
             } catch (error) {
-                console.error('Lỗi đăng ký:', error);
-                setErrorMessage('Đã có lỗi xảy ra, vui lòng thử lại.');
+                console.error("Lỗi đăng ký:", error);
+                setErrorMessage("Đã có lỗi xảy ra, vui lòng thử lại.");
             }
         }
     };

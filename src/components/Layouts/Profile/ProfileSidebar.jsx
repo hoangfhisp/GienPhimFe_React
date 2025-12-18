@@ -1,20 +1,37 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import logouser from "../../../assets/img/avatar.png";
+import * as format from "../../../untils/Format";
 
-import logouser from '../../../assets/img/avatar.png';
-import * as format from '../../../untils/Format';
+function ProfileSidebar({ dataU, walletData }) {
+    const u = dataU?.data ?? dataU;
+    const w = walletData?.data ?? walletData;
 
-
-function ProfileSidebar({dataU}){
-
-    return(
+    return (
         <div className="profile-sidebar">
-            <img src={dataU?.avatarND ? format.formatURLImage(dataU?.avatarND) : logouser} alt="Avatar" className ="avatar" />
-                <h2 className="lable-username">{dataU?.nameND ? dataU?.nameND : "Tên chưa cập nhật"}</h2>
-                <p className="join-date">Tham Gia: <br /> {format.formatDateTime(dataU?.thoiGianTao || 0)}</p>
+            <img
+                src={u?.avatarND ? format.formatURLImage(u.avatarND) : logouser}
+                alt="Avatar"
+                className="avatar"
+            />
+
+            <h2
+                className="lable-username"
+                style={{ color: "#fff", fontWeight: 700 }}
+            >
+                {u?.nameND ? u.nameND : "Tên chưa cập nhật"}
+            </h2>
+
+            <p className="join-date">
+                Tham Gia: <br /> {format.formatDateTime(u?.thoiGianTao || 0)}
+            </p>
+
             <div className="btn-update">
-                <Link to={"/forgot-password"} >Đổi Mật Khẩu Mới</Link>
+                <Link to={"/forgot-password"}>Đổi Mật Khẩu Mới</Link>
             </div>
-                <p className="join-date">Số Dư: {format.formatVND(dataU.soDuTaiKhoan || 0)}</p>
+
+            <p className="join-date">
+                Số Dư: {format.formatVND(w?.soDu || 0)}
+            </p>
         </div>
     );
 }

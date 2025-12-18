@@ -1,5 +1,5 @@
 import "./Sidebar.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     Globe,
@@ -14,10 +14,12 @@ import {
     Bot,
     Clapperboard,
     UsersRound,
+    Home,
+    LogOut,
 } from "lucide-react";
 
 const menus = [
-    { id: "tong-quan", label: "Thông tin", icon: LayoutDashboard, to: "/admin/Tong-Quan" },
+    // { id: "tong-quan", label: "Thông tin", icon: LayoutDashboard, to: "/admin/Tong-Quan" },
     { id: "phim", label: "Phim", icon: Film, to: "/admin/List-Phim" },
     { id: "tap-phim", label: "Tập phim", icon: ListVideo, to: "/admin/List-Tap-Phim" },
     { id: "dao-dien", label: "Đạo diễn", icon: Clapperboard, to: "/admin/List-Dao-Dien" },
@@ -28,17 +30,32 @@ const menus = [
     { id: "the-tag", label: "Thẻ tag", icon: Tags, to: "/admin/List-The-Tag" },
     { id: "nguoi-dung", label: "Người dùng", icon: Users, to: "/admin/List-Nguoi-Dung" },
     { id: "goi-thanh-vien", label: "Gói thành viên", icon: CreditCard, to: "/admin/List-Goi-Thanh-Vien" },
-    { id: "lich-su-giao-dich", label: "Lịch sử giao dịch", icon: History, to: "/admin/List-Lich-Su-Giao-Dich" },
+    // { id: "lich-su-giao-dich", label: "Lịch sử giao dịch", icon: History, to: "/admin/List-Lich-Su-Giao-Dich" },
     { id: "bot", label: "Bot", icon: Bot, to: "/admin/Bot" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onlogins }) {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("rf_token");
+        onlogins?.(false);
+        navigate("/login");
+    };
+
     return (
         <aside className="Sidebar">
-            <div className="Sidebar__logo">
+            {/* LOGO */}
+            <div
+                className="Sidebar__logo"
+                style={{ cursor: "pointer" }}
+                onClick={() => navigate("/home")}
+            >
                 <img src="/images/logo-gienphimvuong-3.png.png" alt="GienPhim" />
             </div>
 
+            {/* MENU */}
             <nav className="Sidebar__nav">
                 {menus.map((m) => {
                     const Icon = m.icon;
@@ -59,6 +76,29 @@ export default function Sidebar() {
                     );
                 })}
             </nav>
+
+            {/* FOOTER */}
+            <div className="Sidebar__footer">
+                <button
+                    className="Sidebar__item Sidebar__item--footer"
+                    onClick={() => navigate("/home")}
+                >
+                    <span className="Sidebar__icon">
+                        <Home size={16} strokeWidth={1.8} />
+                    </span>
+                    <span className="Sidebar__label">Trang chủ</span>
+                </button>
+
+                <button
+                    className="Sidebar__item Sidebar__item--footer Sidebar__item--danger"
+                    onClick={handleLogout}
+                >
+                    <span className="Sidebar__icon">
+                        <LogOut size={16} strokeWidth={1.8} />
+                    </span>
+                    <span className="Sidebar__label">Đăng xuất</span>
+                </button>
+            </div>
         </aside>
     );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-
+import { decodeToken } from "../../../hooks/auth";
 import Sidebar from "../Sidebar/Sidebar";
 import SearchExpand from "../SearchExpand/SearchExpand";
 import adminRouteTitles from "./adminRouteTitles";
@@ -15,6 +15,11 @@ export default function AdminLayout() {
         // fallback nếu chưa map
         return adminRouteTitles[location.pathname] || "BẢNG THÔNG TIN";
     }, [location.pathname]);
+
+    const decoded = decodeToken();
+    const email =
+        decoded?.email ||
+        decoded?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"];
 
     return (
         <div className="AdminLayout">
@@ -42,7 +47,7 @@ export default function AdminLayout() {
 
                     {/* Admin góc phải trên */}
                     <div className="NavBar__right">
-                        <div className="NavBar__name">Admin</div>
+                        <div className="NavBar__name">{email || "Admin"}</div>
                         <img className="NavBar__avatar" src="/images/avataradmin.png" alt="avatar" />
                     </div>
                 </div>

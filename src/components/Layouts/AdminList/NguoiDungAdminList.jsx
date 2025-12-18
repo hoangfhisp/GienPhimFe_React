@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import * as userServices from "../../../services/Admin/AuthenticationService";
+import * as userServices from "../../../services/Admin/MovieService";
 import DataTable from "../DataTable/DataTable";
 import RenderPagination from "../../Commons/RenderPagination";
 

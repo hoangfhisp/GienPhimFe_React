@@ -1,40 +1,41 @@
-import React, { useState } from 'react';
-import LoginContainer from '../../components/Login-container/Login-container';
-import { Link } from 'react-router-dom';
-import '../../components/Login-container/Login.scss';
+import React, { useState } from "react";
+import LoginContainer from "../../components/Login-container/Login-container";
+import { Link, useNavigate } from "react-router-dom"; // ✅ thêm useNavigate
+import "../../components/Login-container/Login.scss";
 import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 
 const ForgotPassword = () => {
-    const [email, setEmail] = useState('');
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [email, setEmail] = useState("");
+    const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const navigate = useNavigate(); // ✅
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Simple validate
         if (!email) {
-            setError('Email không được để trống.');
+            setError("Email không được để trống.");
             return;
         }
 
-        setError(''); // Clear any previous error messages
-        setSuccessMessage(''); // Clear any previous success messages
+        setError("");
+        setSuccessMessage("");
 
         try {
             const type = "fg_password";
-            // Gọi API forgotPassword từ service
-            const response = await AuthenticationService.forgotPassword(email,type);
-            // Khi thành công, hiển thị thông báo thành công
-            if(response.status === true){
-                setSuccessMessage(response.message || 'Yêu cầu đổi mật khẩu đã được gửi.');
-            }else{
-                setError(response.msg || 'Có lỗi xảy ra. Vui lòng thử lại.')
+            const data = await AuthenticationService.forgotPassword(email, type);
+
+            if (data?.status) {
+                setSuccessMessage(data?.msg || "Yêu cầu đổi mật khẩu đã được gửi.");
+
+                // ✅ chuyển sang trang nhập OTP + mật khẩu
+                navigate(`/reset-password?email=${encodeURIComponent(email)}`);
+            } else {
+                setError(data?.msg || "Có lỗi xảy ra. Vui lòng thử lại.");
             }
-            
         } catch (err) {
-            // Nếu có lỗi, hiển thị thông báo lỗi
-            setError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+            setError("Có lỗi xảy ra. Vui lòng thử lại.");
         }
     };
 
@@ -44,21 +45,17 @@ const ForgotPassword = () => {
             <div className="login-body">
                 <div className="login-form-container">
                     <div className="login-title">
-                        <h3 style={{ textAlign: 'center' }}>Quên / Đổi mật khẩu</h3>
+                        <h3 style={{ textAlign: "center" }}>Quên / Đổi mật khẩu</h3>
                     </div>
 
                     <form className="login-form" id="passwordResetForm" onSubmit={handleSubmit}>
-                        {/* Hiển thị lỗi nếu có */}
                         {error && <div className="text-danger" role="alert">{error}</div>}
-
-                        {/* Hiển thị thông báo thành công nếu có */}
                         {successMessage && <div className="text-success" role="alert">{successMessage}</div>}
 
-                        {/* Email input */}
                         <div className="form-group">
                             <input
                                 type="email"
-                                className={`login-form-input ${email ? 'filled' : ''}`}
+                                className={`login-form-input ${email ? "filled" : ""}`}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="username"
@@ -67,12 +64,10 @@ const ForgotPassword = () => {
                             <label className="floating-label">name@example.com</label>
                         </div>
 
-                        {/* Nút submit */}
                         <button type="submit" className="login-form-button">
                             Lấy / Đổi Mật Khẩu
                         </button>
 
-                        {/* Liên kết trợ giúp */}
                         <div className="login-form-help">
                             <Link to="/help" className="help-link">Cần Trợ Giúp?</Link>
                         </div>
