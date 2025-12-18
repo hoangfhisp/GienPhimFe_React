@@ -916,3 +916,22 @@ input[type="number"] {
     background-color: #f8d7da;
     color: #721c24;
 }
+
+.login-google-wrap {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+
+    // giữ đúng bề ngang giống các nút khác
+    width: 100%;
+
+    // đừng set background ở đây
+    background: transparent;
+}
+
+// Ép iframe đúng width thôi, không ép height
+.login-google-wrap iframe {
+    width: 320px !important;
+    max-width: 100% !important;
+    border-radius: 999px !important;
+}

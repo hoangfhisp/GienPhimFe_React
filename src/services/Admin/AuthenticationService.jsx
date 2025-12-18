@@ -420,3 +420,12 @@ export const fetchLichSuGiaoDichNguoiDung = async (page, limit) => {
     }
 };
 
+
+export const loginGoogle = async (idToken) => {
+    return await request.post(
+        "/Auth/ExternalProviderLoginUserToken",
+        { idToken, provider: "Google" },
+        {},
+        false
+    );
+};
