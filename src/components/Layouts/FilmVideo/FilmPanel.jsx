@@ -55,13 +55,12 @@ function FilmPanel({data,onSelect,nguoiDungId}){
         if(id == null)
             return null;
         fetchApi();
-
+        
     },[id,nguoiDungId])
 
     // check nút thích active
-    const daThich = Array.isArray(checkLikeDislike) && checkLikeDislike[0]?.luotThichP;
-    const khongThich = Array.isArray(checkLikeDislike) && checkLikeDislike[0]?.luotDislikeP;
-    
+    const daThich =  checkLikeDislike?.luotThichP;
+    const khongThich = checkLikeDislike?.luotDislikeP;
     return(
         <div className="control-panel">
     

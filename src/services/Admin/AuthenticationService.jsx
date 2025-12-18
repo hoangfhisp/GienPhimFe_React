@@ -339,14 +339,14 @@ export const xacNhanChuyenTien = async () => {
 // api nap tien qua VnPay
 export const CreatePaymentVnPay = async (userId, soTien, motaDH) => {
     try {
-        const res = await request.post('/Payments/CreateVnPay', {
+        const res = await apiHelper.post('/Wallet/CreateVnPay', {
             userId,
             soTien,
             motaDH,
-            kieuDH: "oder"
-        });
+            kieuDH: "order"
+        },{}, true);
 
-        return res;
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi huỷ giao dịch:", error);
     }
