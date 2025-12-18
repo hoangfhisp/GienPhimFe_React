@@ -7,18 +7,18 @@ import { formatVND } from '../../../untils/Format.jsx';
 function Plan({ children, deXuat, isRecommended, onSelect, data, onDataGoiThang, onDataGoiNam, color }) {
     const [dataLuaChonGoiThang, setDataLuaChonGoiThang] = useState([]);
     const [dataLuaChonGoiNam, setDataLuaChonGoiNam] = useState([]);
-    const parts = String(data.moTaGoiTV).split('-');
+    const parts = String(data.moTaPlan).split('-');
 
     useEffect(() => {
-        if (!data || !data.goiTVId) return;
+        if (!data || !data.planId) return;
 
         const fetchApiLuaChon = async () => {
             try {
-                const resultT = await managerServices.GetLuaChonGTVByGoiTVIdAndNgayAsync(data.goiTVId, 30);
+                const resultT = await managerServices.GetLuaChonGTVByGoiTVIdAndNgayAsync(data.planId, 30,1,10);
                 setDataLuaChonGoiThang(resultT.data);
                 onDataGoiThang(resultT.data);
 
-                const resultN = await managerServices.GetLuaChonGTVByGoiTVIdAndNgayAsync(data.goiTVId, 365);
+                const resultN = await managerServices.GetLuaChonGTVByGoiTVIdAndNgayAsync(data.planId, 365,1,10);
                 setDataLuaChonGoiNam(resultN.data);
                 onDataGoiNam(resultN.data);
 
@@ -28,7 +28,7 @@ function Plan({ children, deXuat, isRecommended, onSelect, data, onDataGoiThang,
         };
 
         fetchApiLuaChon();
-    }, [data?.goiTVId]);
+    }, [data?.planId]);
 
     return (
         <button
@@ -38,12 +38,12 @@ function Plan({ children, deXuat, isRecommended, onSelect, data, onDataGoiThang,
             {deXuat && <div className="label">Đề xuất</div>}
             <h2>{children}</h2>
             <p className="price">
-                <span className="monthly">{formatVND(Number(dataLuaChonGoiThang[0]?.giaGoiTV || 0))} / tháng</span>
+                <span className="monthly">{formatVND(Number(dataLuaChonGoiThang[0]?.giaOption || 0))} / tháng</span>
             </p>
             <p className="yearly">
                 Hoặc trả trước theo năm:
                 <br />
-                <span className="highlight">{formatVND(Number(dataLuaChonGoiNam[0]?.giaGoiTV || 0))} / năm</span>
+                <span className="highlight">{formatVND(Number(dataLuaChonGoiNam[0]?.giaOption || 0))} / năm</span>
             </p>
             <ul className='plan-info'>
                 {parts.map((res, index) => (

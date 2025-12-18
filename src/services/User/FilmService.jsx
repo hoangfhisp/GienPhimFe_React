@@ -116,14 +116,14 @@ export const XuLyLichSuXem = async (xulyLichSuXemData) => {
 
 //PHẢN HỒI NGƯỜI DÙNG
 // Gọi Api xử lý like dislike
-export const XuLyLuotLikeDislike = async(phimId,nguoiDungId,luotThichP,luotDislikeP) => {
+export const XuLyLuotLikeDislike = async(phimId,userId,luotThichP,luotDislikeP) => {
     try {
-        const res = await request.post('/PhanHoiNguoiDung/XuLyLikeDislike',{
+        const res = await apiHelper.post('/FeedBack/ProcessingLikeDislike',{
             phimId,
-            nguoiDungId,
+            userId,
             luotThichP,
             luotDislikeP
-        });
+        },{},true);
         
         return res;
     } catch (error) {
@@ -132,16 +132,16 @@ export const XuLyLuotLikeDislike = async(phimId,nguoiDungId,luotThichP,luotDisli
 }
 
 // Gọi api để check người dùng đã like, dislike chưa
-export const CheckLikeDislikeUser = async (phimId,nguoiDungId) => {
+export const CheckLikeDislikeUser = async (phimId,userId) => {
     try {
-        const res = await request.get('/PhanHoiNguoiDung/CheckLikeDislikeUser',{
+        const res = await apiHelper.get('/FeedBack/GetLikeDislikeByUserIdAndPhimId',{
             params: {
                 phimId,
-                nguoiDungId
+                userId
             }
-        });
+        },true);
 
-        return res;
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi gọi API:", error);
     }

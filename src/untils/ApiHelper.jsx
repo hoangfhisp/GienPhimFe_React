@@ -9,6 +9,10 @@ const apiPrivate = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
+  validateStatus: (status) =>
+    (status >= 200 && status < 300) ||
+    status === 400 ||
+    status === 404,
 });
 
 // ================= REQUEST =================

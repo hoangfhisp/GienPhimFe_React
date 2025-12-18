@@ -8,11 +8,13 @@ import ThongBao from "../ThongBao/ThongBao";
 import { formatVND } from "../../../untils/Format";
 import * as authHook from '../../../hooks/auth.jsx'
 import * as authServices from '../../../services/Admin/AuthenticationService.jsx'
+import * as userService from '../../../services/User/UserService.jsx'
+import { set } from "lodash";
 
 function PhuongThucThanhToan() {
     const location = useLocation();
 
-    const[dataUser,setDataUser] = useState([]);
+    const[dataWallet,setDataWallet] = useState([]);
     const[isThongBao,setIsThongBao] = useState(false);
     const[formThongBao,setFormThongBao] = useState({
         type: 'confirm',
@@ -34,13 +36,13 @@ function PhuongThucThanhToan() {
             setFormThongBao({
                 type: 'success',
                 title: 'NẠP TIỀN THÀNH CÔNG',
-                message: `Bạn đã nạp thành công ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDuTaiKhoan || 0)}`,
+                message: `Bạn đã nạp thành công ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDu || 0)}`,
             })
         } else if (status === 'fail'){
             setFormThongBao({
                 type: 'fail',
                 title: 'NẠP TIỀN THẤT BẠI',
-                message: `Bạn đã nạp thất bại ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDuTaiKhoan || 0)}`,
+                message: `Bạn đã nạp thất bại ${formatVND(amount|| 0)} vào tài khoản. Tài khoản gốc ${formatVND(data?.soDu || 0)}`,
             })
         }
     }
@@ -55,10 +57,10 @@ function PhuongThucThanhToan() {
             return null;
 
         const fetchApiUser = async () => {
-            const result = await authServices.getUserById(userIdLogin);
+            const result = await userService.getWalletByUserId(userIdLogin);
 
-            setDataUser(result);
-            handleThongBao(status,result);
+            setDataWallet(result.data);
+            handleThongBao(status,result.data);
             setIsThongBao(true);
             window.history.pushState({}, '', location.pathname); // load url không chuyển trang , chỉ dữ path
         }
