@@ -55,6 +55,7 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            
             {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
             {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
 

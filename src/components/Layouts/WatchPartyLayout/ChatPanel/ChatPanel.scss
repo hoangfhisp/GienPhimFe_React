@@ -2,31 +2,43 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    overflow: hidden;
-}
-
-.ChatPanel__header {
-    padding: 14px 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.ChatPanel__title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #111827;
+    font-size: 13px;
 }
 
 .ChatPanel__messages {
     flex: 1;
-    padding: 12px 14px;
+    padding: 12px;
     overflow-y: auto;
+}
+
+.ChatPanel__messages div {
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.ChatPanel__input {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: #f9fafb;
+    padding: 10px;
+    border-top: 1px solid #222;
+    gap: 6px;
+}
+
+.ChatPanel__input input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 20px;
+    border: none;
+    background: #1e1e2b;
+    color: #fff;
+}
+
+.ChatPanel__input button {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #4f7cff;
+    color: #fff;
+    font-weight: 500;
 }
 
 .ChatMessage {
@@ -35,6 +47,11 @@
     background: #eef2ff;
     font-size: 14px;
     max-width: 90%;
+
+    /* FIX TRÀN CHỮ */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 
 .ChatMessage--system {

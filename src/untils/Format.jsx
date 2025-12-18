@@ -1,5 +1,12 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import env from "../config/Config";
+
+// ====== CONFIG DAYJS ======
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Ho_Chi_Minh");
 
 export function formatVND(value) {
   return value.toLocaleString('vi-VN', {
@@ -19,6 +26,26 @@ export function formatYear(value){
 
 export function formatDate(value){
   return dayjs(value).format('DD/MM/YYYY');
+}
+
+export function formatDateTimeVN(value) {
+  if (!value) return "";
+  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY HH:mm:ss");
+}
+
+export function formatDateVN(value) {
+  if (!value) return "";
+  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY");
+}
+
+export function formatTimeVN(value) {
+  if (!value) return "";
+  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("HH:mm");
+}
+
+export function formatYearVN(value) {
+  if (!value) return "";
+  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("YYYY");
 }
 
 export function formatURLImage(value) {
