@@ -6,12 +6,15 @@ import { Link } from 'react-router-dom';
 import WatchTogetherButton from "../../Commons/WatchTogetherButton";
 import CreateChatGroupModal from "../../Modal/CreateChatGroupModal";
 import { formatURLImage, formatYear } from '../../../untils/Format.jsx';
+import * as authHook from '../../../hooks/auth.jsx'
 
 function PhimBanner({ id }) {
     const [rating, setRating] = useState("0");
     const [dataPhim, setDataPhim] = useState([]);
     const [dataTap, setDataTap] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+
+    const userId = authHook.getUserIdFromToken();
     useEffect(() => {
         if (id == null) {
             return;
@@ -52,15 +55,17 @@ function PhimBanner({ id }) {
                             <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt="kk" />
                             <Link to={`/XemPhim/${dataPhim.phimId}/${dataTap?.[0]?.slugTap ?? ''}`} className="phim-watch-btn">XEM PHIM</Link>
                         </div>
-                        <WatchTogetherButton onClick={() => setOpenModal(true)} />
+                        {userId && (
+                            <>
+                                <WatchTogetherButton onClick={() => setOpenModal(true)} />
 
-                        <CreateChatGroupModal
-                            open={openModal}
-                            onClose={() => setOpenModal(false)}
-                            onSubmit={(data) => {
-                                console.log("Create group:", data);
-                            }}
-                        />
+                                <CreateChatGroupModal
+                                    open={openModal}
+                                    onClose={() => setOpenModal(false)}
+                                    phimId={dataPhim.phimId}
+                                />
+                            </>
+                        )}
                         <div className="phim-details">
                             <h1>{dataPhim.tenP}</h1>
                             <p className="phim-subtitle">{dataPhim.tenP}</p>

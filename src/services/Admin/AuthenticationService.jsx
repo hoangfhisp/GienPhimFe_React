@@ -370,11 +370,7 @@ export const taoGiaoDichMomo = async (napTienDto, userId) => {
 
 export const getUserById = async (id) => {
     try {
-        const res = await request.get(`/User/GetUserByUserId`, {
-            params: {
-                UserId: id
-            }
-        });
+        const res = await request.get(`/User/GetUserByUserId?userId=${id}`);
         return res;
     } catch (error) {
         console.error("Lỗi lấy thông tin người dùng:", error);

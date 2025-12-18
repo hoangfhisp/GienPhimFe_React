@@ -1,13 +1,25 @@
 .WatchPartyLayout {
     display: flex;
-    height: 100vh;
-    background: #f6f8fb;
+    min-height: 100vh;   // ✅ cho phép dài hơn
+    background: #0f0f14;
 }
 
+/* LEFT */
 .WatchPartyLayout__player {
-    flex: 3;
-    min-width: 0;
-    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 10px;
+}
+
+/* RIGHT */
+.WatchPartyLayout__right {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #222;
+    background: #12121a;
 }
 
 .WatchPartyLayout__chat {
@@ -16,38 +28,27 @@
     padding: 16px 16px 16px 0;
 }
 
-.PlayerBox,
-.ChatBox {
-    height: 100%;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-    display: flex;
-    flex-direction: column;
+.PlayerBox {
+    background: #16161f;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 
-.PlayerBox__header,
-.ChatBox__header {
-    padding: 14px 16px;
-    border-bottom: 1px solid #eee;
+.PlayerBox__header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #222;
 }
 
-.PlayerBox__title,
-.ChatBox__title {
-    font-weight: 700;
+.PlayerBox__title {
     font-size: 16px;
+    font-weight: 600;
+    color: white;
 }
 
 .PlayerBox__sub {
-    margin-top: 4px;
     font-size: 12px;
-    color: #777;
-}
-
-.PlayerBox__content {
-    flex: 1;
-    padding: 16px;
+    color: #9a9aa5;
 }
 
 .PlayerPlaceholder {
