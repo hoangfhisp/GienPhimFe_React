@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import "./RoomHeader.scss";
 import * as watchService from "../../../../services/Watch/WatchChatService.jsx";
+import { useNavigate } from "react-router-dom";
+
 
 export default function RoomHeader({ datagroup }) {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [requests, setRequests] = useState([]);
 
@@ -18,21 +21,26 @@ export default function RoomHeader({ datagroup }) {
     }
   };
 
+  const handleClose = () => {
+    navigate("/Home");
+    
+  };
+
   const handleAccept = async (requestId) => {
     const res = await watchService.AcceptJoinRequest(requestId);
     if (res.status) {
-        setShowModal(false);
-        alert("Đã chấp nhận yêu cầu tham gia");
-        
+      setShowModal(false);
+      alert("Đã chấp nhận yêu cầu tham gia");
+
     }
   };
 
   const handleReject = async (requestId) => {
     const res = await watchService.RejectJoinRequest(requestId);
     if (res.status) {
-        setShowModal(false);
-        alert("Đã từ chối yêu cầu tham gia");
-        
+      setShowModal(false);
+      alert("Đã từ chối yêu cầu tham gia");
+
     }
   };
 
@@ -51,7 +59,7 @@ export default function RoomHeader({ datagroup }) {
         <button className="RoomHeader__btn" onClick={fetchRequests}>
           🔗 Mời
         </button>
-        <button className="RoomHeader__btn RoomHeader__btn--danger">
+        <button className="RoomHeader__btn RoomHeader__btn--danger" onClick={handleClose} >
           ⛔ Đóng phòng
         </button>
       </div>
@@ -60,31 +68,42 @@ export default function RoomHeader({ datagroup }) {
       {showModal && (
         <div className="ModalOverlay" onClick={closeModal}>
           <div className="ModalContent" onClick={(e) => e.stopPropagation()}>
-            <h3>Danh sách yêu cầu tham gia</h3>
-            {requests.length === 0 && <p>Chưa có yêu cầu nào</p>}
-            <div className="RequestList">
-              {requests.map((req) => (
-                <div key={req.requestId} className="RequestRow">
-                  <div><strong>User ID:</strong> {req.requestUserId}</div>
-                  <div><strong>Trạng thái:</strong> {req.status}</div>
-                  <div>
-                    <strong>Thời gian yêu cầu:</strong>{" "}
-                    {new Date(req.requestedAt).toLocaleString()}
-                  </div>
-                  <div>
-                    <strong>Thời gian xử lý:</strong>{" "}
-                    {req.processedAt
-                      ? new Date(req.processedAt).toLocaleString()
-                      : "Chưa xử lý"}
-                  </div>
-                  <div className="RequestActions">
-                    <button className="AcceptBtn" onClick={() => handleAccept(req.requestId)}>✔ Chấp nhận</button>
-                    <button className="RejectBtn" onClick={() => handleReject(req.requestId)}>✖ Bỏ qua</button>
-                  </div>
-                </div>
-              ))}
+            <div className="ModalHeader">
+              <h3>Yêu cầu tham gia phòng</h3>
+              <button className="IconClose" onClick={closeModal}>✕</button>
             </div>
-            <button className="CloseBtn" onClick={closeModal}>Đóng</button>
+
+            {requests.length === 0 ? (
+              <div className="EmptyState">Chưa có yêu cầu nào</div>
+            ) : (
+              <div className="RequestList">
+                {requests.map(req => (
+                  <div key={req.requestId} className="RequestCard">
+                    <div className="RequestInfo">
+                      <div className="RequestUser">👤 {req.requestUserId}</div>
+                      <div className="RequestTime">
+                        Gửi lúc: {new Date(req.requestedAt).toLocaleString()}
+                      </div>
+                    </div>
+
+                    <div className="RequestActions">
+                      <button
+                        className="Btn Btn--accept"
+                        onClick={() => handleAccept(req.requestId)}
+                      >
+                        Chấp nhận
+                      </button>
+                      <button
+                        className="Btn Btn--reject"
+                        onClick={() => handleReject(req.requestId)}
+                      >
+                        Từ chối
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -2,63 +2,104 @@ import React, { useEffect, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 import Hls from "hls.js";
 import env from "../../../../config/Config";
+import "./PlayerPanel.scss";
 
-export default function PlayerPanel({ groupId, userId, videoUrl, isHost }) {
-    const videoRef = useRef();
-    const isSyncingRef = useRef(false); // flag để tránh vòng lặp play/pause
+export default function PlayerPanel({
+    groupId,
+    isHost,
+    tapList,
+    currentTap,
+    onSelectTap
+}) {
+    const videoRef = useRef(null);
     const connectionRef = useRef(null);
+    const isSyncingRef = useRef(false);
 
-    // fallback test video nếu prop không có
-    const testVideoUrl = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-    const src = videoUrl || testVideoUrl;
+    const getVideoSource = (tap) => {
+        if (!tap) return null;
 
-    // SignalR connection
+        // 1️⃣ Ưu tiên linkChinh
+        if (tap.linkChinh && tap.linkChinh.endsWith(".m3u8")) {
+            return tap.linkChinh;
+        }
+
+        // 2️⃣ linkPhu → tách param url
+        if (tap.linkPhu) {
+            try {
+                const urlObj = new URL(tap.linkPhu);
+                const realUrl = urlObj.searchParams.get("url");
+                if (realUrl && realUrl.endsWith(".m3u8")) {
+                    return realUrl;
+                }
+            } catch {
+                return null;
+            }
+        }
+
+        return null;
+    };
+
+    // ================= SIGNALR =================
     useEffect(() => {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(env.SIGNALR_URL) // URL backend
+            .withUrl(env.SIGNALR_URL)
             .withAutomaticReconnect()
             .build();
 
-        connection.start()
-            .then(() => {
-                console.log("SignalR connected");
-                return connection.invoke("JoinRoom", groupId);
-            })
-            .catch(err => console.error("SignalR connection error:", err));
+        connection.start().then(() => {
+            connection.invoke("JoinRoom", groupId);
+        });
 
-        // Receive events from server
-
-        connection.on("ReceivePlayerEvent", (eventType, currentTime) => {
+        connection.on("ReceivePlayerEvent", (eventType, data) => {
             if (!videoRef.current) return;
 
-            isSyncingRef.current = true; // bắt đầu đồng bộ
+            isSyncingRef.current = true;
 
-            // Luôn set currentTime
-            videoRef.current.currentTime = currentTime;
-
-            if (eventType === "play" && videoRef.current.paused) {
-                videoRef.current.play().catch(err => console.warn(err));
+            if (eventType === "play") {
+                videoRef.current.play().catch(() => { });
             }
 
-            if (eventType === "pause" && !videoRef.current.paused) {
+            if (eventType === "pause") {
                 videoRef.current.pause();
             }
 
-            setTimeout(() => {
-                isSyncingRef.current = false; // xong đồng bộ
-            }, 50);
+            if (eventType === "seek") {
+                videoRef.current.currentTime = data;
+            }
+
+            if (eventType === "changeEpisode") {
+                // 🔥 đổi tập từ DTO
+                const fakeTap = {
+                    tapId: data.episodeId,
+                    soTap: data.episodeNumber,
+                    linkChinh: data.videoUrl
+                };
+
+                onSelectTap(fakeTap);
+
+                setTimeout(() => {
+                    videoRef.current.currentTime = 0;
+                }, 200);
+            }
+
+            setTimeout(() => (isSyncingRef.current = false), 150);
         });
 
         connectionRef.current = connection;
+        return () => connection.stop();
+    }, [groupId, onSelectTap]);
 
-        return () => {
-            if (connectionRef.current) connectionRef.current.stop();
-        };
-    }, [groupId]);
-
-    // HLS setup
+    // ================= VIDEO LOAD =================
     useEffect(() => {
         if (!videoRef.current) return;
+        if (!currentTap) return;
+
+        const src = getVideoSource(currentTap);
+        if (!src) {
+            console.warn("Không tìm được link video hợp lệ");
+            return;
+        }
+
         let hls;
 
         if (Hls.isSupported()) {
@@ -72,49 +113,63 @@ export default function PlayerPanel({ groupId, userId, videoUrl, isHost }) {
         return () => {
             if (hls) hls.destroy();
         };
-    }, [src]);
+    }, [currentTap]);
+    // ================= PLAYER EVENTS =================
+    const sendEvent = (type) => {
+        if (isSyncingRef.current) return;
+        connectionRef.current?.invoke(
+            "SendPlayerEvent",
+            groupId,
+            type,
+            videoRef.current.currentTime
+        );
+    };
 
-    // Event handlers
-    const handlePlay = () => {
-        if (isSyncingRef.current) return;
-        if (connectionRef.current?.state === "Connected") {
-            connectionRef.current.invoke("SendPlayerEvent", groupId, "play", videoRef.current.currentTime);
-        }
+    const handleChangeTap = (tap) => {
+        if (!isHost) return;
+
+        const src = getVideoSource(tap);
+        if (!src) return;
+
+        const dto = {
+            episodeId: tap.tapId,
+            episodeNumber: tap.soTap,
+            videoUrl: src
+        };
+
+        onSelectTap(tap);
+
+        connectionRef.current?.invoke(
+            "ChangeEpisode",
+            groupId,
+            dto
+        );
     };
-    const handlePause = () => {
-        if (isSyncingRef.current) return;
-        if (connectionRef.current?.state === "Connected") {
-            connectionRef.current.invoke("SendPlayerEvent", groupId, "pause", videoRef.current.currentTime);
-        }
-    };
-    const handleSeek = () => {
-        if (isSyncingRef.current) return;
-        if (connectionRef.current?.state === "Connected") {
-            connectionRef.current.invoke("SendPlayerEvent", groupId, "seek", videoRef.current.currentTime);
-        }
-    };
-    // Fullscreen
-    const handleFullScreen = () => {
-        if (!videoRef.current) return;
-        if (document.fullscreenElement) {
-            document.exitFullscreen();
-        } else {
-            videoRef.current.requestFullscreen().catch(err => console.warn(err));
-        }
-    };
+
     return (
-        <div>
+        <div className="PlayerPanel">
             <video
                 ref={videoRef}
                 controls={isHost}
                 width="100%"
-                onPlay={handlePlay}
-                onPause={handlePause}
-                onSeeked={handleSeek}
+                onPlay={() => sendEvent("play")}
+                onPause={() => sendEvent("pause")}
+                onSeeked={() => sendEvent("seek")}
             />
-            <button onClick={handleFullScreen} style={{ marginTop: 5 }}>
-                {document.fullscreenElement ? "Thu nhỏ" : "Phóng to"}
-            </button>
+
+            {/* DANH SÁCH TẬP */}
+            <div className="EpisodeList">
+                {tapList.map(tap => (
+                    <button
+                        key={tap.tapId}
+                        className={currentTap?.tapId === tap.tapId ? "active" : ""}
+                        onClick={() => handleChangeTap(tap)}
+                        disabled={!isHost}
+                    >
+                    {tap.tenTap}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 }

@@ -1,10 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
+import * as authService from "../../../../services/Admin/AuthenticationService.jsx";
 import env from "../../../../config/Config";
+import "./ChatPanel.scss";
+import { set } from "lodash";
 
 export default function ChatPanel({ userId, groupId }) {
     const [messages, setMessages] = useState([]);
     const inputRef = useRef();
+    const [usersById, setUsersById] = useState({});
     const connectionRef = useRef(null);
     const messagesEndRef = useRef(null);
 
@@ -28,6 +32,7 @@ export default function ChatPanel({ userId, groupId }) {
 
         connection.on("ReceiveMessage", (msg) => {
             setMessages(prev => [...prev, msg]);
+            fetchUserId(msg.userId);
         });
 
         connectionRef.current = connection;
@@ -48,24 +53,40 @@ export default function ChatPanel({ userId, groupId }) {
         if (e.key === "Enter") sendMessage();
     };
 
+    const fetchUserId = async (userId) => {
+        if (usersById[userId]) return;
+
+        const result = await authService.getUserById(userId);
+
+        setUsersById(prev => ({
+            ...prev,
+            [userId]: result.data
+        }));
+    };
     return (
-        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-            <div style={{ flex: 1, overflowY: "auto", padding: 8 }}>
+        <div className="ChatPanel">
+            <div className="ChatPanel__messages">
                 {messages.map((m, idx) => (
-                    <div key={idx}>
-                        <b>{m.userId}:</b> {m.text} <span style={{ fontSize: '0.8em', color: '#666' }}>{new Date(m.timestamp).toLocaleTimeString()}</span>
+                    <div key={idx} className="ChatMessage">
+                        <strong>
+                            {m.userId === userId
+                                ? "Bạn"
+                                : usersById[m.userId]?.email || "Đang tải..."}
+                            : 
+                        </strong>
+                        {m.text}
                     </div>
                 ))}
                 <div ref={messagesEndRef} />
             </div>
-            <div style={{ display: "flex", marginTop: 4 }}>
+
+            <div className="ChatPanel__input">
                 <input
                     ref={inputRef}
                     placeholder="Nhập tin nhắn..."
                     onKeyPress={handleKeyPress}
-                    style={{ flex: 1, padding: 6 }}
                 />
-                <button onClick={sendMessage} style={{ marginLeft: 4 }}>Gửi</button>
+                <button onClick={sendMessage}>Gửi</button>
             </div>
         </div>
     );
