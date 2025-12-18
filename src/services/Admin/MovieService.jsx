@@ -1,4 +1,4 @@
-import * as request from "../../untils/Request.jsx";
+import * as request from "../../untils/Requests.jsx";
 
 // Đảm bảo handle lỗi đúng cách
 const handleError = (error) => {
@@ -93,6 +93,17 @@ export const fetchTapPhimsByPhimId = async (phimId) => {
     } catch (error) {
         console.error("Lỗi khi gọi API fetchTapPhimsByPhimId:", error);
     }
+};
+
+// Tìm kiếm tập phim theo keyword (tên tập + tên phim)
+export const searchTapPhims = async (keyword, page = 1, limit = 10) => {
+    return await request.get("/TapPhim/Search", {
+        params: {
+            keyword: (keyword || "").trim(),
+            page,
+            limit,
+        },
+    });
 };
 
 // Thêm tập phim (multipart/form-data)

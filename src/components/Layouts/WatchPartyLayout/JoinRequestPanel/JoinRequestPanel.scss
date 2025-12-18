@@ -1,0 +1,93 @@
+.JoinRequestPanel {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.JoinRequestPanel__header {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.JoinRequestPanel__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.JoinRequestPanel__count {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fff7ed;
+    color: #9a3412;
+    font-weight: 700;
+}
+
+.JoinRequestPanel__list {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #f9fafb;
+    max-height: 240px;
+    overflow: auto;
+}
+
+.JoinRequestRow {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.JoinRequestRow__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.JoinRequestRow__name {
+    font-weight: 700;
+    font-size: 14px;
+    color: #111827;
+}
+
+.JoinRequestRow__time {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.JoinRequestRow__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.MiniBtn {
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.MiniBtn--accept {
+    background: #22c55e;
+    color: #fff;
+}
+
+.MiniBtn--reject {
+    background: #ef4444;
+    color: #fff;
+}

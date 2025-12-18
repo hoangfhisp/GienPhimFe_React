@@ -10,6 +10,7 @@ import TapPhimForm from "../AdminForms/TapPhimForm";
 
 export default function TapPhimAdminList() {
     const [rows, setRows] = useState([]);
+    const [keyword, setKeyword] = useState("");
     const [paging, setPaging] = useState({ page: 1, limit: 10, last: 1, total: 0 });
 
     const [open, setOpen] = useState(false);
@@ -36,9 +37,57 @@ export default function TapPhimAdminList() {
         []
     );
 
-    // fetch list tập phim (phân trang)
+    // fetch list tập phim (phân trang + search)
     const fetchData = useCallback(async () => {
         try {
+            const k = (keyword || "").trim();
+
+            // ===== Có keyword -> Search =====
+            if (k) {
+                const res = await movieServices.searchTapPhims(k, paging.page, paging.limit);
+                if (!res) return;
+
+                const list = res.data || [];
+                const pg = res.pagination || {
+                    page: 1,
+                    limit: paging.limit,
+                    last: 1,
+                    total: list.length,
+                };
+
+                setRows(
+                    list.map((x) => ({
+                        id: x.tapId,
+                        tenPhim: x.tenPhim,     // hoặc x.tenP tuỳ backend trả
+                        tenTap: x.tenTap,
+                        slugTap: x.slugTap,
+                        tenFile: x.tenFile,
+                        linkChinh: x.linkChinh ? (
+                            <a href={x.linkChinh} target="_blank" rel="noreferrer">Mở</a>
+                        ) : (
+                            ""
+                        ),
+                        linkPhu: x.linkPhu ? (
+                            <a href={x.linkPhu} target="_blank" rel="noreferrer">Mở</a>
+                        ) : (
+                            ""
+                        ),
+                        checked: false,
+                        raw: x,
+                    }))
+                );
+
+                setPaging((p) => {
+                    const next = { ...p, page: pg.page, limit: pg.limit, last: pg.last, total: pg.total };
+                    const same =
+                        p.page === next.page && p.limit === next.limit && p.last === next.last && p.total === next.total;
+                    return same ? p : next;
+                });
+
+                return;
+            }
+
+            // ===== Không keyword -> fetch thường =====
             const res = await movieServices.fetchTapPhims(paging.page, paging.limit);
             if (!res) return;
 
@@ -52,22 +101,18 @@ export default function TapPhimAdminList() {
 
             setRows(
                 list.map((x) => ({
-                    id: x.tapId, // TapId là string
+                    id: x.tapId,
                     tenPhim: x.tenPhim,
                     tenTap: x.tenTap,
                     slugTap: x.slugTap,
                     tenFile: x.tenFile,
                     linkChinh: x.linkChinh ? (
-                        <a href={x.linkChinh} target="_blank" rel="noreferrer">
-                            Mở
-                        </a>
+                        <a href={x.linkChinh} target="_blank" rel="noreferrer">Mở</a>
                     ) : (
                         ""
                     ),
                     linkPhu: x.linkPhu ? (
-                        <a href={x.linkPhu} target="_blank" rel="noreferrer">
-                            Mở
-                        </a>
+                        <a href={x.linkPhu} target="_blank" rel="noreferrer">Mở</a>
                     ) : (
                         ""
                     ),
@@ -78,13 +123,14 @@ export default function TapPhimAdminList() {
 
             setPaging((p) => {
                 const next = { ...p, page: pg.page, limit: pg.limit, last: pg.last, total: pg.total };
-                const same = p.page === next.page && p.limit === next.limit && p.last === next.last && p.total === next.total;
+                const same =
+                    p.page === next.page && p.limit === next.limit && p.last === next.last && p.total === next.total;
                 return same ? p : next;
             });
         } catch (err) {
             console.error("fetchTapPhims error:", err);
         }
-    }, [paging.page, paging.limit]);
+    }, [paging.page, paging.limit, keyword]);
 
     // load options phim (gọi 1 lần)
     const fetchPhimOptions = useCallback(async () => {
@@ -100,6 +146,16 @@ export default function TapPhimAdminList() {
     useEffect(() => {
         fetchData();
     }, [fetchData]);
+
+    useEffect(() => {
+        const handler = (e) => {
+            const text = (e?.detail || "").trim();
+            setKeyword(text);
+            setPaging((p) => ({ ...p, page: 1 }));
+        };
+        window.addEventListener("admin-search", handler);
+        return () => window.removeEventListener("admin-search", handler);
+    }, []);
 
     useEffect(() => {
         fetchPhimOptions();

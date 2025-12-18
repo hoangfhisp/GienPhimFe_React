@@ -158,3 +158,70 @@
     object-fit: contain;
     border-radius: 8px;
 }
+
+// Create chat group modal
+.ModalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.ModalBox {
+    width: 420px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.ModalTitle {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.ModalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ModalLabel {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.ModalInput {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.ModalFooter {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.Btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.Btn--ghost {
+    background: #f3f3f3;
+}
+
+.Btn--primary {
+    background: #5e72e4;
+    color: #fff;
+}

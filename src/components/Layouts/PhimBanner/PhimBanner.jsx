@@ -3,14 +3,18 @@ import { useEffect, useState } from 'react';
 import './PhimBanner.scss'
 import * as phimServices from '../../../services/User/FilmService.jsx'
 import { Link } from 'react-router-dom';
+import { formatYear } from '../../../untils/Format.jsx';
+import WatchTogetherButton from "../../Commons/WatchTogetherButton";
+import CreateChatGroupModal from "../../Modal/CreateChatGroupModal";
 import { formatURLImage, formatYear } from '../../../untils/Format.jsx';
 
-function PhimBanner({id}){
-    const [rating,setRating] = useState("0");
-    const [dataPhim,setDataPhim] = useState([]);
-    const [dataTap,setDataTap] = useState([]);
+function PhimBanner({ id }) {
+    const [rating, setRating] = useState("0");
+    const [dataPhim, setDataPhim] = useState([]);
+    const [dataTap, setDataTap] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
     useEffect(() => {
-        if(id == null){
+        if (id == null) {
             return;
         }
 
@@ -21,23 +25,23 @@ function PhimBanner({id}){
             setDataTap(resultTapPhim.data);
         }
         fetchApi();
-    },[id])
+    }, [id])
 
     useEffect(() => {
-        if(!dataPhim){
+        if (!dataPhim) {
             return;
         }
 
-        const rate = ((dataPhim.luotThichP / (dataPhim.luotThichP + dataPhim.luotDislikeP))*10).toFixed(1);
-        if(isNaN(rate)){
+        const rate = ((dataPhim.luotThichP / (dataPhim.luotThichP + dataPhim.luotDislikeP)) * 10).toFixed(1);
+        if (isNaN(rate)) {
             setRating("0")
-        }else{
+        } else {
             setRating(rate);
         }
 
-    },[dataPhim])
+    }, [dataPhim])
 
-    return(
+    return (
         <>
             <div className="banner-phim" style={{
                 background: `url(${dataPhim.avatarP ? formatURLImage(dataPhim.avatarP) : null}) center/cover no-repeat`,
@@ -49,14 +53,23 @@ function PhimBanner({id}){
                             <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt="kk"/>
                             <Link to={`/XemPhim/${dataPhim.phimId}/${dataTap?.[0]?.slugTap ?? ''}`} className="phim-watch-btn">XEM PHIM</Link>
                         </div>
+                        <WatchTogetherButton onClick={() => setOpenModal(true)} />
+
+                        <CreateChatGroupModal
+                            open={openModal}
+                            onClose={() => setOpenModal(false)}
+                            onSubmit={(data) => {
+                                console.log("Create group:", data);
+                            }}
+                        />
                         <div className="phim-details">
                             <h1>{dataPhim.tenP}</h1>
                             <p className="phim-subtitle">{dataPhim.tenP}</p>
                             <p className="phim-description">{dataPhim.moTaP}</p>
                             <div className="rating">
-                                    <span className="rating-score">{rating}</span>
-                                    <span className="stars">☆☆☆☆☆</span>
-                                    <span className="reviews"> {`( ${dataPhim.luotThichP + dataPhim.luotDislikeP} )`} Đánh giá</span>
+                                <span className="rating-score">{rating}</span>
+                                <span className="stars">☆☆☆☆☆</span>
+                                <span className="reviews"> {`( ${dataPhim.luotThichP + dataPhim.luotDislikeP} )`} Đánh giá</span>
                             </div>
                             <div className="phim-stats">
                                 <span>⏳ {dataPhim.thuoiLuongP}</span>

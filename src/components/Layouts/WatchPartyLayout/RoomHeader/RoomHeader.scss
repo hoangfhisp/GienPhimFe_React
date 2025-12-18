@@ -1,0 +1,53 @@
+.RoomHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 20px;
+    background: #ffffff;
+    border-radius: 14px;
+    margin-bottom: 16px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.RoomHeader__left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.RoomHeader__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.RoomHeader__subtitle {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.RoomHeader__right {
+    display: flex;
+    gap: 10px;
+}
+
+.RoomHeader__btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #5e72e4;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.RoomHeader__btn--danger {
+    background: #ef4444;
+}
