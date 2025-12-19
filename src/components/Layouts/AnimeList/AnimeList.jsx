@@ -8,7 +8,7 @@ import FilmCard from "../FilmCards/FilmCard.jsx";
 import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
 import * as searchServices from '../../../services/User/SearchSevice.jsx'
-import { formatDateTime } from "../../../untils/Format.jsx";
+import { formatDateTime, formatURLImage } from "../../../untils/Format.jsx";
 
 export default function AnimeList({ userId, timtheo, page, limit, webpage, onPagination, typePhim }) {
     const [listPhimResult, setListPhimResult] = useState([]);
@@ -17,6 +17,13 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
         const fetchApi = async () => {
             try {
                 let result;
+                const data = {
+                    ngonNguSlug: null,
+                    quocGiaSlug: null,
+                    theLoaiSlug: null,
+                    tenDienVien: null,
+                    tenDaoDien: null,
+                };
                 if (userId && webpage === "History") { // trang histoty
 
                     result = await phimServices.LichSuXemUser(userId, page, limit);
@@ -24,12 +31,12 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                 } else if (webpage === "SearchPhim") { // trang search
 
                     if (typePhim === "TheLoai"){
-
-                        result = await searchServices.searchTheLoaiSlug(timtheo, page, limit)
+                        data.theLoaiSlug = timtheo;
+                        result = await searchServices.searchFilterPhims(data, page, limit)
                     }
                     else if (typePhim === "QuocGia"){
-
-                        result = await searchServices.searchQuocGiaSlug(timtheo, page, limit)
+                        data.quocGiaSlug = timtheo;
+                        result = await searchServices.searchFilterPhims(data, page, limit)
                     }
                     
                     else if (typePhim === "DangPhim"){
@@ -61,7 +68,7 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
             <div className="anime-list" id="anime-list">
                 {listPhimResult.map((result) => (
                     <TippyHeadless
-                        key={result.phimId}
+                        key={result.phimId || result.lichSuXemId} 
                         interactive
                         placement="right"
                         render={attrs => (
@@ -75,14 +82,14 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                         <div className="anime-item">
                             <div className="episode-label">{result.soTapP} Tập</div>
                             <Link to={`/Phim/${result.phimId}`}>
-                                <img src={result.avatarPoster} alt={result.tenP} />
+                                <img src={formatURLImage(result.avatarPoster)} alt={result.tenP} />
                                 <p ><strong>{result.tenP}</strong></p>
                             </Link>
                             {webpage === "History" ? (
                                 <>
-                                    <h6>Đã xem tập: {result.slugTapXem} </h6>
+                                    <h6>Đã xem tập: {result.tapVuaXem} </h6>
                                     <h6>vào lúc {formatDateTime(result.thoiGianXem)}</h6>
-                                    <Link to={`/XemPhim/${result.phimId}/${result.slugTapXem}`} className="history-xemtiep">Xem tiếp</Link>
+                                    <Link to={`/XemPhim/${result.phimId}/${result.tapVuaXem}`} className="history-xemtiep">Xem tiếp</Link>
                                 </>
                             ) : (<h6>Lượt xem: {result.luotXemP}</h6>)}
                         </div>

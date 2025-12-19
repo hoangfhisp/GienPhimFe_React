@@ -22,7 +22,7 @@ export default function NavbarMenu(){
 
     useEffect(() => {
         const fetchApiAllTheLoai = async () => {
-            const resultTL = await phimServices.GetAllTheLoai();
+            const resultTL = await phimServices.GetAllTheLoai(1,20);
             setAllTheLoai(resultTL.data);
 
             const resultQG = await phimServices.GetAllQuocGia(1,12);
@@ -36,7 +36,7 @@ export default function NavbarMenu(){
         <div className="collapse navbar-collapse" id="navbarNav">
             <ul  className="navbar-nav me-auto collapse navbar-collapse">
                 <NavbarSingle link={"/Home"}>TRANG CHỦ</NavbarSingle>
-                <NavbarList data={dataDang} type="DangPhim">DẠNG PHIM</NavbarList>
+                {/* <NavbarList data={dataDang} type="DangPhim">DẠNG PHIM</NavbarList> */}
                 <NavbarSingle link={`/SearchPhim/TopPhim/top-phim`} >TOP PHIM</NavbarSingle>
                 <NavbarList data = {allTheLoai} type="TheLoai">THỂ LOẠI</NavbarList>
                 <NavbarList data = {allQuocGia} type="QuocGia">QUỐC GIA</NavbarList>

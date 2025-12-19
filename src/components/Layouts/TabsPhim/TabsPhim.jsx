@@ -19,15 +19,16 @@ function TabsPhim({id}){
         }
 
         const fetchApi = async () => {
-            const result = await phimServices.phim(id);
-            setDataPhim(result.data);
-            setDataTap(result.tapCuaPhim);
+             const resultPhim = await phimServices.phim(id);
+            const resultTapPhim = await phimServices.tapPhims(id);
+            setDataPhim(resultPhim.data);
+            setDataTap(resultTapPhim.data);
         }
         fetchApi();
 
     },[id])
 
-    console.log(dataPhim);
+  
     return(
         <>
             <nav className="tabs-phim">

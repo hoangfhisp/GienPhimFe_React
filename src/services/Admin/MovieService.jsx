@@ -1,4 +1,4 @@
-import * as request from "../../untils/Request.jsx";
+import * as request from "../../untils/Requests.jsx";
 
 // Đảm bảo handle lỗi đúng cách
 const handleError = (error) => {
@@ -6,29 +6,15 @@ const handleError = (error) => {
     throw error; // Hoặc trả về thông báo lỗi thân thiện
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getPhimFormFields() {
-    const response = await request.get('/Admin/Phim/metadata');
-    return response.fields;
-}
-
-// Lấy danh sách phim
-export const fetchMovies = async (page, limit) => {
+// Lấy danh sách phim với phân trang
+export const fetchPhims = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/Phim', {
-            params: { page, limit }
-        });
-
-        // Nếu response chứa các URL ảnh đầy đủ, bạn có thể trả về response như bình thường
-        return response;
+        return await request.get(
+            "/Phim/GetAllPhims",
+            { params: { page, limit } },
+        );
     } catch (error) {
-        console.error("Lỗi tải phim:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách phim'
-        };
+        console.error("Lỗi khi gọi API phim:", error);
     }
 };
 
@@ -51,579 +37,456 @@ export const fetchFilterMovies = async (tenTL, TenQG, TenNN, page, limit) => {
 };
 
 // Tìm kiếm phim theo tên
-export const searchMovies = async (tenp, page = 1, limit = 10) => {
-    try {
-        const response = await request.get('/Search', {
-            params: { tenp, page, limit }
-        });
-        return response;
-    } catch (error) {
-        console.error("Lỗi khi tìm kiếm phim:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: { page, limit, total: 0 },
-            msg: error.message || 'Lỗi khi tìm kiếm phim'
-        };
-    }
+export const searchPhims = async (keyword) => {
+    // backend đang dùng [FromQuery] string keyword
+    return await request.get("/Phim/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
 // API để nhập dữ liệu từ nguồn ngoài
 export const addMovieFromAPI = (apiLink) => {
-    return request.post('/Admin/Phim/inputapi', { query: apiLink });
+    return request.post("/api/Phim/ImportFromApi", null,
+        { params: { slug: apiLink } },
+        true
+    );
 };
 
-// Tạo phim mới
-export const createMovie = (movieData) => {
-    const isFormData = movieData instanceof FormData;
-
-    return request.post('/Admin/Phim/Them', movieData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Xem chi tiết phim
+export const fetchPhimDetail = (id) => {
+    return request.get(`/Phim/GetById/${id}`);
 };
 
-// Cập nhật phim
-export const updateMovie = (phimId, movieData) => {
-    const isFormData = movieData instanceof FormData;
-
-    return request.put(`/Admin/Phim/CapNhat/${phimId}`, movieData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Thêm phim (multipart/form-data) -> ADMIN cần token
+export const createPhim = async (formData) => {
+    return await request.post("/Phim/Create", formData, {}, true);
 };
 
-
-// Xóa phim
-export const deleteMovie = (id) => {
-    return request.deleteRequest(`/Admin/Phim/Xoa/${id}`).catch(handleError);
+// Cập nhật phim 
+export const updatePhim = async (formData) => {
+    return await request.put(
+        "/Phim/Update",
+        formData,
+        {},
+        true
+    );
 };
 
-// Lấy metadata để biết các trường cần nhập cho tập phim
-export async function getTapPhimFormFields() {
-    const response = await request.get('/Admin/QuanTriVienTapPhim/metadata');
-    return response.fields;
-}
+// Xoá phim
+export const deletePhim = async (phimId) => {
+    return await request.deleteRequest(
+        "/Phim/Delete",
+        { params: { phimId } },
+        true
+    );
+};
 
-// Lấy danh sách tập phim (có phân trang)
-export const fetchEpisodes = async (page, limit) => {
+// Lấy danh sách tất cả tập phim (phân trang)
+export const fetchTapPhims = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/QuanTriVienTapPhim/TapCuaPhim', {
-            params: { page, limit }
+        const response = await request.get("/TapPhim/GetAll", {
+            params: { page, limit },
         });
         return response;
     } catch (error) {
-        console.error("Lỗi tải tập phim:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách tập phim'
-        };
+        console.error("Lỗi khi gọi API fetchTapPhims:", error);
     }
 };
 
-// Lấy danh sách tập phim theo phimId
-export const fetchEpisodesByMovieId = async (phimId) => {
+// Lấy danh sách tập theo PhimId
+export const fetchTapPhimsByPhimId = async (phimId) => {
     try {
-        const response = await request.get('/Admin/QuanTriVienTapPhim/TapTheoPhim', {
-            params: {
-                phimId
-            }
-        });
-
-        return response;
-    } catch (error) {
-        console.error("Lỗi khi lấy danh sách tập phim:", error);
-        throw new Error(error.response?.data?.Msg || 'Lỗi khi lấy danh sách tập phim');
-    }
-};
-
-// Lấy chi tiết một tập phim theo phimId và tapPhimId
-export const fetchEpisodeDetail = async (phimId, tapPhimId) => {
-    try {
-        const response = await request.get('/Admin/QuanTriVienTapPhim/ChiTietTapPhim', {
-            params: {
-                phimId,
-                tapPhimId
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi khi lấy chi tiết tập phim:", error);
-        return {
-            status: false,
-            data: null,
-            msg: error.response?.data?.Msg || error.message || 'Lỗi khi lấy thông tin tập phim'
-        };
-    }
-};
-
-// Tạo tập phim mới
-export const createEpisode = (episodeData) => {
-    const isFormData = episodeData instanceof FormData;
-    return request.post('/Admin/QuanTriVienTapPhim/Them', episodeData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
-};
-
-// Cập nhật tập phim
-export const updateEpisode = async (episodeData) => {
-    try {
-        const response = await request.put(`/Admin/QuanTriVienTapPhim/CapNhat`, episodeData, {
-            headers: {
-                // Browser sẽ tự đặt Content-Type nếu là FormData
-            }
+        const response = await request.get("/TapPhim/GetByPhimId", {
+            params: { phimId },
         });
         return response;
     } catch (error) {
-        console.error("Lỗi cập nhật tập phim:", error);
-        throw new Error(error.response?.data?.Msg || 'Lỗi khi cập nhật tập phim');
+        console.error("Lỗi khi gọi API fetchTapPhimsByPhimId:", error);
     }
 };
 
-// Xóa tập phim
-export const deleteEpisode = (id) => {
-    return request.deleteRequest(`/Admin/QuanTriVienTapPhim/Xoa/${id}`).catch(handleError);
+// Tìm kiếm tập phim theo keyword (tên tập + tên phim)
+export const searchTapPhims = async (keyword, page = 1, limit = 10) => {
+    return await request.get("/TapPhim/Search", {
+        params: {
+            keyword: (keyword || "").trim(),
+            page,
+            limit,
+        },
+    });
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getTheLoaiFormFields() {
-    const response = await request.get('/Admin/QuanTriVienTheLoai/metadata');
-    return response.fields;
-}
+// Thêm tập phim (multipart/form-data)
+export const createTapPhim = async (formData) => {
+    return await request.post(
+        "/TapPhim/Create",
+        formData,
+        {},
+        true
+    );
+};
 
+// Cập nhật tập phim (multipart/form-data)
+export const updateTapPhim = async (formData) => {
+    return await request.put(
+        "/TapPhim/Update",
+        formData,
+        {},
+        true
+    );
+};
+
+// Xoá tập phim
+export const deleteTapPhim = async (tapId) => {
+    return await request.deleteRequest(
+        "/TapPhim/Delete",
+        { params: { tapId } },
+        true
+    );
+};
+
+// Lấy danh sách thể loại
 export const fetchTheLoais = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/QuanTriVienTheLoai', {
-            params: { page, limit }
+        const response = await request.get("/TheLoai/GetAllTheLoais", {
+            params: { page, limit },
         });
 
         return response;
-
     } catch (error) {
-        console.error("Lỗi tải thể loại:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách thể loại'
-        };
+        console.error("Lỗi khi gọi API thể loại:", error);
     }
 };
 
-export const searchTheLoais = async (tentl, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/QuanTriVienTheLoai/search`, {
-            params: {
-                tentl,
-                page,
-                limit
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tìm kiếm thể loại:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm thể loại'
-        };
-    }
+// Tìm kiếm thể loại
+export const searchTheLoais = async (keyword) => {
+    return await request.get("/TheLoai/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
-// Tạo thể loại mới
-export const createTheLoai = (theLoaiData) => {
-    const isFormData = theLoaiData instanceof FormData;
+// Xem chi tiết thể loại
+export const fetchTheLoaiDetail = (theLoaiId) => {
+    return request.get(`/TheLoai/Detail/${theLoaiId}`);
+};
 
-    return request.post('/Admin/QuanTriVienTheLoai/Them', theLoaiData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Thêm thể loại
+export const createTheLoai = async (payload) => {
+    return await request.post(
+        "/TheLoai/Create",
+        {
+            tenTL: payload.tenTL,
+            moTa: payload.moTa,
+        },
+        {},
+        true
+    );
 };
 
 // Cập nhật thể loại
-export const updateTheLoai = (id, theLoaiData) => {
-    const isFormData = theLoaiData instanceof FormData;
-
-    return request.put(`/Admin/QuanTriVienTheLoai/CapNhat/${id}`, theLoaiData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateTheLoai = async (payload) => {
+    return await request.put(
+        "/TheLoai/Update",
+        payload,
+        {},
+        true
+    );
 };
 
-// Xóa thể loại
-export const deleteTheLoai = (id) => {
-    return request.deleteRequest(`/Admin/QuanTriVienTheLoai/Xoa/${id}`).catch(handleError);
+// Xoá thể loại
+export const deleteTheLoai = async (theLoaiId) => {
+    return await request.deleteRequest(
+        "/TheLoai/Delete",
+        { params: { theLoaiId } },
+        true
+    );
 };
 
 // Lấy danh sách quốc gia với phân trang
 export const fetchQuocGias = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/QuocGia', {
+        const response = await request.get('/QuocGia/GetAllQuocGias', {
             params: { page, limit }
         });
 
         return response;
 
     } catch (error) {
-        console.error("Lỗi tải quốc gia:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách quốc gia'
-        };
+        console.error("Lỗi khi gọi API:", error);
     }
 };
-
-// Lấy metadata để biết các trường cần nhập
-export async function getQuocGiaFormFields() {
-    const response = await request.get('/Admin/QuocGia/metadata');
-    return response.fields;
-}
 
 // Tìm kiếm quốc gia theo từ khóa
-export const searchQuocGias = async (tenqg, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/QuocGia/search`, {
-            params: {
-                tenqg,
-                page,
-                limit
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tìm kiếm quốc gia:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm quốc gia'
-        };
-    }
+export const searchQuocGias = async (keyword) => {
+    return await request.get("/QuocGia/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
-// Thêm quốc gia mới
-export const createQuocGia = (quocGiaData) => {
-    const isFormData = quocGiaData instanceof FormData;
-
-    return request.post('/Admin/QuocGia/Them', quocGiaData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Xem chi tiết quốc gia
+export const fetchQuocGiaDetail = (quocGiaId) => {
+    return request.get(`/QuocGia/Detail/${quocGiaId}`);
 };
 
-// Cập nhật thông tin quốc gia
-export const updateQuocGia = (id, quocGiaData) => {
-    const isFormData = quocGiaData instanceof FormData;
-
-    return request.put(`/Admin/QuocGia/CapNhat/${id}`, quocGiaData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Thêm quốc gia
+export const createQuocGia = async (payload) => {
+    return await request.post(
+        "/QuocGia/Create",
+        {
+            tenQG: payload.tenQG,
+            moTaQG: payload.moTaQG,
+        },
+        {},
+        true
+    );
 };
 
-// Xóa quốc gia
-export const deleteQuocGia = (id) => {
-    return request.deleteRequest(`/Admin/QuocGia/Xoa/${id}`).catch(handleError);
+// Cập nhật quốc gia
+export const updateQuocGia = async (payload) => {
+    return await request.put(
+        "/QuocGia/Update",
+        payload,
+        {},
+        true
+    );
 };
 
+// Xoá quốc gia
+export const deleteQuocGia = async (quocGiaId) => {
+    return await request.deleteRequest(
+        "/QuocGia/Delete",
+        { params: { quocGiaId } },
+        true
+    );
+};
 
 // Lấy danh sách ngôn ngữ với phân trang
 export const fetchNgonNgus = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/NgonNgu', {
+        const response = await request.get('/NgonNgu/GetAllNgonNgus', {
             params: { page, limit }
         });
-
-        console.log('API Response NgonNgu:', response);
 
         return response;
 
     } catch (error) {
-        console.error("Lỗi tải ngôn ngữ:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách ngôn ngữ'
-        };
+        console.error("Lỗi khi gọi API:", error);
     }
 };
 
 // Tìm kiếm ngôn ngữ
-export const searchNgonNgus = async (tennn, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/NgonNgu/search`, {
-            params: {
-                tennn,
-                page,
-                limit
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tìm kiếm ngôn ngữ:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm ngôn ngữ'
-        };
-    }
+export const searchNgonNgus = async (keyword) => {
+    return await request.get("/NgonNgu/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getNgonNguFormFields() {
-    const response = await request.get('/Admin/NgonNgu/metadata');
-    return response.fields;
-}
+// Xem chi tiết ngôn ngữ
+export const fetchNgonNguDetail = (ngonNguId) => {
+    return request.get(`/NgonNgu/Detail/${ngonNguId}`);
+};
 
-// Thêm ngôn ngữ mới
-export const createNgonNgu = (ngonNguData) => {
-    const isFormData = ngonNguData instanceof FormData;
-
-    return request.post('/Admin/NgonNgu/Them', ngonNguData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+// Thêm ngôn ngữ
+export const createNgonNgu = async (payload) => {
+    return await request.post(
+        "/NgonNgu/Create",
+        {
+            tenNN: payload.tenNN,
+            moTaNN: payload.moTaNN,
+        },
+        {},
+        true
+    );
 };
 
 // Cập nhật ngôn ngữ
-export const updateNgonNgu = (id, ngonNguData) => {
-    const isFormData = ngonNguData instanceof FormData;
-
-    return request.put(`/Admin/NgonNgu/CapNhat/${id}`, ngonNguData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateNgonNgu = async (payload) => {
+    return await request.put(
+        "/NgonNgu/Update",
+        payload,
+        {},
+        true
+    );
 };
 
-// Xóa ngôn ngữ
-export const deleteNgonNgu = (id) => {
-    return request.deleteRequest(`/Admin/NgonNgu/Xoa/${id}`).catch(handleError);
+// Xoá ngôn ngữ
+export const deleteNgonNgu = async (ngonNguId) => {
+    return await request.deleteRequest(
+        "/NgonNgu/Delete",
+        { params: { ngonNguId } },
+        true
+    );
 };
 
+// Lấy danh sách đạo diễn với phân trang
 export const fetchDaoDiens = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/DaoDien', {
-            params: { page, limit }
-        });
-
-        console.log('API Response DaoDien:', response);
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tải đạo diễn:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách đạo diễn'
-        };
-    }
-};
-
-export const searchDaoDiens = async (tendg, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/DaoDien/search`, {
-            params: {
-                tendg,
-                page,
-                limit
-            }
+        const response = await request.get("/DaoDien/GetAllDaoDiens", {
+            params: { page, limit },
         });
 
         return response;
-
     } catch (error) {
-        console.error("Lỗi tìm kiếm đạo diễn:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm đạo diễn'
-        };
+        console.error("Lỗi khi gọi API đạo diễn:", error);
     }
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getDaoDienFormFields() {
-    const response = await request.get('/Admin/DaoDien/metadata');
-    return response.fields;
-}
+// Tìm kiếm đạo diễn
+export const searchDaoDiens = async (keyword) => {
+    return await request.get("/DaoDien/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
+};
+
+// Xem chi tiết đạo diễn
+export const fetchDaoDienDetail = (daoDienId) => {
+    return request.get(`/DaoDien/Detail/${daoDienId}`);
+};
 
 // Thêm đạo diễn
-export const createDaoDien = (daoDienData) => {
-    const isFormData = daoDienData instanceof FormData;
-
-    return request.post('/Admin/DaoDien/Them', daoDienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const createDaoDien = async (payload) => {
+    return await request.post(
+        "/DaoDien/Create",
+        {
+            tenDD: payload.tenDD,
+            moTaDD: payload.moTaDD,
+        },
+        {},
+        true
+    );
 };
 
 // Cập nhật đạo diễn
-export const updateDaoDien = (id, daoDienData) => {
-    const isFormData = daoDienData instanceof FormData;
-
-    return request.put(`/Admin/DaoDien/CapNhat/${id}`, daoDienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateDaoDien = async (payload) => {
+    return await request.put(
+        "/DaoDien/Update",
+        payload,
+        {},
+        true
+    );
 };
 
-// Xóa đạo diễn
-export const deleteDaoDien = (id) => {
-    return request.deleteRequest(`/Admin/DaoDien/Xoa/${id}`).catch(handleError);
+// Xoá đạo diễn
+export const deleteDaoDien = async (daoDienId) => {
+    return await request.deleteRequest(
+        "/DaoDien/Delete",
+        { params: { daoDienId } },
+        true
+    );
 };
 
-
+// Lấy danh sách diễn viên với phân trang
 export const fetchDienViens = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/DienVien', {
-            params: { page, limit }
+        const response = await request.get("/DienVien/GetAllDienViens", {
+            params: { page, limit },
         });
 
         return response;
-
     } catch (error) {
-        console.error("Lỗi tải danh sách diễn viên:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách diễn viên'
-        };
+        console.error("Lỗi khi gọi API diễn viên:", error);
     }
 };
 
 // Tìm kiếm diễn viên theo từ khóa
-export const searchDienViens = async (tendv, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/DienVien/search`, {
-            params: {
-                tendv,
-                page,
-                limit
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tìm kiếm diễn viên:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm diễn viên'
-        };
-    }
+export const searchDienViens = async (keyword) => {
+    return await request.get("/DienVien/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getDienVienFormFields() {
-    const response = await request.get('/Admin/DienVien/metadata');
-    return response.fields;
-}
+// Xem chi tiết diễn viên
+export const fetchDienVienDetail = (dienVienId) => {
+    return request.get(`/DienVien/Detail/${dienVienId}`);
+};
 
 // Thêm diễn viên
-export const createDienVien = (dienVienData) => {
-    const isFormData = dienVienData instanceof FormData;
-
-    return request.post('/Admin/DienVien/Them', dienVienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const createDienVien = async (payload) => {
+    return await request.post(
+        "/DienVien/Create",
+        {
+            tenDV: payload.tenDV,
+            moTaDV: payload.moTaDV,
+        },
+        {},
+        true
+    );
 };
 
 // Cập nhật diễn viên
-export const updateDienVien = (id, dienVienData) => {
-    const isFormData = dienVienData instanceof FormData;
-
-    return request.put(`/Admin/DienVien/CapNhat/${id}`, dienVienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateDienVien = async (payload) => {
+    return await request.put(
+        "/DienVien/Update",
+        payload,
+        {},
+        true
+    );
 };
 
-// Xóa diễn viên
-export const deleteDienVien = (id) => {
-    return request.deleteRequest(`/Admin/DienVien/Xoa/${id}`).catch(handleError);
+// Xoá diễn viên
+export const deleteDienVien = async (dienVienId) => {
+    return await request.deleteRequest(
+        "/DienVien/Delete",
+        { params: { dienVienId } },
+        true
+    );
 };
 
-// Lấy danh sách tất cả các thẻ tag
+// Lấy danh sách thẻ tag với phân trang
 export const fetchTheTags = async (page, limit) => {
     try {
-        const response = await request.get('/Admin/TheTag', {
-            params: { page, limit }
+        const response = await request.get("/TheTag/GetAllTheTags", {
+            params: { page, limit },
         });
 
         return response;
-
     } catch (error) {
-        console.error("Lỗi tải thẻ tag:", error);
-        return {
-            status: false,
-            data: [],
-            pagination: null,
-            msg: error.message || 'Lỗi khi tải danh sách thẻ tag'
-        };
+        console.error("Lỗi khi gọi API thẻ tag:", error);
     }
 };
 
 // Tìm kiếm thẻ tag theo từ khóa
-export const searchTheTags = async (tent, page, limit) => {
-    try {
-        const response = await request.get(`/Admin/TheTag/search`, {
-            params: {
-                tent,
-                page,
-                limit
-            }
-        });
-
-        return response;
-
-    } catch (error) {
-        console.error("Lỗi tìm kiếm thẻ tag:", error);
-        return {
-            status: false,
-            data: [],
-            totalItems: 0,
-            msg: error.message || 'Lỗi khi tìm kiếm thẻ tag'
-        };
-    }
+export const searchTheTags = async (keyword) => {
+    return await request.get("/TheTag/Search", {
+        params: { keyword: (keyword || "").trim() },
+    });
 };
 
-// Lấy metadata để biết các trường cần nhập
-export async function getTheTagFormFields() {
-    const response = await request.get('/Admin/TheTag/metadata');
-    return response.fields;
-}
+// Xem chi tiết thẻ tag
+export const fetchTheTagDetail = (theTagId) => {
+    return request.get(`/TheTag/Detail/${theTagId}`);
+};
 
 // Thêm thẻ tag
-export const createTheTag = (theTagData) => {
-    const isFormData = theTagData instanceof FormData;
-
-    return request.post('/Admin/TheTag/Them', theTagData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const createTheTag = async (payload) => {
+    return await request.post(
+        "/TheTag/Create",
+        {
+            tenT: payload.tenT,
+            moTaT: payload.moTaT,
+        },
+        {},
+        true
+    );
 };
 
 // Cập nhật thẻ tag
-export const updateTheTag = (id, theTagData) => {
-    const isFormData = theTagData instanceof FormData;
-
-    return request.put(`/Admin/TheTag/CapNhat/${id}`, theTagData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+export const updateTheTag = async (payload) => {
+    return await request.put(
+        "/TheTag/Update",
+        payload,
+        {},
+        true
+    );
 };
 
-// Xóa thẻ tag
-export const deleteTheTag = (id) => {
-    return request.deleteRequest(`/Admin/TheTag/Xoa/${id}`).catch(handleError);
+// Xoá thẻ tag
+export const deleteTheTag = async (theTagId) => {
+    return await request.deleteRequest(
+        "/TheTag/Delete",
+        { params: { theTagId } },
+        true
+    );
 };
 
 // Lấy danh sách lịch sử giao dịch
@@ -688,25 +551,31 @@ export async function getGoiThanhVienFormFields() {
 
 // Thêm gói thành viên
 export const createGoiThanhVien = (goiThanhVienData) => {
-    const isFormData = goiThanhVienData instanceof FormData;
-
-    return request.post('/GoiThanhVien/AddGoiThanhVien', goiThanhVienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+    return request.post(
+        "/GoiThanhVien/AddGoiThanhVien",
+        goiThanhVienData,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Cập nhật gói thành viên (đúng route mới)
 export const updateGoiThanhVien = (id, goiThanhVienData) => {
-    const isFormData = goiThanhVienData instanceof FormData;
-
-    return request.put(`/GoiThanhVien/UpdateGoiThanhVien/${id}`, goiThanhVienData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+    return request.put(
+        `/GoiThanhVien/UpdateGoiThanhVien/${id}`,
+        goiThanhVienData,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Xóa gói thành viên (đúng route mới)
 export const deleteGoiThanhVien = (id) => {
-    return request.deleteRequest(`/GoiThanhVien/DeleteGoiThanhVien/${id}`).catch(handleError);
+    return request.deleteRequest(
+        `/GoiThanhVien/DeleteGoiThanhVien/${id}`,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Lấy danh sách tất cả gói thành viên
@@ -724,7 +593,7 @@ export const fetchAllGoiThanhVien = async () => {
     }
 };
 
-// ✅ Lấy metadata để biết các trường cần nhập
+// Lấy metadata để biết các trường cần nhập
 export async function getLuaChonGoiTVFormFields() {
     try {
         const response = await request.get('/LuaChonGoiTV/metadata');
@@ -737,26 +606,31 @@ export async function getLuaChonGoiTVFormFields() {
 
 // Thêm lựa chọn gói thành viên
 export const createLuaChonGoiTV = (luaChonData) => {
-    const isFormData = luaChonData instanceof FormData;
-
-    return request.post('/LuaChonGoiTV/AddLuachonGoiTV', luaChonData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+    return request.post(
+        "/LuaChonGoiTV/AddLuachonGoiTV",
+        luaChonData,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Cập nhật lựa chọn gói thành viên
 export const updateLuaChonGoiTV = (id, luaChonData) => {
-    const isFormData = luaChonData instanceof FormData;
-
-    return request.put(`/LuaChonGoiTV/UpdateLuaChonGoiTV/${id}`, luaChonData, {
-        headers: isFormData ? {} : { 'Content-Type': 'application/json' }
-    }).catch(handleError);
+    return request.put(
+        `/LuaChonGoiTV/UpdateLuaChonGoiTV/${id}`,
+        luaChonData,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Xoá lựa chọn gói thành viên
 export const deleteLuaChonGoiTV = (id) => {
-    return request.deleteRequest(`/LuaChonGoiTV/DeleteLuaChonGoiTV/${id}`)
-        .catch(handleError);
+    return request.deleteRequest(
+        `/LuaChonGoiTV/DeleteLuaChonGoiTV/${id}`,
+        {},
+        true
+    ).catch(handleError);
 };
 
 // Lấy tất cả lựa chọn gói thành viên
@@ -804,3 +678,142 @@ export const AddPhimByApi = async (api) => {
         console.error("Lỗi khi add phim api:", error);
     }
 }
+
+// Lấy danh sách gói thành viên (phân trang)
+export const fetchMembershipPlans = async (page = 1, limit = 10) => {
+    return await request.get("/MembershipPlan/GetAllMembershipPlans", {
+        params: { page, limit },
+    });
+};
+
+// Lấy chi tiết gói thành viên
+export const fetchMembershipPlanDetail = async (planId) => {
+    return await request.get(`/MembershipPlan/Detail/${planId}`);
+};
+
+// Tạo gói thành viên
+export const createMembershipPlan = async (payload) => {
+    return await request.post(
+        "/MembershipPlan/Create",
+        payload,
+        {},
+        true
+    );
+};
+
+// Cập nhật gói thành viên
+export const updateMembershipPlan = async (payload) => {
+    return await request.put(
+        "/MembershipPlan/Update",
+        payload,
+        {},
+        true
+    );
+};
+
+// Xoá gói thành viên
+export const deleteMembershipPlan = async (planId) => {
+    return await request.deleteRequest(
+        "/MembershipPlan/Delete",
+        { params: { planId } },
+        true
+    );
+};
+
+// Lấy danh sách option (phân trang – dùng cho admin tổng)
+export const fetchPlanOptions = async (page = 1, limit = 10) => {
+    return await request.get("/PlanOption/GetAllPlanOptions", {
+        params: { page, limit },
+    });
+};
+
+// Lấy chi tiết option
+export const fetchPlanOptionDetail = async (optionId) => {
+    return await request.get(`/PlanOption/Detail/${optionId}`);
+};
+
+// Tạo option cho gói
+export const createPlanOption = async (payload) => {
+    return await request.post(
+        "/PlanOption/Create",
+        payload,
+        {},
+        true
+    );
+};
+
+// Cập nhật option
+export const updatePlanOption = async (payload) => {
+    return await request.put(
+        "/PlanOption/Update",
+        payload,
+        {},
+        true
+    );
+};
+
+// Xoá option
+export const deletePlanOption = async (optionId) => {
+    return await request.deleteRequest(
+        "/PlanOption/Delete",
+        { params: { optionId } },
+        true
+    );
+};
+
+// GET cấu hình bot
+export const fetchBotConfig = async () => {
+    return await request.get(
+        "/BotConfig/GetConfig",
+        {},
+        true
+    );
+};
+
+// PUT cập nhật cấu hình bot
+export const updateBotConfig = async (payload) => {
+    return await request.put(
+        "/BotConfig/Update",
+        payload,
+        {},
+        true
+    );
+};
+
+// GET logs phân trang
+export const fetchBotSyncLogs = async (page = 1, limit = 10) => {
+    return await request.get("/BotSyncLogs/GetAll", { params: { page, limit } });
+};
+
+//Api người dùng
+export const fetchUsers = async (page, limit) => {
+    try {
+        const res = await request.get(
+            "/User/GetListUser",
+            { params: { page, limit } },
+            true
+        );
+        return res;
+    } catch (error) {
+        console.error("Lỗi lấy danh sách user:", error);
+    }
+};
+
+// Cập nhật người dùng
+export const updateInfoUser = async (formData) => {
+    return await request.put(
+        "/User/UpdateInfoUser",
+        formData,
+        {},
+        true
+    );
+};
+
+// Xóa người dùng
+export const deleteUser = async (userId) => {
+    return await request.deleteRequest(
+        "/User/DeleteUser",
+        { params: { userId } },
+        true
+    );
+};

@@ -9,7 +9,7 @@ import * as authHook from "../../hooks/auth.jsx"
 
 function History(){
     const [pagination,setPagination] = useState([]);
-    const [currentPage,setCurrentPage] = useState();
+    const [currentPage,setCurrentPage] = useState(1);
 
     var userId =authHook.getUserIdFromToken();
 
@@ -18,7 +18,7 @@ function History(){
             <div className="container-main">
                 <Notice/>
 
-                <BoxTitle>Lịch sử xem gân đây của : </BoxTitle>
+                <BoxTitle>Lịch sử xem gân đây của bạn : </BoxTitle>
 
                 <br /> <hr />   
 

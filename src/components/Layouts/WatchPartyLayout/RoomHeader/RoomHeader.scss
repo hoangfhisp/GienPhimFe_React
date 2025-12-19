@@ -1,0 +1,182 @@
+.RoomHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 16px;
+    background: #16161f;
+    border-radius: 12px;
+    margin-bottom: 12px;
+
+    border: 1px solid #222;
+}
+
+.RoomHeader__left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.RoomHeader__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #f5f5f7;
+}
+
+.RoomHeader__subtitle {
+    font-size: 12px;
+    color: #9a9aa5;
+}
+
+.RoomHeader__right {
+    display: flex;
+    gap: 8px;
+}
+
+.RoomHeader__btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    background: #4f7cff;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity .15s ease;
+}
+
+.RoomHeader__btn:hover {
+    opacity: .85;
+}
+
+.RoomHeader__btn--danger {
+    background: #ef4444;
+}
+.ModalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+/* ===== MODAL CONTENT ===== */
+.ModalContent {
+    width: 480px;
+    background: #181822;
+    border-radius: 16px;
+    padding: 18px;
+    color: #e5e7eb;
+    border: 1px solid #2a2a3a;
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    animation: modalFade .2s ease;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; transform: scale(.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ===== HEADER ===== */
+.ModalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.ModalHeader h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.IconClose {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #9ca3af;
+    cursor: pointer;
+}
+
+.IconClose:hover {
+    color: #fff;
+}
+
+/* ===== EMPTY ===== */
+.EmptyState {
+    text-align: center;
+    padding: 30px 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* ===== REQUEST LIST ===== */
+.RequestList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+/* ===== REQUEST CARD ===== */
+.RequestCard {
+    background: #1e1e2b;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid #2a2a3a;
+}
+
+.RequestInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.RequestUser {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.RequestTime {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* ===== ACTIONS ===== */
+.RequestActions {
+    display: flex;
+    gap: 8px;
+}
+
+.Btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s ease;
+}
+
+.Btn:hover {
+    opacity: .85;
+}
+
+.Btn--accept {
+    background: #22c55e;
+    color: #052e16;
+}
+
+.Btn--reject {
+    background: #ef4444;
+    color: #fff;
+}

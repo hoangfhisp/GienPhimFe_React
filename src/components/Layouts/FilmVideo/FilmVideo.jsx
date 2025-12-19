@@ -5,6 +5,7 @@ import './FilmVideo.scss'
 import FilmPanel from './FilmPanel';
 import FilmTap from './FilmTap.jsx';
 import * as phimServices from '../../../services/User/FilmService.jsx'
+import { formatURLImage } from '../../../untils/Format.jsx';
 
 function FilmVideo({ id, tap, userId }) {
     const [isPlaying, setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
@@ -20,8 +21,8 @@ function FilmVideo({ id, tap, userId }) {
             return;
         }
         const fetchApi = async () => {
-            const dataTap = await phimServices.phim(id);
-            const danhSachTap = dataTap.tapCuaPhim || [];
+            const dataTap = await phimServices.tapPhims(id);
+            const danhSachTap = dataTap.data || [];
             setDataTapPhim(danhSachTap);
         }
 
@@ -43,11 +44,13 @@ function FilmVideo({ id, tap, userId }) {
 
         if (tap == null || userId == null)
             return;
+
+        var xuLyLichSuXemData = {phimId: id, userId, tapVuaXem: tap}
         const fetchApiXuLyLichSuXem = async () => {
-            await phimServices.XuLyLichXuXem(id, userId, tap);
+            await phimServices.XuLyLichSuXem(xuLyLichSuXemData);
         }
         fetchApiXuLyLichSuXem();
-    }, [tap])
+    }, [tap, id, userId])
 
     // Thiết lập loại mặc định (chính hoặc phụ) sau khi load danh sách tập
     useEffect(() => {
@@ -68,9 +71,9 @@ function FilmVideo({ id, tap, userId }) {
         if (!tapchon) return;
 
         if (currentType === 'chinh') {
-            setTapPhim(tapchon.linkChinh);
+            setTapPhim(formatURLImage(tapchon.linkChinh));
         } else {
-            setTapPhim(tapchon.linkPhu);
+            setTapPhim(formatURLImage(tapchon.linkPhu));
         }
 
     }, [tapchon, currentType]);
@@ -78,6 +81,9 @@ function FilmVideo({ id, tap, userId }) {
     console.log(tapPhim)
     // Hàm để chạy api update lại số lượt xem khi người dùng xem
     const Views = async (idphim, nguoiDungId) => {
+        if(nguoiDungId == null){
+            nguoiDungId = null;
+        }
         await phimServices.addLuotXem(idphim, nguoiDungId);
         setIsPlaying(true);
     }
@@ -86,7 +92,7 @@ function FilmVideo({ id, tap, userId }) {
         <>
             <div className="video-container">
 
-                <iframe src={tapPhim} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
+                <iframe src={tapPhim} title={`Xem phim - Tập ${tap}`} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
 
                 <div className="video-overlay" style={{ display: isPlaying ? "none" : "block" }}>
                     <p className="warning">WEBSITE CÓ NHIỀU QUẢNG CÁO!</p>
@@ -111,7 +117,7 @@ function FilmVideo({ id, tap, userId }) {
                     <FilmTap
                         type="chinh"
                         currentType={currentType}
-                        data={dataTapPhim.filter(tap => tap.linkChinh !== null)}
+                        data={dataTapPhim.filter(tap => formatURLImage(tap.linkChinh) !== null)}
                         idphim={id}
                         slugtap={tap}
                         onSelect={() => {
@@ -129,7 +135,7 @@ function FilmVideo({ id, tap, userId }) {
                     <FilmTap
                         type="phu"
                         currentType={currentType}
-                        data={dataTapPhim.filter(tap => tap.linkPhu !== null)}
+                        data={dataTapPhim.filter(tap => formatURLImage(tap.linkPhu) !== null)}
                         idphim={id}
                         slugtap={tap}
                         onSelect={() => {

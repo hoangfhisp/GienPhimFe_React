@@ -23,7 +23,6 @@ html {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1;
 }
 
 .login-header {
@@ -916,4 +915,23 @@ input[type="number"] {
 .alert-danger {
     background-color: #f8d7da;
     color: #721c24;
+}
+
+.login-google-wrap {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+
+    // giữ đúng bề ngang giống các nút khác
+    width: 100%;
+
+    // đừng set background ở đây
+    background: transparent;
+}
+
+// Ép iframe đúng width thôi, không ép height
+.login-google-wrap iframe {
+    width: 320px !important;
+    max-width: 100% !important;
+    border-radius: 999px !important;
 }

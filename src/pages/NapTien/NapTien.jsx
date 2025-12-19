@@ -9,9 +9,10 @@ import PhuongThucThanhToan from '../../components/Layouts/PhuongThucThanhToan/Ph
 
 export default function NapTien() {
     const { phuongthuc } = useParams();
-
+    
     const [typePayment, setTypePayment] = useState("");
 
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
        
@@ -21,7 +22,7 @@ export default function NapTien() {
     return (
         <div className="login-container">
             <LoginContainer />
-            {typePayment === "home" && <PhuongThucThanhToan />}
+            {typePayment === "home" && <PhuongThucThanhToan userId={userId}/>}
             {typePayment === "vnpay" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng ví điện tử VNPay</ThanhToan>}
             {typePayment === "vib" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng tài khoản VIB</ThanhToan>}
             {typePayment === "momo" && <ThanhToan phuongthuc={typePayment}>Thanh toán bằng ví điện tử Momo</ThanhToan>}

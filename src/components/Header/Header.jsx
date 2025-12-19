@@ -8,14 +8,15 @@ import SearchFilm from "../Layouts/SearchFilm/SearchFilm";
 import * as authHook from "../../hooks/auth.jsx"
 import * as authServices from "../../services/Admin/AuthenticationService.jsx"
 import logoDefaultUser from "../../assets/img/LogoDefaultUser.webp"
-import { formatVND } from "../../untils/Format.jsx";
+import { formatURLImage, formatVND } from "../../untils/Format.jsx";
 import * as managerServices from '../../services/User/ManagerService.jsx'
+import * as userService from '../../services/User/UserService.jsx'
 
 export default function Header() {
     const [isLogin, setIsLogin] = useState(false);
     const [roleLogin, setRoleLogin] = useState('');
     const [dataUser, setDataUser] = useState([]);
-
+    const [dataWallet, setDataWallet] = useState([]);
     var userId = authHook.getUserIdFromToken();
     var roleUser = authHook.getRolseUserFromToken();
 
@@ -29,13 +30,14 @@ export default function Header() {
 
         const fetchApi = async () => {
             var result = await authServices.getUserById(userId);
-            setDataUser(result);
-            await managerServices.CheckXuLyGoiHetHanUser(userId);
+            setDataUser(result.data);
+            await managerServices.CheckXuLyGoiHetHanUser(userId);;
+            var result = await userService.getWalletByUserId(userId);
+            setDataWallet(result.data);
         }
         fetchApi();
 
     }, [userId, roleUser]);
-
 
     return (
         <>
@@ -56,12 +58,10 @@ export default function Header() {
 
                         <SearchFilm />
 
-                        <seacr />
-
                         <ul className="navbar-nav ms-3">
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown">
-                                    <img src={userId && dataUser?.avatarND ? dataUser.avatarND : logoDefaultUser} alt="logo-login" width="40" className="avatar logologin" />
+                                    <img src={userId && dataUser?.avatarND ? formatURLImage(dataUser.avatarND) : logoDefaultUser} alt="logo-login" width="40" className="avatar logologin" />
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end ">
                                     {isLogin && <UserLogin data={dataUser} role={roleLogin} onlogins={setIsLogin} />}
@@ -69,6 +69,17 @@ export default function Header() {
                                 </ul>
                             </li>
                         </ul>
+                        {isLogin &&(
+                        <ul className="navbar-nav ms-3">
+                            <li className="nav-item dropdown">
+                                <a className="nav-link dropdown-toggle d-flex align-items-center" href="/" role="button" data-bs-toggle="dropdown">
+                                    <span className="badge bg-warning text-dark">{formatVND(dataWallet?.soDu || "0")}</span>
+                                </a>
+                                <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                    <WalletUser/>
+                                </ul>
+                            </li>
+                        </ul>)}
                     </div>
                 </nav>
             </header>
@@ -89,6 +100,7 @@ function UserLogin({ onlogins, role, data }) {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('rf_token');
         onlogins(false);
     }
 
@@ -97,7 +109,6 @@ function UserLogin({ onlogins, role, data }) {
         <>
             <ItemUser link={"/InfoAccount"}>Thông Tin Tài khoản</ItemUser>
             {role === "Admin" && <ItemUser link={"/Tong-Quan"}>Quản Lý Giền Phim</ItemUser>}
-            {role === "User" && <ItemUser link={"/NapTien/Home"} >Nạp Tiền: {formatVND(data.soDuTaiKhoan || 0)}</ItemUser>}
             <ItemUser link={"/GoiThanhVien"}>Mua Gói Thành Viên</ItemUser>
             <ItemUser link={"/History"}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/LienHe"}>Liên Hệ Giền Phim</ItemUser>
@@ -106,6 +117,16 @@ function UserLogin({ onlogins, role, data }) {
     );
 }
 
+
+function WalletUser(){
+
+    return(
+        <>
+            <ItemUser link={"/LichSuGiaoDich"}>Lịch Sử Giao Dịch</ItemUser>
+            <ItemUser link={"/NapTien/Home"}>Nạp Tiền</ItemUser>
+        </>
+    );
+}
 
 function ItemUser({ children, onSelect, link }) {
     return (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Comment.scss';
 import avatarNull from '../../../assets/img/avatar.png';
-import { formatDateTime } from '../../../untils/Format';
+import { formatDateTime, formatURLImage } from '../../../untils/Format';
 import * as managerServices from '../../../services/User/ManagerService.jsx';
 
 function ReplyComment({ data, userId, phimId, fetchApiComment, onShowTB, onformTB }) {
@@ -60,7 +60,7 @@ function ReplyComment({ data, userId, phimId, fetchApiComment, onShowTB, onformT
         <div className="comment-item child">
             <div className="comment-header">
                 <img
-                    src={data.user?.avatarND ? data.user.avatarND : avatarNull}
+                    src={data.user?.avatarND ? formatURLImage(data.user.avatarND) : avatarNull}
                     alt={data.user?.nameND ? data.user.nameND : "Ẩn danh"}
                     className="comment-avatar"
                 />

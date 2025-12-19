@@ -1,55 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as AuthenticationService from "../../services/Admin/AuthenticationService";
-import LoginContainer from '../../components/Login-container/Login-container';
-import '../../components/Login-container/Login.scss';
+import LoginContainer from "../../components/Login-container/Login-container";
+import "../../components/Login-container/Login.scss";
 
 const ResetPassword = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get('token');
-    const email = queryParams.get('email');
+    const email = queryParams.get("email"); // chỉ cần email
 
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [otp, setOtp] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
+    const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
-        // Kiểm tra nếu không có token hoặc email trong URL
-        if (!token || !email) {
-            setError('Thông tin không hợp lệ hoặc thiếu.');
+        if (!email) {
+            setError("Thiếu email trong đường dẫn. Vui lòng quay lại bước 'Quên mật khẩu'.");
         }
-    }, [token, email]);
+    }, [email]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Kiểm tra nếu mật khẩu hoặc xác nhận mật khẩu không hợp lệ
-        if (!newPassword || !confirmPassword) {
-            setError('Mật khẩu không được để trống.');
+        if (!email) return;
+
+        if (!otp.trim()) {
+            setError("Vui lòng nhập mã OTP.");
+            return;
+        }
+        if (!newPassword || !confirmNewPassword) {
+            setError("Mật khẩu không được để trống.");
+            return;
+        }
+        if (newPassword !== confirmNewPassword) {
+            setError("Mật khẩu mới và xác nhận mật khẩu không trùng khớp.");
             return;
         }
 
-        if (newPassword !== confirmPassword) {
-            setError('Mật khẩu mới và xác nhận mật khẩu không trùng khớp.');
-            return;
-        }
-
-        setError('');
-        setSuccessMessage('');
+        setError("");
+        setSuccessMessage("");
 
         try {
-            // Gọi API reset password từ service
-            const response = await AuthenticationService.resetPassword(token, email, newPassword);
-            setSuccessMessage(response.message || 'Mật khẩu đã được thay đổi thành công.');
+            const payload = {
+                email: String(email).trim(),
+                otp: String(otp).trim(),
+                type: "fg_password",
+                newPassword,
+                confirmNewPassword,
+            };
 
-            // Redirect về trang login sau khi reset thành công
-            setTimeout(() => navigate('/login'), 2000);
+            const data = await AuthenticationService.resetPassword(payload);
+
+            console.log("DATA =", data);
+
+            if (data?.status === true) {
+                setError("");
+                setSuccessMessage(data?.msg || "Đổi mật khẩu thành công.");
+                setTimeout(() => navigate("/login"), 1500);
+            } else {
+                setSuccessMessage("");
+                setError(data?.msg || "Đổi mật khẩu thất bại.");
+            }
         } catch (err) {
-            setError(err.message || 'Có lỗi xảy ra. Vui lòng thử lại.');
+            console.error(err);
+            setError("Có lỗi xảy ra. Vui lòng thử lại.");
         }
     };
 
@@ -59,44 +78,72 @@ const ResetPassword = () => {
             <div className="login-body">
                 <div className="login-form-container">
                     <div className="login-title">
-                        <h4 style={{ textAlign: 'center' }}>Đổi lại mật khẩu</h4>
+                        <h4 style={{ textAlign: "center" }}>Đổi lại mật khẩu</h4>
                     </div>
 
                     <form className="login-form" id="changePasswordForm" onSubmit={handleSubmit}>
-                        {/* Hiển thị lỗi nếu có */}
-                        {error && <div className="text-danger" role="alert">{error}</div>}
+                        {error && (
+                            <div className="text-danger" role="alert">
+                                {error}
+                            </div>
+                        )}
+                        {successMessage && (
+                            <div className="text-success" role="alert">
+                                {successMessage}
+                            </div>
+                        )}
 
-                        {/* Hiển thị thông báo thành công nếu có */}
-                        {successMessage && <div className="text-success" role="alert">{successMessage}</div>}
+                        {/* Email (readonly) */}
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                className={`login-form-input ${email ? "filled" : ""}`}
+                                value={email || ""}
+                                readOnly
+                            />
+                            <label className="floating-label">Email</label>
+                        </div>
 
-                        {/* Mật khẩu mới */}
+                        {/* OTP */}
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                className={`login-form-input ${otp ? "filled" : ""}`}
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                autoComplete="one-time-code"
+                                required
+                            />
+                            <label className="floating-label">Mã OTP</label>
+                        </div>
+
+                        {/* New password */}
                         <div className="form-group">
                             <input
                                 type="password"
-                                className={`login-form-input ${newPassword ? 'filled' : ''}`}
+                                className={`login-form-input ${newPassword ? "filled" : ""}`}
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                autoComplete="off"
+                                autoComplete="new-password"
                                 required
                             />
                             <label className="floating-label">Mật khẩu mới</label>
                         </div>
 
-                        {/* Xác nhận mật khẩu */}
+                        {/* Confirm new password */}
                         <div className="form-group">
                             <input
                                 type="password"
-                                className={`login-form-input ${confirmPassword ? 'filled' : ''}`}
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                autoComplete="off"
+                                className={`login-form-input ${confirmNewPassword ? "filled" : ""}`}
+                                value={confirmNewPassword}
+                                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                autoComplete="new-password"
                                 required
                             />
-                            <label className="floating-label">Xác nhận mật khẩu</label>
+                            <label className="floating-label">Xác nhận mật khẩu mới</label>
                         </div>
 
-                        {/* Nút submit */}
-                        <button type="submit" className="login-form-button">
+                        <button type="submit" className="login-form-button" disabled={!email}>
                             Thay đổi mật khẩu
                         </button>
                     </form>

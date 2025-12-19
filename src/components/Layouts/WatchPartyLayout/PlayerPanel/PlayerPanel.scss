@@ -1,0 +1,85 @@
+.PlayerPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+}
+
+.PlayerPanel video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 12px;
+}
+
+
+.PlayerPanel__player {
+    flex: 1;
+    padding: 16px;
+}
+
+.PlayerPlaceholder {
+    height: 100%;
+    border-radius: 12px;
+    background: #0f172a;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.PlayerPanel__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.ControlBtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #5e72e4;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.EpisodeList {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.EpisodeList button {
+    min-width: 56px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid #2a2a3a;
+    background: #1a1a25;
+    color: #cfd3ff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.EpisodeList button.active {
+    background: #4f7cff;
+    border-color: #4f7cff;
+    color: #fff;
+}
+
+.EpisodeList button:disabled {
+    opacity: .4;
+}

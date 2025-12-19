@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { formatYear } from "../../../untils/Format";
+import { formatURLImage, formatYear } from "../../../untils/Format";
 
 export default function FilmBanner({data}){
     const [dataPhim,setDataPhim] = useState([]);
     const [rating,setRating] = useState("0");
     useEffect(() => {
-        if (data?.theLoai) {
-            setDataPhim(data.theLoai);
+        if (data?.theLoais) {
+            setDataPhim(data.theLoais);
         }
 
         const rate = ((data.luotThichP / (data.luotThichP + data.luotDislikeP))*10).toFixed(1);
@@ -24,7 +24,7 @@ export default function FilmBanner({data}){
         
         <div className="banner" 
             style={{
-                background: `url(${data.avatarP}) center/cover no-repeat`,
+                background: `url(${formatURLImage(data.avatarP)}) center/cover no-repeat`,
         }}>
             <div className="overlay-banner"></div>
             <div className="content-banner">
@@ -33,7 +33,7 @@ export default function FilmBanner({data}){
                 <hr />
                 <div className="info-banner">
                         <span className="tag-banner">⭐ {rating}</span>
-                    <span>⏳ {data.thoiLuongP}</span>
+                    <span>⏳ {data.thuoiLuongP}</span>
                     <span>📅 { formatYear(data.ngayPhatHanhP)}</span>
                 </div>
                 <p>{data.moTaP}</p>
@@ -41,7 +41,7 @@ export default function FilmBanner({data}){
                 <div className="genres-banner">
                 📌 Thể loại:
                 {dataPhim.map((result) => (
-                    <span>{result.tenTL}</span>
+                    <span>{result}</span>
                 ))}
                 </div>
                 <Link to={`/Phim/${data.phimId}`} className="watch-btn">▶ Xem Phim</Link>

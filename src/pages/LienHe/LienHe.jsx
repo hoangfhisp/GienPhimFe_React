@@ -30,7 +30,12 @@ function LienHe() {
             <div className="login-body">
                 <div className="login-form-container">
                     <div className="login-form-header">
-                        <h4 >
+                        <h4 style={{
+                            fontSize: 22,
+                            color: "Red",
+                            fontWeight: "600",
+                            textAlign: "center"
+                        }}>
                             Hãy Liên Hệ Với Chúng Tôi
                         </h4>
                     </div>
@@ -55,15 +60,15 @@ function LienHe() {
                             <span className="login-email-text">Liên hệ qua Gmail</span>
                         </a>
 
-                        <div className="login-form-signupnow">
+                        <div className="login-form-signupnow" style={{textAlign: "center"}}>
                             Bạn có hài lòng với website GIENPHIM?
                         </div>
                         <a target='_blank' rel="noreferrer" href={linkLienHe} asp-action="GRDis" className="login-form-button login-email-button" onClick={() => handleLinnk("discord")}>
                             <i className="fab fa-discord"></i>
                             <span className="login-email-text">Join Group Discord GienPhim</span>
                         </a>
-                        <div className="login-term">
-                            <p>Nếu bạn có trải nghiệm không tốt về website. Hãy liên hệ sớm nhất với chúng tôi. Chúng tôi sẽ cố gắng khắc phục nhanh chóng.</p>
+                        <div className="login-term"style={{textAlign: "center"}}>
+                            <p >Nếu bạn có trải nghiệm không tốt về website. Hãy liên hệ sớm nhất với chúng tôi. Chúng tôi sẽ cố gắng khắc phục nhanh chóng.</p>
                             <a rel="noreferrer" href="/">Tìm hiểu thêm.</a>
                         </div>
                     </div>
