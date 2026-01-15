@@ -40,54 +40,113 @@ export default function PlayerPanel({
     };
 
     // ================= SIGNALR =================
+    // useEffect(() => {
+    //     const connection = new signalR.HubConnectionBuilder()
+    //         .withUrl(env.SIGNALR_URL, { withCredentials: true })
+    //         .withAutomaticReconnect()
+    //         .build();
+    //     connection.start().then(() => {
+    //         connection.invoke("JoinRoom", groupId);
+    //     });
+
+    //     connection.on("ReceivePlayerEvent", (eventType, data) => {
+    //         if (!videoRef.current) return;
+
+    //         isSyncingRef.current = true;
+
+    //         if (eventType === "play") {
+    //             videoRef.current.play().catch(() => { });
+    //         }
+
+    //         if (eventType === "pause") {
+    //             videoRef.current.pause();
+    //         }
+
+    //         if (eventType === "seek") {
+    //             videoRef.current.currentTime = data;
+    //         }
+
+    //         if (eventType === "changeEpisode") {
+    //             // 🔥 đổi tập từ DTO
+    //             const fakeTap = {
+    //                 tapId: data.episodeId,
+    //                 soTap: data.episodeNumber,
+    //                 linkChinh: data.videoUrl
+    //             };
+
+    //             onSelectTap(fakeTap);
+
+    //             setTimeout(() => {
+    //                 videoRef.current.currentTime = 0;
+    //             }, 200);
+    //         }
+
+    //         setTimeout(() => (isSyncingRef.current = false), 150);
+    //     });
+
+    //     connectionRef.current = connection;
+    //     return () => connection.stop();
+    // }, [groupId, onSelectTap]);
+
     useEffect(() => {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(env.SIGNALR_URL)
+            .withUrl(env.SIGNALR_URL, {
+                withCredentials: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
             .withAutomaticReconnect()
             .build();
-
-        connection.start().then(() => {
-            connection.invoke("JoinRoom", groupId);
-        });
 
         connection.on("ReceivePlayerEvent", (eventType, data) => {
             if (!videoRef.current) return;
 
             isSyncingRef.current = true;
 
-            if (eventType === "play") {
-                videoRef.current.play().catch(() => { });
-            }
+            switch (eventType) {
+                case "play":
+                    videoRef.current.play().catch(() => { });
+                    break;
 
-            if (eventType === "pause") {
-                videoRef.current.pause();
-            }
+                case "pause":
+                    videoRef.current.pause();
+                    break;
 
-            if (eventType === "seek") {
-                videoRef.current.currentTime = data;
-            }
+                case "seek":
+                    videoRef.current.currentTime = data;
+                    break;
 
-            if (eventType === "changeEpisode") {
-                // 🔥 đổi tập từ DTO
-                const fakeTap = {
-                    tapId: data.episodeId,
-                    soTap: data.episodeNumber,
-                    linkChinh: data.videoUrl
-                };
+                case "changeEpisode":
+                    const fakeTap = {
+                        tapId: data.episodeId,
+                        soTap: data.episodeNumber,
+                        linkChinh: data.videoUrl
+                    };
 
-                onSelectTap(fakeTap);
+                    onSelectTap(fakeTap);
 
-                setTimeout(() => {
-                    videoRef.current.currentTime = 0;
-                }, 200);
+                    setTimeout(() => {
+                        if (videoRef.current) {
+                            videoRef.current.currentTime = 0;
+                        }
+                    }, 200);
+                    break;
             }
 
             setTimeout(() => (isSyncingRef.current = false), 150);
         });
 
+        connection.start()
+            .then(() => connection.invoke("JoinRoom", groupId))
+            .catch(err => console.error("SignalR start error:", err));
+
         connectionRef.current = connection;
-        return () => connection.stop();
+
+        return () => {
+            connection.off("ReceivePlayerEvent");
+            connection.stop();
+        };
     }, [groupId, onSelectTap]);
+
 
     // ================= VIDEO LOAD =================
     useEffect(() => {
@@ -166,7 +225,7 @@ export default function PlayerPanel({
                         onClick={() => handleChangeTap(tap)}
                         disabled={!isHost}
                     >
-                    {tap.tenTap}
+                        {tap.tenTap}
                     </button>
                 ))}
             </div>

@@ -1,7 +1,14 @@
-.search-result{
-    width: 260px;
+.search-result {
+    width: 100%;
+    max-width: 360px; /* web gọn gàng */
+    box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+    .search-result {
+        width: 100%;
+    }
+}
 .search-form-control{
     display: block;
     width: 260px;

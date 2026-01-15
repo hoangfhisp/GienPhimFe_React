@@ -32,7 +32,6 @@ function XemPhim(){
     var userIdLogin = authHook.getUserIdFromToken();
     var roleUser = authHook.getRolseUserFromToken();
 
-    console.log(userIdLogin);
     return(
         <>
             <div className="container-main">

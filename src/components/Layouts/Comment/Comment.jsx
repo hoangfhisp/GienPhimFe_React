@@ -5,6 +5,7 @@ import ReplyComment from './ReplyComment';
 import * as managerServices from '../../../services/User/ManagerService.jsx'
 import { formatDateTime, formatURLImage } from '../../../untils/Format.jsx';
 import avatarNull from '../../../assets/img/avatar.png'
+import { useNavigate } from 'react-router-dom';
 
 function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
     const [showRepliesMap, setShowRepliesMap] = useState({});
@@ -14,7 +15,7 @@ function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
     const [replyText, setReplyText] = useState('');
     const [page, setPage] = useState(1);
     const [pagi, setPagi] = useState(1);
-
+    const navigate = useNavigate();
 
     // Sửa Bình luận
     const [editingCommentId, setEditingCommentId] = useState(null);
@@ -134,14 +135,24 @@ function Comment({ phimId, userId, roleUser, onShowTB, onformTB }) {
         }
     };
 
+    const handleLoginRedirect = () => {
+        navigate('/Login');
+    }
+
     return (
         <div className="comment-section">
             <h2 className="comment-title">Bình luận</h2>
-
+            {userId ? (
             <form className="comment-form" onSubmit={handleSubmitComment}>
                 <textarea className="comment-input" placeholder="Viết bình luận của bạn..." value={newComment} onChange={(e) => setNewComment(e.target.value)}></textarea>
                 <button type="submit" className="comment-button">Gửi bình luận</button>
             </form>
+            ):(
+                <>
+                    <p className="login-prompt">Vui lòng đăng nhập để bình luận.</p>
+                    <button className="login-button" onClick={handleLoginRedirect}>Đăng Nhập</button>
+                </>
+            )}
 
             <div className="comment-list">
 

@@ -7,9 +7,8 @@ import momoImg from '../../../assets/img/momo.png';
 import ThongBao from "../ThongBao/ThongBao";
 import { formatVND } from "../../../untils/Format";
 import * as authHook from '../../../hooks/auth.jsx'
-import * as authServices from '../../../services/Admin/AuthenticationService.jsx'
 import * as userService from '../../../services/User/UserService.jsx'
-import { set } from "lodash";
+import './PhuongThucThanhToan.scss';
 
 function PhuongThucThanhToan() {
     const location = useLocation();

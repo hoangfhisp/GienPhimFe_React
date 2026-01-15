@@ -1,0 +1,147 @@
+.profile-content {
+    width: 65%;
+    padding-left: 20px;
+}
+
+.profile-title {
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: yellow;
+}
+
+/* Form */
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+/* Nút cập nhật */
+.btn-update {
+    background: #ffcc00;
+    color: black;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.profile-sidebar {
+    width: 35%;
+    text-align: center;
+    border-right: 2px solid #3c4855;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+
+
+@media (max-width: 768px) {
+    .profile-container {
+        flex-direction: column;
+        /* 👈 QUAN TRỌNG NHẤT */
+        width: 100%;
+        padding: 16px;
+        margin: 0;
+    }
+
+    /* ===== SIDEBAR LÊN TRÊN ===== */
+    .profile-sidebar {
+        width: 100%;
+        border-right: none;
+        padding: 12px 0;
+        margin-bottom: 20px;
+        order: 1;
+    }
+
+    .profile-content {
+        width: 100%;
+        padding-left: 0;
+        order: 2;
+    }
+
+    /* ===== AVATAR ===== */
+    .avatar {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 8px;
+    }
+
+    /* ===== TÊN ===== */
+    .lable-username {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+
+    /* ===== INFO TEXT ===== */
+    .join-date {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    /* ===== NÚT ĐỔI MẬT KHẨU (SIDEBAR) ===== */
+    .profile-sidebar .btn-update {
+        width: 90%;
+        margin: 10px auto;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    /* ===== TITLE FORM ===== */
+    .profile-title {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    /* ===== FORM ===== */
+    .profile-form label {
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+    .profile-form input,
+    .profile-form textarea {
+        width: 100%;
+        font-size: 14px;
+        padding: 12px;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    /* ===== RADIO ===== */
+    .gender-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;      /* 👈 CĂN GIỮA NGANG */
+    align-items: center;
+    gap: 12px 20px;
+    margin-top: 8px;
+}
+
+.gender-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.gender-item input[type="radio"] {
+    margin: 0;
+    transform: scale(1.1);
+}
+
+    /* ===== SUBMIT BUTTON ===== */
+    .profile-form .btn-update {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        border-radius: 8px;
+        margin-top: 16px;
+    }
+}

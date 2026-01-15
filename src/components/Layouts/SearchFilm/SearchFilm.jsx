@@ -1,78 +1,72 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TippyHeadless from '@tippyjs/react/headless';
 
 import WrapperPopper from "../../Popper/Wrapper";
 import './SearchFilm.scss'
 import FilmInfo from "../../Layouts/FilmInfo/FilmInfo";
 import TabButton from "../../Commons/TabButton";
-import * as phimServices  from "../../../services/User/FilmService";
 import * as searchServices from "../../../services/User/SearchSevice"
 import useDebounce from "../../../hooks/useDebounce";
+import { useNavigate } from "react-router-dom";
 
-export default function SearchFilm(){
+export default function SearchFilm({ setShowSidebar }) {
     const [inputValue, setInputValue] = useState("");
-    const[searchResult,setSearchResult] = useState([]);
-    const[showResult, setShowResult] = useState(true)
-    
-    const debounce = useDebounce(inputValue,600);
+    const [searchResult, setSearchResult] = useState([]);
+    const [showResult, setShowResult] = useState(true)
+    const navigate = useNavigate();
+    const debounce = useDebounce(inputValue, 600);
 
     useEffect(() => {
-        if(!debounce.trim()){
+        if (!debounce.trim()) {
             setSearchResult([])
             return;
         }
         const fetchApi = async () => {
-            
-            const  result = await searchServices.searchphim(debounce);
-            if(result.status == true){
+
+            const result = await searchServices.searchphim(debounce, 1, 3);
+            if (result.status == true) {
                 setSearchResult(result.data)
-            }else{
+            } else {
                 setShowResult(false);
             }
         }
         fetchApi();
-    },[debounce])
+    }, [debounce])
 
     function HandelSearch(onSearch) {
-        alert(`${onSearch} được chọn`);
-            const fetchApi = async () => {
-                let result;
-                if(!onSearch){
-                    result = await phimServices.listphim();
-                }else{
-                    result = await phimServices.phim(onSearch);
-                }
-            }
-        fetchApi();
-      }
+        if (setShowSidebar) {
+            setShowSidebar(false);
+        }
+        navigate(`/SearchPhim/SearchNamePhim/${onSearch}`);
+    }
 
     function HandelHideResult() {
         setShowResult(false);
     }
-    return(
+    return (
 
         <form className="d-flex " onSubmit={(e) => e.preventDefault()}>
-                                    
-            <TippyHeadless 
-                interactive = {true}
+
+            <TippyHeadless
+                interactive={true}
                 visible={showResult && searchResult.length > 0}
                 onClickOutside={HandelHideResult}
                 render={attrs => (
                     <WrapperPopper>
                         <div className="search-result" tabIndex={-1} {...attrs}>
                             {searchResult.map((result) => (
-                                <FilmInfo key={result.phimId} data={result} onSelect={() => setInputValue("")}/>
+                                <FilmInfo key={result.phimId} data={result} onSelect={() => { setInputValue(""); setShowSidebar(false); }} />
                             ))}
                         </div>
                     </WrapperPopper>
                 )}
-                >
+            >
                 <div>
-                    <input className="search-form-control me-2" type="search" name="timkiem" placeholder="Tìm anime... " value={inputValue} onChange={(e) => setInputValue(e.target.value) } onFocus={() => setShowResult(true)}/>
+                    <input className="search-form-control me-2" type="search" name="timkiem" placeholder="Tìm anime... " value={inputValue} onChange={(e) => setInputValue(e.target.value)} onFocus={() => setShowResult(true)} />
                 </div>
             </TippyHeadless>
 
-            <TabButton onSelect={() => {HandelSearch(inputValue)}}>Tìm</TabButton>
-        </form> 
+            <TabButton onSelect={() => { HandelSearch(inputValue) }}>Tìm</TabButton>
+        </form>
     );
 }

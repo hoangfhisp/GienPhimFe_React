@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Register from '../pages/Dang_nhap/Register';
 import Help from '../pages/Dang_nhap/Help';
@@ -17,10 +17,8 @@ import ListTheTag from "../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag";
 import ListDaoDien from "../pages/Quan_tri_vien/QuanLyDaoDien/List-Dao-Dien";
 import ListDienVien from "../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien";
 import ListNguoiDung from "../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung.jsx";
-import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import ListGoiThanhVien from "../pages/Quan_tri_vien/QuanLyGoiThanhVien/List-Goi-Thanh-Vien";
 import ListBot from "../pages/Quan_tri_vien/QuanLyBot/List-Bot.jsx";
-import LichSuGiaoDichList from '../pages/Quan_tri_vien/QuanLyLichSuGiaoDich/List-Lich-Su-Giao-Dich';
 import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";
 import XemPhim from "../pages/XemPhim/XemPhim.jsx";
@@ -34,6 +32,8 @@ import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
 import LichSuGiaoDich from "../pages/LichSuGiaoDich/LichSuGiaoDich.jsx";
 import AdminGuard from "../components/AdminGuard/AdminGuard";
+import DieuKhoan from "../pages/DieuKhoanChinhSach/DieuKhoan.jsx";
+import ChinhSach from "../pages/DieuKhoanChinhSach/ChinhSach.jsx";
 
 export default function AppRoutes() {
 
@@ -42,6 +42,9 @@ export default function AppRoutes() {
 
     return (
         <Routes>
+            {/* Redirect root / → /Home */}
+             <Route path="/" element={<Navigate to="/Home" replace />} />
+
             {/* Router UI*/}
             <Route path="/Home" element={<Home />} />
             <Route path="/Phim/:id" element={<Phim />} />
@@ -55,7 +58,8 @@ export default function AppRoutes() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            
+            <Route path="/DieuKhoan" element={<DieuKhoan />} />
+            <Route path="/ChinhSach" element={<ChinhSach />} />
             {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
             {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
 

@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-
 import './FilmVideo.scss'
-
 import FilmPanel from './FilmPanel';
 import FilmTap from './FilmTap.jsx';
 import * as phimServices from '../../../services/User/FilmService.jsx'
-import { formatURLImage } from '../../../untils/Format.jsx';
+import { extractM3U8, formatURLImage } from '../../../untils/Format.jsx';
+import useHlsSkipAds from '../../../hooks/useHlsSkipAds.jsx';
 
 function FilmVideo({ id, tap, userId }) {
     const [isPlaying, setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
     const [dataTapPhim, setDataTapPhim] = useState([]); // hàm gắn lấy dữ liệu của 1 list phim
-    const [tapPhim, setTapPhim] = useState([]); // hàm gán 1 link của tập phim cụ thể
+    const [tapPhim, setTapPhim] = useState(null); // hàm gán 1 link của tập phim cụ thể
     const [currentType, setCurrentType] = useState(null);
 
     const isFirstRun = useRef(true); // Thêm kiểm soát bằng useRef để chỉ gọi API một lần
+    const videoRef = useRef(null);
 
     // Hàm lấy api id phim. rồi lấy list tập phim
     useEffect(() => {
@@ -45,7 +45,7 @@ function FilmVideo({ id, tap, userId }) {
         if (tap == null || userId == null)
             return;
 
-        var xuLyLichSuXemData = {phimId: id, userId, tapVuaXem: tap}
+        var xuLyLichSuXemData = { phimId: id, userId, tapVuaXem: tap }
         const fetchApiXuLyLichSuXem = async () => {
             await phimServices.XuLyLichSuXem(xuLyLichSuXemData);
         }
@@ -65,34 +65,45 @@ function FilmVideo({ id, tap, userId }) {
             }
         }
     }, [dataTapPhim, currentType]);
-    
-    // Hàm lấy tập phim để gắn vào iframe
+
+
+
+    // Hàm lấy tập phim để gắn vào video
     useEffect(() => {
         if (!tapchon) return;
 
-        if (currentType === 'chinh') {
-            setTapPhim(formatURLImage(tapchon.linkChinh));
-        } else {
-            setTapPhim(formatURLImage(tapchon.linkPhu));
-        }
+        const rawLink = currentType === 'chinh'
+            ? formatURLImage(tapchon.linkChinh)
+            : extractM3U8(formatURLImage(tapchon.linkPhu));
+
+        setTapPhim(rawLink);
 
     }, [tapchon, currentType]);
 
-    console.log(tapPhim)
     // Hàm để chạy api update lại số lượt xem khi người dùng xem
     const Views = async (idphim, nguoiDungId) => {
-        if(nguoiDungId == null){
-            nguoiDungId = null;
-        }
         await phimServices.addLuotXem(idphim, nguoiDungId);
-        setIsPlaying(true);
+        setIsPlaying(true); 
     }
+
+    // Sử dụng hook tùy chỉnh để bỏ qua quảng cáo
+    useHlsSkipAds(tapPhim, videoRef, true,isPlaying);
 
     return (
         <>
             <div className="video-container">
 
-                <iframe src={tapPhim} title={`Xem phim - Tập ${tap}`} style={{ display: isPlaying ? "block" : "none", height: "100%", width: "100%" }} allowFullScreen={1} loading='lazy'> </iframe>
+                <video
+                    ref={videoRef}
+                    title={`Xem phim - Tập ${tap}`}
+                    controls
+                    playsInline
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        visibility: isPlaying ? "visible" : "hidden"
+                    }}
+                />
 
                 <div className="video-overlay" style={{ display: isPlaying ? "none" : "block" }}>
                     <p className="warning">WEBSITE CÓ NHIỀU QUẢNG CÁO!</p>

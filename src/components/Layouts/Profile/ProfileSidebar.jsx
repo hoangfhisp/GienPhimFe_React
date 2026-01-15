@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import logouser from "../../../assets/img/avatar.png";
 import * as format from "../../../untils/Format";
-
+import "./Profile.scss";
 function ProfileSidebar({ dataU, walletData }) {
     const u = dataU?.data ?? dataU;
     const w = walletData?.data ?? walletData;

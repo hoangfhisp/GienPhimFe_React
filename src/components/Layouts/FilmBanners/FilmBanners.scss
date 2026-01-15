@@ -7,12 +7,12 @@ div.banner {
   background: url('https://cdn.animevietsub.red/data/big_banner/2024/11/30/animevsub-02NnXF2KvW.jpeg') no-repeat center center/cover;
 }
 
-.overlay-banner{
+.overlay-banner {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 105%;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 30%, rgba(0, 0, 0, 0) 75%);
 }
 
@@ -23,24 +23,25 @@ div.banner {
   padding: 20px;
 }
 
-  .content-banner p {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      font-size: 16px;
-  }
+.content-banner p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  font-size: 16px;
+}
 
 .title-banner {
   font-size: 24px;
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
 }
+
 .info-banner {
   display: flex;
   align-items: center;
@@ -55,17 +56,18 @@ div.banner {
   font-size: 14px;
 }
 
-.studio-banner, .genres-banner {
+.studio-banner,
+.genres-banner {
   margin: 5px 0;
   font-size: 14px;
 }
 
-  .genres-banner span {
-      background: #444;
-      padding: 5px;
-      border-radius: 3px;
-      margin-right: 5px;
-  }
+.genres-banner span {
+  background: #444;
+  padding: 5px;
+  border-radius: 3px;
+  margin-right: 5px;
+}
 
 .watch-btn {
   display: inline-block;
@@ -79,12 +81,95 @@ div.banner {
 }
 
 .swiper-pagination-bullet {
-  background: white;        /* Màu chấm */
+  background: white;
+  /* Màu chấm */
   opacity: 0.7;
 }
 
 .swiper-pagination-bullet-active {
-  background: red;      /* Màu chấm đang active (vàng) */
+  background: red;
+  /* Màu chấm đang active (vàng) */
   opacity: 1;
-  transform: scale(1.3);    /* Tăng kích thước */
+  transform: scale(1.3);
+  /* Tăng kích thước */
+}
+
+@media (max-width: 768px) {
+
+  .banner {
+    height: 260px;
+    align-items: flex-end;
+  }
+
+  .overlay-banner {
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.75) 40%,
+        rgba(0, 0, 0, 0.2) 75%,
+        rgba(0, 0, 0, 0) 100%);
+  }
+
+  .content-banner {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .title-banner {
+    font-size: 22px;
+    white-space: normal;
+    line-height: 1.3;
+    color: #fff;
+
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+
+  .content-banner h7 {
+    font-size: 13px;
+    color: yellow;
+
+    text-shadow:
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000;
+  }
+
+  .info-banner {
+    font-size: 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag-banner {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .content-banner p {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+    /* mobile đọc ngắn */
+  }
+
+  .studio-banner,
+  .genres-banner {
+    font-size: 12px;
+  }
+
+  .genres-banner span {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .watch-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
 }

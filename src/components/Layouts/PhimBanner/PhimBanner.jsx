@@ -5,16 +5,20 @@ import * as phimServices from '../../../services/User/FilmService.jsx'
 import { Link } from 'react-router-dom';
 import WatchTogetherButton from "../../Commons/WatchTogetherButton";
 import CreateChatGroupModal from "../../Modal/CreateChatGroupModal";
-import { formatURLImage, formatYear } from '../../../untils/Format.jsx';
+import { formatURLImage, formatYearVN } from '../../../untils/Format.jsx';
 import * as authHook from '../../../hooks/auth.jsx'
+import ThongBao from '../ThongBao/ThongBao.jsx';
 
 function PhimBanner({ id }) {
     const [rating, setRating] = useState("0");
     const [dataPhim, setDataPhim] = useState([]);
     const [dataTap, setDataTap] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+    const [showThongBao, setShowThongBao] = useState(false);
 
     const userId = authHook.getUserIdFromToken();
+
+
     useEffect(() => {
         if (id == null) {
             return;
@@ -43,6 +47,10 @@ function PhimBanner({ id }) {
 
     }, [dataPhim])
 
+    const handleWatchTogether  = () => {
+        setShowThongBao(true);
+    }
+
     return (
         <>
             <div className="banner-phim" style={{
@@ -57,7 +65,7 @@ function PhimBanner({ id }) {
                         </div>
                         {userId && (
                             <>
-                                <WatchTogetherButton onClick={() => setOpenModal(true)} />
+                                <WatchTogetherButton onClick={() => handleWatchTogether()} />
 
                                 <CreateChatGroupModal
                                     open={openModal}
@@ -77,13 +85,14 @@ function PhimBanner({ id }) {
                             </div>
                             <div className="phim-stats">
                                 <span>⏳ {dataPhim.thuoiLuongP}</span>
-                                <span>📅 {formatYear(dataPhim.ngayPhatHanhP)}</span>
+                                <span>📅 {formatYearVN(dataPhim.ngayPhatHanhP)}</span>
                                 <span>👁️ {dataPhim.luotXemP} Lượt xem</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {showThongBao && <ThongBao show={showThongBao} type={"warning"} title={"Chức năng đang hoàn thiện"} message={"Chức năng xem chung với bạn bè đang được đội ngũ Giền Phim phát triển, xin vui lòng đợi."} onClose={() => setShowThongBao(false)} />}
         </>
     );
 }

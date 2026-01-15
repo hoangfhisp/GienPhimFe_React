@@ -1,22 +1,32 @@
 .user-info {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
     margin-block: 30px;
     color: white;
     font-family: "Roboto", sans-serif;
     font-size: 16px;
-    text-align: left;
+    max-width: 1100px;   // ✅ chống trải quá rộng
 }
-
 .user-info div {
-    margin-bottom: 10px;
-    margin-inline: 15px;
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    min-width: 260px;
+    align-items: flex-start;
+}
+.user-info strong {
+    display: inline-block;
+    margin-left: 6px;
 }
 
 .user-info .user-name,
 .user-info .balance,
 .user-info .current-plan {
     font-weight: 500;
+    line-height: 1.4;
     
 }
 
@@ -45,7 +55,7 @@
     display: flex;
     gap: 20px;
     justify-content: center;
-    font-family: Arial, sans-serif;
+    flex-wrap: wrap; // ✅ quan trọng
 }
 
 
@@ -54,8 +64,8 @@
 .buttons-container {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 30px;
     padding-right: 40px;
 }
 
@@ -69,6 +79,7 @@
     font-family: "Roboto", sans-serif;
     font-size: 14px;
 }
+
 
 .buy-btn {
     background-color: #f23144;
@@ -88,4 +99,86 @@
 
 .back-btn:hover {
     background-color: rgb(78, 78, 78);
+}
+
+@media (max-width: 992px) {
+    .user-info div {
+        flex: 1 1 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-info {
+        flex-direction: column;
+        gap: 10px;
+        font-size: 14px;
+        margin-block: 20px;
+    }
+
+    .user-info div {
+        width: 100%;
+        padding: 14px;
+    }
+
+    .user-info strong {
+        display: block;
+        margin: 6px 0 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .plans {
+        flex-wrap: nowrap;          /* ❗ không xuống dòng */
+        overflow-x: auto;           /* 👉 kéo ngang */
+        justify-content: flex-start;
+        padding: 10px 8px;
+        scroll-snap-type: x mandatory; /* vuốt mượt */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .plans > * {
+        flex: 0 0 85%;              /* mỗi plan chiếm 85% màn hình */
+        max-width: 85%;
+        scroll-snap-align: start;
+    }
+
+    /* Ẩn scrollbar cho đẹp */
+    .plans::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .plans.single-plan {
+        justify-content: center;   /* 🎯 căn giữa container */
+        overflow-x: hidden;        /* ❌ không cho swipe */
+    }
+
+    .plans.single-plan > * {
+        flex: 0 0 90%;             /* plan rộng vừa đẹp */
+        max-width: 90%;
+        margin: 0 auto;            /* 🎯 ép ra giữa */
+        scroll-snap-align: center;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .buttons-container {
+        flex-direction: column;   /* ⬆⬇ chỉ mobile */
+        padding: 0 12px;
+    }
+
+    .back-btn,
+    .buy-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+        border-radius: 6px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
 }

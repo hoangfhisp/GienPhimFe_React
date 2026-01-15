@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './FilmCard.scss'
-import { formatYear } from '../../../untils/Format';
+import { formatYearVN } from '../../../untils/Format';
 
 export default function FilmCard({data}){
     const [dataTheLoai,setDataTheLoai] = useState([]);
@@ -30,7 +30,7 @@ export default function FilmCard({data}){
                     <span>⭐ {rating}</span>
                     <span>📺 {data.soTapP} Tập</span>
                     <span>⌛ {data.thuoiLuongP}</span>
-                    <span>📅 {formatYear(data.ngayPhatHanhP)}</span>
+                    <span>📅 {formatYearVN(data.ngayPhatHanhP)}</span>
                 </p>
                 <div className='phim-card-description'>
                     <h5>🎬 {data.moTaP}</h5>

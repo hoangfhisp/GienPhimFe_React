@@ -11,7 +11,7 @@ function FilmInfo({data,onSelect}){
                 <p className="phim-title">
                     {data.tenP}
                 </p>
-                <span className="phim-tap">Tập 04 Vietsub</span>
+                <span className="phim-tap">{data.soTapP != 1 ? `${data.soTapP} Tập` : "Full Movie"}</span>
             </div>
         </Link>
     );

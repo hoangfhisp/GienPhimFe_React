@@ -1,12 +1,12 @@
 import * as request from "../../untils/Request.jsx";
 
-export const searchphim = async (keyword) => {
+export const searchphim = async (keyword,page,limit) => {
     try {
         const res = await request.get('/Phim/Search', {
             params: {
                 keyword,
-                page: 1,
-                limit: 3
+                page,
+                limit
 
             }
         });
