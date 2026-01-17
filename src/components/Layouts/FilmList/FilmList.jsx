@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import Tippy from "@tippyjs/react";
-
+ 
 import './FilmList.scss'
 import FilmItem from './FilmItem.jsx'
 import * as phimServices from '../../../services/User/FilmService.jsx'
+import { useMatch } from 'react-router-dom';
 
 export default function FilmList({ page, limit }) {
     const [newPhimsResult, setNewPhimsResult] = useState([]);
+
+    const isPhimPage = useMatch("/Phim/:id");
 
     useEffect(() => {
         const fetchApi = async () => {
@@ -47,7 +50,7 @@ export default function FilmList({ page, limit }) {
                         </span>}
                     >
                         <div className="film-list" id="film-list">
-                            <FilmItem key={result.phimId} data={result} />
+                            <FilmItem key={result.phimId} data={result} isPhimPage={isPhimPage}/>
                         </div>
                     </Tippy>
                 </SwiperSlide>

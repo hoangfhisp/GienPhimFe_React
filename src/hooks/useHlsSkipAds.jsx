@@ -10,8 +10,8 @@ function useHlsSkipAds(tapPhim, videoRef, enableSkipAds = false, autoPlay = fals
         if (!tapPhim || !videoRef.current) return;
         if (!Hls.isSupported()) return;
 
-        const START_OFFSET = 0.1;
-        const END_OFFSET = 0.1;
+        const START_OFFSET = 0.3;
+        const END_OFFSET = 0.2;
 
         const video = videoRef.current;
         const hls = new Hls({ debug: false });

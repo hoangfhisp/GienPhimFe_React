@@ -5,6 +5,8 @@ import FilmTap from './FilmTap.jsx';
 import * as phimServices from '../../../services/User/FilmService.jsx'
 import { extractM3U8, formatURLImage } from '../../../untils/Format.jsx';
 import useHlsSkipAds from '../../../hooks/useHlsSkipAds.jsx';
+import useScrollTo from '../../../hooks/useScrollTo.jsx';
+import { useLocation } from 'react-router-dom';
 
 function FilmVideo({ id, tap, userId }) {
     const [isPlaying, setIsPlaying] = useState(false); // hàm để bật tắt xem phim để bật iframe
@@ -14,6 +16,11 @@ function FilmVideo({ id, tap, userId }) {
 
     const isFirstRun = useRef(true); // Thêm kiểm soát bằng useRef để chỉ gọi API một lần
     const videoRef = useRef(null);
+    const videoContainerRef = useRef(null);
+    const location = useLocation();
+
+    const { scrollToRef } = useScrollTo();
+
 
     // Hàm lấy api id phim. rồi lấy list tập phim
     useEffect(() => {
@@ -52,6 +59,15 @@ function FilmVideo({ id, tap, userId }) {
         fetchApiXuLyLichSuXem();
     }, [tap, id, userId])
 
+    // Cuộn đến video khi thay đổi tập
+    useEffect(() => {
+        if (location.state?.scroll === "video-container") {
+            setTimeout(() => {
+                scrollToRef(videoContainerRef, 80);
+            }, 10);
+        }
+    }, [location.state]);
+
     // Thiết lập loại mặc định (chính hoặc phụ) sau khi load danh sách tập
     useEffect(() => {
         if (!currentType && Array.isArray(dataTapPhim) && dataTapPhim.length > 0) {
@@ -83,15 +99,15 @@ function FilmVideo({ id, tap, userId }) {
     // Hàm để chạy api update lại số lượt xem khi người dùng xem
     const Views = async (idphim, nguoiDungId) => {
         await phimServices.addLuotXem(idphim, nguoiDungId);
-        setIsPlaying(true); 
+        setIsPlaying(true);
     }
 
     // Sử dụng hook tùy chỉnh để bỏ qua quảng cáo
-    useHlsSkipAds(tapPhim, videoRef, true,isPlaying);
+    useHlsSkipAds(tapPhim, videoRef, true, isPlaying);
 
     return (
         <>
-            <div className="video-container">
+            <div className="video-container" ref={videoContainerRef}>
 
                 <video
                     ref={videoRef}

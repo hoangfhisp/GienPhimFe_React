@@ -40,7 +40,7 @@ export default function Header() {
         fetchApi();
 
     }, [userId, roleUser]);
-
+    
     return (
         <>
             <header>
@@ -191,6 +191,11 @@ function UserLogout() {
 }
 
 function UserLogin({ onlogins, role, setShowSidebar }) {
+    const closeSidebar = () => {
+        if (typeof setShowSidebar === "function") {
+            setShowSidebar(false);
+        }
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -200,10 +205,10 @@ function UserLogin({ onlogins, role, setShowSidebar }) {
 
     return (
         <>
-            <ItemUser link={"/InfoAccount"} onSelect={() => setShowSidebar(false)}>Thông Tin Tài khoản</ItemUser>
+            <ItemUser link={"/InfoAccount"} onSelect={() => closeSidebar()}>Thông Tin Tài khoản</ItemUser>
             {role === "Admin" && <ItemUser link={"/Admin/Tong-Quan"}>Quản Lý Giền Phim</ItemUser>}
             <ItemUser link={"/GoiThanhVien"}>Mua Gói Thành Viên</ItemUser>
-            <ItemUser link={"/History"} onSelect={() => setShowSidebar(false)}>Lịch Sử Xem</ItemUser>
+            <ItemUser link={"/History"} onSelect={() => closeSidebar()}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/LienHe"}>Liên Hệ Giền Phim</ItemUser>
             <ItemUser link={'/Home'} onSelect={() => handleLogout()} >Đăng Xuất</ItemUser>
         </>

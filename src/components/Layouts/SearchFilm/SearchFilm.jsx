@@ -35,7 +35,7 @@ export default function SearchFilm({ setShowSidebar }) {
 
     function HandelSearch(onSearch) {
         if (setShowSidebar) {
-            setShowSidebar(false);
+            setShowSidebar?.(false);
         }
         navigate(`/SearchPhim/SearchNamePhim/${onSearch}`);
     }
@@ -55,7 +55,7 @@ export default function SearchFilm({ setShowSidebar }) {
                     <WrapperPopper>
                         <div className="search-result" tabIndex={-1} {...attrs}>
                             {searchResult.map((result) => (
-                                <FilmInfo key={result.phimId} data={result} onSelect={() => { setInputValue(""); setShowSidebar(false); }} />
+                                <FilmInfo key={result.phimId} data={result} onSelect={() => { setInputValue(""); setShowSidebar?.(false); }} />
                             ))}
                         </div>
                     </WrapperPopper>
