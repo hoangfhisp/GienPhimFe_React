@@ -25,7 +25,7 @@ jobs:
           echo "REACT_APP_GIENPHIM_BE_URL=${{ secrets.REACT_APP_GIENPHIM_BE_URL }}" >> .env.production
 
       - name: Install deps
-        run: npm install
+        run: npm ci
 
       - name: Build React
         run: npm run build

@@ -26,7 +26,6 @@ import NotFound from "../pages/NotFound/NotFound.jsx";
 import History from "../pages/History/History.jsx";
 import SearchPhim from "../pages/SearchPhim/SearchPhim.jsx";
 import NapTien from "../pages/NapTien/NapTien.jsx";
-import TaoGiaoDichVIB from "../pages/NapTien/TaoGiaoDichVIB.jsx";
 import * as authHook from "../hooks/auth.jsx";
 import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
@@ -129,7 +128,6 @@ export default function AppRoutes() {
 
                 {/* Router nạp tiền */}
                 {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
-                {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
 
                 {/* Thêm route 404 nếu muốn */}
                 <Route path="*" element={<NotFound />} />
