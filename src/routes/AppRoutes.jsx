@@ -53,7 +53,7 @@ export default function AppRoutes() {
                 <Route path="/Phim/:id" element={<Phim />} />
                 <Route path="/XemPhim/:id/:tap" element={<XemPhim />} />
                 <Route path="/LienHe" element={<LienHe />} />
-                {userId && <Route path="/History" element={<History />} />}
+                <Route path="/History" element={<History />} />
                 {userId && <Route path="/InfoAccount" element={<InfoAccount />} />}
                 <Route path="/SearchPhim/:type/:timtheo" element={<SearchPhim />} />
                 <Route path="/help" element={<Help />} />

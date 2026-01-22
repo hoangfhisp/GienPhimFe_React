@@ -3,7 +3,6 @@ import LoginContainer from "../../components/Login-container/Login-container";
 import { Link, useNavigate } from "react-router-dom";
 import * as AuthenticationService from "../../services/Admin/AuthenticationService";
 import "../../components/Login-container/Login.scss";
-import { Bold } from "lucide-react";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -15,6 +14,12 @@ export default function Login() {
     // nơi render nút Google
     const googleBtnRef = useRef(null);
 
+    const localStorageLogin = (result) => {
+        localStorage.setItem("token", result.data.token);
+        localStorage.setItem("rf_token", result.data.refreshToken);
+        localStorage.removeItem("watch_history_guest");
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -22,8 +27,7 @@ export default function Login() {
             const result = await AuthenticationService.login(email, password);
 
             if (result?.status) {
-                localStorage.setItem("token", result.data.token);
-                localStorage.setItem("rf_token", result.data.refreshToken);
+                localStorageLogin(result);
                 navigate("/Home");
             } else {
                 setErrorMessage(result?.msg || "Đăng nhập thất bại");
@@ -54,8 +58,7 @@ export default function Login() {
                         const result = await AuthenticationService.loginGoogle(idToken);
 
                         if (result?.status) {
-                            localStorage.setItem("token", result.data.token);
-                            localStorage.setItem("rf_token", result.data.refreshToken);
+                            localStorageLogin(result);
                             navigate("/Home");
                         } else {
                             setErrorMessage(result?.msg || "Đăng nhập Google thất bại");

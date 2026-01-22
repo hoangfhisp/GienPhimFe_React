@@ -1,22 +1,22 @@
 
 
-function RenderPagination({data,onPageChange}){
+function RenderPagination({ data, onPageChange }) {
 
     const handlePageChange = (newPage) => {
-            if (onPageChange) {
-                onPageChange(newPage);
-            }
-        };
+        if (onPageChange) {
+            onPageChange(newPage);
+        }
+    };
 
-    
 
-    if (!data || data.total <= 1) return null;
+
+    if (!data || data.last <= 1) return null;
 
     const currentPage = data.page;
     const endPage = data.last;
     const pages = [];
 
-        const addPageButton = (page) => {
+    const addPageButton = (page) => {
         pages.push(
             <button
                 key={page}
@@ -28,35 +28,35 @@ function RenderPagination({data,onPageChange}){
         );
     };
 
-    if(endPage <=4){
-        for(let i = 1 ; i <= endPage ; i++){
+    if (endPage <= 4) {
+        for (let i = 1; i <= endPage; i++) {
 
             addPageButton(i);
         }
-    }else{
+    } else {
 
         addPageButton(1);
-    
+
         // Hiển thị "..." nếu currentPage > 3
         if (currentPage > 3) {
             pages.push(<span key="start-ellipsis">...</span>);
         }
-    
+
         // Hiển thị currentPage nếu nó không nằm trong đầu/cuối
         if (currentPage > 1 && currentPage < endPage) {
             addPageButton(currentPage);
         }
-    
+
         // Hiển thị trang kế tiếp nếu currentPage < endPage - 1
         if (currentPage + 1 < endPage) {
             addPageButton(currentPage + 1);
         }
-    
+
         // Hiển thị "..." nếu cần giữa current và endPage
         if (currentPage + 2 < endPage) {
             pages.push(<span key="end-ellipsis">...</span>);
         }
-    
+
         // Hiển thị trang cuối nếu khác trang đầu
         if (endPage !== 1) {
             addPageButton(endPage);

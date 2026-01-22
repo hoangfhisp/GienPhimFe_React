@@ -79,7 +79,7 @@ function PhimBanner({ id }) {
                 <div className="container-phim">
                     <div className="phim-info-banner">
                         <div className="phim-poster">
-                            <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt="kk" />
+                            <img src={dataPhim.avatarPoster ? formatURLImage(dataPhim.avatarPoster) : null} alt={dataPhim.tenP} />
                             <Link to={`/XemPhim/${dataPhim.phimId}/${dataTap?.[0]?.slugTap ?? ''}`} className="phim-watch-btn">XEM PHIM</Link>
                         </div>
                         {userId && (

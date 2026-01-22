@@ -40,7 +40,7 @@ export default function Header() {
         fetchApi();
 
     }, [userId, roleUser]);
-    
+
     return (
         <>
             <header>
@@ -158,11 +158,12 @@ export default function Header() {
                             <ul className="dropdown-menu dropdown-menu-dark w-100 text-center">
                                 <WalletUser />
                             </ul>
-                            <div className="mobile-search">
-                                <SearchFilm setShowSidebar={setShowSidebar} />
-                            </div>
+
                         </li>
                     )}
+                    <div className="mobile-search">
+                        <SearchFilm setShowSidebar={setShowSidebar} />
+                    </div>
                 </ul>
 
 
@@ -181,9 +182,15 @@ export default function Header() {
     );
 }
 
-function UserLogout() {
+function UserLogout(setShowSidebar) {
+    const closeSidebar = () => {
+        if (typeof setShowSidebar === "function") {
+            setShowSidebar(false);
+        }
+    };
     return (
         <>
+            <ItemUser link={"/History"} onSelect={() => closeSidebar()}>Lịch Sử Xem</ItemUser>
             <ItemUser link={"/Login"}>Đăng Nhập</ItemUser>
             <ItemUser link={"/register"}>Đăng ký</ItemUser>
         </>

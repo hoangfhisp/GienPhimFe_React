@@ -26,10 +26,27 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                     tenDienVien: null,
                     tenDaoDien: null,
                 };
-                if (userId && webpage === "History") { // trang histoty
+                if (webpage === "History") { // trang histoty
+                    if (userId) {
+                        result = await phimServices.LichSuXemUser(userId, page, limit);
+                    } else {
+                        const raw = localStorage.getItem("watch_history_guest");
+                        let data = raw ? JSON.parse(raw) : [];
 
-                    result = await phimServices.LichSuXemUser(userId, page, limit);
+                        data.sort(
+                            (a, b) => new Date(b.thoiGianXem) - new Date(a.thoiGianXem)
+                        );
 
+                        result = {
+                            data,
+                            pagination: {
+                                page: 1,
+                                limit: 12,
+                                total: data.length,
+                                last: Math.ceil(data.length / limit)
+                            }
+                        };
+                    }
                 } else if (webpage === "SearchPhim") { // trang search
 
                     if (typePhim === "TheLoai") {
@@ -66,74 +83,82 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
         fetchApi();
     }, [webpage, userId, page, limit, timtheo, typePhim, onPagination]);
 
-
     return (
         <>
-            <div className="anime-list" id="anime-list">
-                {listPhimResult.map((result) => {
+            {listPhimResult.length > 0 ? (
+                <>
+                    <div className="anime-list" id="anime-list">
+                        {listPhimResult.map((result) => {
 
-                    const content = (
-                        <div className="anime-item">
-                            <div className="episode-label">{result.soTapP} Tập</div>
+                            const content = (
+                                <div className="anime-item">
+                                    <div className="episode-label">{result.soTapP} Tập</div>
 
-                            <Link to={`/Phim/${result.phimId}`}>
-                                <img
-                                    src={formatURLImage(result.avatarPoster)}
-                                    alt={result.tenP}
-                                />
-                                <p><strong>{result.tenP}</strong></p>
-                            </Link>
-
-                            {webpage === "History" ? (
-                                <>
-                                    <h6>Đã xem tập: {result.tapVuaXem}</h6>
-                                    <h6>vào lúc {formatDateTimeVN(result.thoiGianXem)}</h6>
-                                    <Link
-                                        to={`/XemPhim/${result.phimId}/${result.tapVuaXem}`}
-                                        className="history-xemtiep"
-                                    >
-                                        Xem tiếp
+                                    <Link to={`/Phim/${result.phimId}`}>
+                                        <img
+                                            src={formatURLImage(result.avatarPoster)}
+                                            alt={result.tenP}
+                                        />
+                                        <p><strong>{result.tenP}</strong></p>
                                     </Link>
-                                </>
-                            ) : (
-                                <h6>Lượt xem: {result.luotXemP}</h6>
-                            )}
-                        </div>
-                    );
 
-                    // 👉 MOBILE: KHÔNG TIPPY
-                    if (isMobile) {
-                        return (
-                            <div key={result.phimId || result.lichSuXemId}>
-                                {content}
-                            </div>
-                        );
-                    }
+                                    {webpage === "History" ? (
+                                        <>
+                                            <h6>Đã xem tập: {result.tapVuaXem}</h6>
+                                            <h6>vào lúc {formatDateTimeVN(result.thoiGianXem)}</h6>
+                                            <Link
+                                                to={`/XemPhim/${result.phimId}/${result.tapVuaXem}`}
+                                                className="history-xemtiep"
+                                            >
+                                                Xem tiếp
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        <h6>Lượt xem: {result.luotXemP}</h6>
+                                    )}
+                                </div>
+                            );
 
-                    // 👉 WEB: CÓ TIPPY
-                    return (
-                        <TippyHeadless
-                            key={result.phimId || result.lichSuXemId}
-                            interactive
-                            placement="right"
-                            render={attrs => (
-                                <WrapperPopper>
-                                    <div
-                                        className="film-card-result"
-                                        tabIndex={-1}
-                                        {...attrs}
-                                    >
-                                        <FilmCard data={result} />
+                            // 👉 MOBILE: KHÔNG TIPPY
+                            if (isMobile) {
+                                return (
+                                    <div key={result.phimId || result.lichSuXemId}>
+                                        {content}
                                     </div>
-                                </WrapperPopper>
-                            )}
-                        >
-                            {content}
-                        </TippyHeadless>
-                    );
-                })}
-            </div>
+                                );
+                            }
 
+                            // 👉 WEB: CÓ TIPPY
+                            return (
+                                <TippyHeadless
+                                    key={result.phimId || result.lichSuXemId}
+                                    interactive
+                                    placement="right"
+                                    render={attrs => (
+                                        <WrapperPopper>
+                                            <div
+                                                className="film-card-result"
+                                                tabIndex={-1}
+                                                {...attrs}
+                                            >
+                                                <FilmCard data={result} />
+                                            </div>
+                                        </WrapperPopper>
+                                    )}
+                                >
+                                    {content}
+                                </TippyHeadless>
+                            );
+                        })}
+                    </div>
+
+                </>
+            ) : (
+                <>
+                    <h1 style={{ color: "red", height: "auto" }}>Không có dữ liệu lịch sử</h1>
+                </>
+            )
+            }
         </>
 
     );
