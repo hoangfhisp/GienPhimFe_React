@@ -1,0 +1,46 @@
+name: Deploy React to IIS
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types: [ closed ]
+
+jobs:
+  build-and-deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create env.production
+        run: |
+          echo "REACT_APP_GIENPHIM_BE_API_URL=${{ secrets.REACT_APP_GIENPHIM_BE_API_URL }}" > frontend/.env.production
+          echo "REACT_APP_GIENPHIM_BE_URL=${{ secrets.REACT_APP_GIENPHIM_BE_URL }}" >> frontend/.env.production
+
+      - name: Install deps
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build React
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to IIS (Web Deploy)
+        shell: pwsh
+        run: |
+          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+            -verb:sync `
+            -source:contentPath="frontend/build" `
+            -dest:contentPath="GienPhimClient",computerName="https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd", `
+            userName="${{ secrets.IIS_USERNAME }}",password="${{ secrets.IIS_PASSWORD }}",authType=Basic `
+            -skip:objectName=filePath,absolutePath=web.config `
+            -allowUntrusted
