@@ -21,25 +21,21 @@ jobs:
 
       - name: Create env.production
         run: |
-          echo "REACT_APP_GIENPHIM_BE_API_URL=${{ secrets.REACT_APP_GIENPHIM_BE_API_URL }}" > frontend/.env.production
-          echo "REACT_APP_GIENPHIM_BE_URL=${{ secrets.REACT_APP_GIENPHIM_BE_URL }}" >> frontend/.env.production
+          echo "REACT_APP_GIENPHIM_BE_API_URL=${{ secrets.REACT_APP_GIENPHIM_BE_API_URL }}" > .env.production
+          echo "REACT_APP_GIENPHIM_BE_URL=${{ secrets.REACT_APP_GIENPHIM_BE_URL }}" >> .env.production
 
       - name: Install deps
-        run: |
-          cd frontend
-          npm install
+        run: npm install
 
       - name: Build React
-        run: |
-          cd frontend
-          npm run build
+        run: npm run build
 
       - name: Deploy to IIS (Web Deploy)
         shell: pwsh
         run: |
           & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
             -verb:sync `
-            -source:contentPath="frontend/build" `
+            -source:contentPath="build" `
             -dest:contentPath="GienPhimClient",computerName="https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd", `
             userName="${{ secrets.IIS_USERNAME }}",password="${{ secrets.IIS_PASSWORD }}",authType=Basic `
             -skip:objectName=filePath,absolutePath=web.config `
