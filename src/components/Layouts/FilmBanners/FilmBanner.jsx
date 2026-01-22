@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { formatURLImage, formatYear } from "../../../untils/Format";
+import { formatURLImage, formatYearVN } from "../../../untils/Format";
 
 export default function FilmBanner({data}){
     const [dataPhim,setDataPhim] = useState([]);
@@ -34,7 +34,7 @@ export default function FilmBanner({data}){
                 <div className="info-banner">
                         <span className="tag-banner">⭐ {rating}</span>
                     <span>⏳ {data.thuoiLuongP}</span>
-                    <span>📅 { formatYear(data.ngayPhatHanhP)}</span>
+                    <span>📅 { formatYearVN(data.ngayPhatHanhP)}</span>
                 </div>
                 <p>{data.moTaP}</p>
                 <div className="studio-banner">🏢 Studio: {data.tenCTSXP}</div>

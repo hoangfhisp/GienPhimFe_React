@@ -1,9 +1,29 @@
-.wrapper-main{
+.wrapper-main {
     width: 100%;
-    max-height: min((100vh - 96px) - 60px , 734px) ;
+
+    max-height: calc(100vh - 160px);
     min-height: 100px;
+
     background-color: #434242;
     border-radius: 8px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
+    padding: 6px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .wrapper-main {
+        max-height: none;
+        min-height: auto;
+        width: 96%;
+        padding: 6px;
+        border-radius: 6px;
+
+        overflow-y: visible;
+    }
 }

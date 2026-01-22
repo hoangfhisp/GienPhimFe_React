@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-
 import NotePayMent from "../../Commons/NotePayment";
 import * as authServices from "../../../services/Admin/AuthenticationService.jsx"
 import * as authHooks from "../../../hooks/auth.jsx"
-
+import './PhuongThucThanhToan.scss';
 
 function ThanhToan({ children, phuongthuc}) {
     const navigate = useNavigate();

@@ -312,3 +312,59 @@
         left: 25%;
     }
 }
+
+@media (max-width: 768px) {
+
+    .modal-overlay-tb {
+        padding: 12px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content-tb {
+        width: 100%;
+        max-width: 360px;
+        padding: 1.5rem 1.2rem;
+        border-radius: 14px;
+    }
+
+    .modal-content-tb h3 {
+        font-size: 18px;
+    }
+
+    .modal-content-tb p {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+
+    /* Select chọn số ngày */
+    .chon-so-ngay {
+        margin-top: 12px;
+    }
+
+    .chon-so-ngay label {
+        font-size: 14px;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .chon-so-ngay select {
+        width: 100%;
+        margin-left: 0;
+        height: 38px;
+        font-size: 14px;
+    }
+
+    /* Buttons */
+    .modal-buttons-tb {
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-tb {
+        flex: 1;
+        padding: 10px;
+        font-size: 13px;
+    }
+}

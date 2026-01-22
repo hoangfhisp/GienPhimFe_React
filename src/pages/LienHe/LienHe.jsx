@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import Logo from '../../components/Commons/Logo';
-
 function LienHe() {
     const [linkLienHe, setLinkLienHe] = useState("");
 

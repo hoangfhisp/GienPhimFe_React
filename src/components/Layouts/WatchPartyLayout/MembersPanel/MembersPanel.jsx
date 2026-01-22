@@ -60,8 +60,6 @@ export default function MembersPanel({ dataMembers, userId, isOwner }) {
         fetchAllMembers();
     }, [dataMembers]);
 
-    console.log("MembersPanel members:", members);
-    console.log("MembersPanel ", dataMembers);
     const handleKick = async (member) => {
         if (!window.confirm(`Bạn có chắc chắn muốn đá ${member.name} ra khỏi phòng không?`)) return;
         try {

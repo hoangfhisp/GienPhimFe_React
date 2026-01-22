@@ -5,6 +5,7 @@ import RenderPagination from "../../Commons/RenderPagination";
 import DataTable from "../DataTable/DataTable";
 
 import BotConfigCard from "../BotConfigCard/BotConfigCard";
+import { formatDateTimeVN } from "../../../untils/Format";
 
 export default function BotAdminList() {
     const [config, setConfig] = useState(null);
@@ -70,7 +71,7 @@ export default function BotAdminList() {
             setLogRows(
                 list.map((x) => ({
                     id: x.botSyncLogId,
-                    syncedAt: x.syncedAt ? new Date(x.syncedAt).toLocaleString("vi-VN") : "",
+                    syncedAt: formatDateTimeVN(x.syncedAt ?? ""),
                     actionText: actionMap[x.action] ?? x.action,
                     phimName: x.phimName,
                     phimSlug: x.phimSlug,

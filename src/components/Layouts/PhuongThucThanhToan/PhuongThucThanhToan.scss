@@ -1,0 +1,110 @@
+@media (max-width: 768px) {
+
+    /* Khung tổng – chỉ thu nhỏ, không đổi bố cục */
+    .trogiup-body {
+        padding: 12px;
+    }
+
+    .login-form-container {
+        transform: scale(0.95);
+        transform-origin: top center;
+    }
+
+    /* Tiêu đề */
+    .login-title h4 {
+        font-size: 22px !important;
+    }
+
+    /* Danh sách phương thức */
+    .payment-methods-container {
+        gap: 10px;
+    }
+
+    /* Card thanh toán */
+    .payment-method-card {
+        padding: 12px;
+    }
+
+    /* Icon */
+    .payment-method-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Text */
+    .payment-method-name {
+        font-size: 15px;
+    }
+
+    .payment-method-description {
+        font-size: 13px;
+    }
+
+    /* Link dưới */
+    .back-link {
+        font-size: 14px;
+    }
+}
+
+//Thanh Toan
+@media (max-width: 768px) {
+
+    /* ===== Khung tổng ===== */
+    .trogiup-body {
+        padding: 12px;
+    }
+
+    .login-form-container {
+        transform: scale(0.95);
+        transform-origin: top center;
+    }
+
+    /* ===== Tiêu đề ===== */
+    .login-title h4 {
+        font-size: 22px !important;
+        margin-bottom: 12px;
+    }
+
+    /* ===== Ghi chú ===== */
+    .note-payment {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    /* ===== Form ===== */
+    .payment-form {
+        margin-top: 18px !important;
+        padding: 0 6px; /* tạo khoảng hở đều */
+    }
+
+    /* ===== Input ===== */
+    .amount-input {
+        width: 100%;
+        font-size: 15px;
+        padding: 14px 16px;
+        border-radius: 6px;   /* 👈 vuông nhẹ, không pill */
+        box-sizing: border-box;
+    }
+
+    /* ===== VNĐ ===== */
+    .currency {
+        font-size: 14px;
+        right: 14px;
+    }
+
+    /* ===== BUTTON – SỬA CHUẨN ===== */
+    .submit-btn {
+        width: 100%;
+        height: auto;          /* ❗ bỏ height 36px */
+        margin-left: 0;        /* ❗ bỏ lệch trái */
+        padding: 14px 0;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 6px;    /* 👈 giống input */
+    }
+
+    /* ===== Link quay về ===== */
+    .back-link {
+        font-size: 14px;
+    }
+}

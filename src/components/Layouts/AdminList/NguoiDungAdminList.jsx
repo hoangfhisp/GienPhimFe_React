@@ -7,6 +7,7 @@ import ActionCard from "../ActionCard/ActionCard";
 import Modal from "../../Modal/Modal";
 import ConfirmModal from "../../Modal/ConfirmModal";
 import NguoiDungForm from "../AdminForms/NguoiDungForm";
+import { formatURLImage } from "../../../untils/Format";
 
 export default function NguoiDungAdminList() {
     const [rows, setRows] = useState([]);
@@ -60,7 +61,7 @@ export default function NguoiDungAdminList() {
                     createdAt: formatDate(x.thoiGianTao),
                     avatar: x.avatarND ? (
                         <img
-                            src={x.avatarND}
+                            src={formatURLImage(x.avatarND)}
                             alt="avatar"
                             style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
                         />

@@ -99,7 +99,7 @@ export default function GoiThanhVien() {
                 message: `Bạn có muốn mua gói ${goi[0].membershipPlans.tenPlan} này thay gói ${dataCTGoiTVUser?.data?.tenPlan} kia không `,
                 btnLabel: 'Vẫn mua',
                 onBTNClick: HandleMuaGoi,
-                showButton: true, 
+                showButton: true,
             });
         } else {
             HandleMuaGoi();
@@ -200,7 +200,7 @@ export default function GoiThanhVien() {
                             </div>
                         </div>
 
-                        <div className="plans">
+                        <div className={`plans ${dataListGoi.length === 1 ? 'single-plan' : ''}`}>
                             {dataListGoi.map((res, index) => (
                                 <Plan
                                     key={res.planId}
@@ -217,8 +217,12 @@ export default function GoiThanhVien() {
                             ))}
                         </div>
                         <div className="buttons-container">
-                            <Link to={"/Home"} className="btn back-btn">Trở về</Link>
-                            <button onClick={handleThongBao} className={`btn ${selectedPlan && "buy-btn"}`}>Mua</button>
+                            <Link to={"/Home"} className="back-btn">Trở về</Link>
+                            {selectedPlan && (
+                                <button onClick={handleThongBao} className="buy-btn">
+                                    Mua
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

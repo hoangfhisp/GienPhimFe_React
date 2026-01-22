@@ -16,21 +16,21 @@ export function formatVND(value) {
   }) + ' VNĐ';
 }
 
-export function formatDateTime(value){
-    return dayjs(value).format('DD/MM/YYYY HH:mm:ss');
+export function formatDateTime(value) {
+  return dayjs(value).format('DD/MM/YYYY HH:mm:ss');
 }
 
-export function formatYear(value){
-    return dayjs(value).format('YYYY');
+export function formatYear(value) {
+  return dayjs(value).format('YYYY');
 }
 
-export function formatDate(value){
+export function formatDate(value) {
   return dayjs(value).format('DD/MM/YYYY');
 }
 
 export function formatDateTimeVN(value) {
   if (!value) return "";
-  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("DD/MM/YYYY HH:mm:ss");
+  return dayjs.utc(value).tz("Asia/Ho_Chi_Minh").format("HH:mm:ss DD/MM/YYYY");
 }
 
 export function formatDateVN(value) {
@@ -59,3 +59,13 @@ export function formatURLImage(value) {
   // Nếu là path từ BE
   return env.BE_URL + value;
 }
+
+export function extractM3U8(playerUrl){
+  if (!playerUrl) return null;
+  try {
+    const url = new URL(playerUrl);
+    return url.searchParams.get('url');
+  } catch (e) {
+    return null;
+  }
+};

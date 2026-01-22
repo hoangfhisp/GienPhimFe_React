@@ -1,95 +1,196 @@
 .tabs-phim {
+  display: flex;
+  background: #1e1e1e;
+  border-radius: 10px;
+  padding: 10px;
+  justify-content: space-around;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tab.active {
+  border-bottom: 3px solid yellow;
+}
+
+.phim-details-container {
+  padding: 20px;
+}
+
+.detail-item {
+  margin-bottom: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: gray;
+  font-size: 12px;
+  color: white;
+}
+
+.tag-hd {
+  background: red;
+}
+
+.tag-nn {
+  background: rgb(255, 81, 0);
+}
+
+.tag-pg {
+  background: orange;
+}
+
+.genres {
+  color: #00d4ff;
+  margin: 5px;
+  font-weight: 500;
+}
+
+.country {
+  font-weight: bold;
+  color: lightgreen;
+  margin: 5px;
+}
+
+.player-wrapper {
+  max-width: 80%;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+}
+
+.avatar-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.logo-gienphim {
+  width: 120px;
+  max-width: 100%;
+  margin: 8px auto 0;
+  display: block;
+}
+
+@media (max-width: 768px) {
+
+  .tabs-phim {
     display: flex;
-    background: #1e1e1e;
-    border-radius: 10px;
-    padding: 10px;
-    justify-content: space-around;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 8px 16px;
+    -webkit-overflow-scrolling: touch;
   }
-  
+
+  .tabs-phim::before,
+  .tabs-phim::after {
+    content: "";
+    flex: 0 0 16px;
+  }
+
+  .tabs-phim::-webkit-scrollbar {
+    display: none;
+  }
+
   .tab {
-    background: none;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
+    justify-content: center;
+    font-size: 14px;
+    padding: 8px 12px;
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
-  
-    .tab.active {
-        border-bottom: 3px solid yellow;
-    }
 
-    .phim-details-container {
-        padding: 20px;
-      }
-      
-      .detail-item {
-        margin-bottom: 8px;
-      }
-      
-      .tag {
-        display: inline-block;
-        padding: 5px 10px;
-        border-radius: 5px;
-        background: gray;
-        font-size: 12px;
-        color: white;
-      }
-      
-      .tag-hd {
-        background: red;
-      }
-      
-      .tag-pg {
-        background: orange;
-      }
-      
-      .genres {
-        color: #00d4ff;
-        margin: 5px;
-        font-weight: 500;
-      }
-      
-      .country {
-        font-weight: bold;
-        color: lightgreen;
-        margin: 5px;
-      }
-      
-        .player-wrapper{
-            max-width: 80%;
-            aspect-ratio: 16 / 9;
-            margin: 0 auto;
-        }
+  .tab.active {
+    border-bottom: 2px solid yellow;
+  }
+}
 
-        @media (max-width: 768px) {
-            .player-wrapper {
-              width: 100%;           /* Khi màn hình <768px, tăng chiều rộng lên 90% */
-            }
-          }
+@media (max-width: 768px) {
 
-          .avatar-wrapper{
-            max-width: 80%;
-            aspect-ratio: 16 / 9;
-            margin: 0 auto;
-            .avatar-container{
-              width: 100%;
-              height: 100%;
-            }
-            img{
-              width: 100%;
-              height: 100%;
-            } 
-            .logo-gienphim{
-              width: 80px;
-              height: 40px;
-              margin: 0 auto;
-              img {
-                width: 100%;
-                height: 100%;
-              }
-            }
-            
-          }
+  .phim-details-container {
+    padding: 12px 14px;
+  }
 
-          
+  .detail-item {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .genres,
+  .country {
+    font-size: 13px;
+    margin: 3px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .player-wrapper {
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .characters-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 16px;
+    justify-items: center;
+  }
+
+  .character-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    font-size: 24px;
+  }
+
+  .character-name {
+    font-size: 13px;
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .avatar-wrapper {
+    max-width: 100%;
+    padding: 0 12px;
+  }
+
+  .avatar-container {
+    position: relative;
+  }
+
+  .avatar-container img {
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .logo-gienphim {
+    margin-top: 8px;
+  }
+}

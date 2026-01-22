@@ -183,3 +183,50 @@
 .me{
     color: rgb(255, 166, 0);
 }
+
+.login-prompt {
+    text-align: center;
+    font-size: 15px;
+    color: #bbb;
+    margin: 20px 0 10px;
+    font-style: italic;
+}
+
+.login-button {
+    display: block;
+    margin: 0 auto 20px;
+    padding: 10px 26px;
+
+    background: linear-gradient(135deg, #facc15, #f59e0b);
+    color: #000;
+
+    border: none;
+    border-radius: 999px; /* bo tròn đẹp như app */
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.login-button:hover {
+    background: linear-gradient(135deg, #fde047, #fbbf24);
+    transform: translateY(-1px);
+}
+
+.login-button:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 768px) {
+    .login-button {
+        width: 100%;
+        max-width: 260px;
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .login-prompt {
+        font-size: 14px;
+    }
+}

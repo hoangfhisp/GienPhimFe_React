@@ -272,8 +272,6 @@ export const taoGiaoDich = async (napTienDto) => {
                 Authorization: `Bearer ${token}`  // Thêm token vào header
             }
         });
-        // Kiểm tra response để chắc chắn nó có dữ liệu
-        console.log("Response từ API:", response);
         return response;
 
     } catch (error) {

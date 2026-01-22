@@ -7,6 +7,7 @@ import * as authHook from "../../hooks/auth.jsx";
 import * as userService from '../../services/User/UserService.jsx';
 import '../../components/Login-container/Login.scss';
 import RenderPagination from '../../components/Commons/RenderPagination.jsx';
+import './LichSuGiaoDich.scss';
 
 export default function LichSuGiaoDich() {
     const [listLichSuGiaoDichResult, setLichSuGiaoDichResult] = useState([]);
