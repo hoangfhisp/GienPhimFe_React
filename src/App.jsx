@@ -15,6 +15,7 @@ function App() {
     
     const hiddenFooterPaths = ['/Home','/Phim','/XemPhim','/History','/SearchPhim','/InfoAccount'].map(path => path.toLowerCase());;
     const isFooterVisible = hiddenFooterPaths.some(path => location.pathname.toLowerCase().startsWith(path));
+
     return (
         <div className='body-main'>
             {isHeadersVisible && <Headers />}

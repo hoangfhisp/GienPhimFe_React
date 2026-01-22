@@ -17,11 +17,43 @@ export default function ChatPanel({ userId, groupId }) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
+    // useEffect(() => {
+    //     const connection = new signalR.HubConnectionBuilder()
+    //         .withUrl(env.SIGNALR_URL)
+    //         .withAutomaticReconnect()
+    //         .build();
+
+    //     connection.start()
+    //         .then(() => {
+    //             console.log("SignalR connected");
+    //             return connection.invoke("JoinRoom", groupId);
+    //         })
+    //         .catch(err => console.error("SignalR connection error:", err));
+
+    //     connection.on("ReceiveMessage", (msg) => {
+    //         setMessages(prev => [...prev, msg]);
+    //         fetchUserId(msg.userId);
+    //     });
+
+    //     connectionRef.current = connection;
+
+    //     return () => {
+    //         if (connectionRef.current) connectionRef.current.stop();
+    //     };
+    // }, [groupId]);
     useEffect(() => {
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl(env.SIGNALR_URL)
+            .withUrl(env.SIGNALR_URL, {
+                transport: signalR.HttpTransportType.WebSockets
+            })
             .withAutomaticReconnect()
             .build();
+
+        // 🔹 đăng ký event TRƯỚC start
+        connection.on("ReceiveMessage", (msg) => {
+            setMessages(prev => [...prev, msg]);
+            fetchUserId(msg.userId);
+        });
 
         connection.start()
             .then(() => {
@@ -30,15 +62,11 @@ export default function ChatPanel({ userId, groupId }) {
             })
             .catch(err => console.error("SignalR connection error:", err));
 
-        connection.on("ReceiveMessage", (msg) => {
-            setMessages(prev => [...prev, msg]);
-            fetchUserId(msg.userId);
-        });
-
         connectionRef.current = connection;
 
         return () => {
-            if (connectionRef.current) connectionRef.current.stop();
+            connection.off("ReceiveMessage");
+            connection.stop();
         };
     }, [groupId]);
 
@@ -72,7 +100,7 @@ export default function ChatPanel({ userId, groupId }) {
                             {m.userId === userId
                                 ? "Bạn"
                                 : usersById[m.userId]?.email || "Đang tải..."}
-                            : 
+                            :
                         </strong>
                         {m.text}
                     </div>

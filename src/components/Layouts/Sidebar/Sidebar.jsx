@@ -52,7 +52,7 @@ export default function Sidebar({ onlogins }) {
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate("/home")}
             >
-                <img src="/images/logo-gienphimvuong-3.png.png" alt="GienPhim" />
+                <img src="/images/logo-gienphimvuong-3.png" alt="GienPhim" />
             </div>
 
             {/* MENU */}

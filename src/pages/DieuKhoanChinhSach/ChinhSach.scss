@@ -1,0 +1,152 @@
+/* Wrapper nền */
+.policy-container-main {
+  padding-block: 40px;
+}
+.policy-wrapper {
+  max-width: 920px;
+  margin: auto;
+  padding: 40px;
+  background: linear-gradient(180deg, #111 0%, #0b0b0b 100%);
+  color: #dcdcdc;
+  border-radius: 18px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+/* Header */
+.policy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.policy-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+/* Badge cập nhật */
+.policy-badge {
+  background: rgba(255, 77, 77, 0.15);
+  color: #ff4d4d;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Content markdown */
+.policy-content {
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+/* Heading */
+.policy-content h1,
+.policy-content h2,
+.policy-content h3 {
+  font-weight: 600;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  color: #ffffff;
+  position: relative;
+}
+
+/* Accent line bên trái */
+.policy-content h2::before,
+.policy-content h3::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 6px;
+  width: 4px;
+  height: 70%;
+  border-radius: 4px;
+  background: #ff4d4d;
+}
+
+.policy-content h1 {
+  font-size: 24px;
+}
+
+.policy-content h2 {
+  font-size: 20px;
+}
+
+.policy-content h3 {
+  font-size: 18px;
+  color: #cfcfcf;
+}
+
+/* Paragraph */
+.policy-content p {
+  margin: 14px 0;
+  color: #cfcfcf;
+}
+
+/* List */
+.policy-content ul,
+.policy-content ol {
+  margin: 16px 0 16px 20px;
+}
+
+.policy-content li {
+  margin-bottom: 10px;
+}
+
+/* Highlight */
+.policy-content strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Blockquote (nếu có) */
+.policy-content blockquote {
+  margin: 20px 0;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 4px solid #ff4d4d;
+  color: #dcdcdc;
+  border-radius: 8px;
+}
+
+/* Link */
+.policy-content a {
+  color: #4da3ff;
+  text-decoration: none;
+}
+
+.policy-content a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .policy-wrapper {
+    margin: 12px;
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .policy-header h1 {
+    font-size: 22px;
+  }
+
+  .policy-content {
+    font-size: 14px;
+  }
+
+  .policy-content h1 {
+    font-size: 20px;
+  }
+
+  .policy-content h2 {
+    font-size: 18px;
+  }
+}

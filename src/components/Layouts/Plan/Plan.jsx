@@ -38,12 +38,12 @@ function Plan({ children, deXuat, isRecommended, onSelect, data, onDataGoiThang,
             {deXuat && <div className="label">Đề xuất</div>}
             <h2>{children}</h2>
             <p className="price">
-                <span className="monthly">{formatVND(Number(dataLuaChonGoiThang[0]?.giaOption || 0))} / tháng</span>
+                <span className="monthly">{formatVND(Number(dataLuaChonGoiThang?.[0]?.giaOption || 0))} / tháng</span>
             </p>
             <p className="yearly">
                 Hoặc trả trước theo năm:
                 <br />
-                <span className="highlight">{formatVND(Number(dataLuaChonGoiNam[0]?.giaOption || 0))} / năm</span>
+                <span className="highlight">{formatVND(Number(dataLuaChonGoiNam?.[0]?.giaOption || 0))} / năm</span>
             </p>
             <ul className='plan-info'>
                 {parts.map((res, index) => (

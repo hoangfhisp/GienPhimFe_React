@@ -3,7 +3,6 @@ import { jwtDecode } from "jwt-decode";
 
 // Lấy token đã lưu 
 export function getToken(){
-    console.log(localStorage.getItem('token'));
     return localStorage.getItem('token');
 }
 

@@ -56,7 +56,6 @@ const ResetPassword = () => {
 
             const data = await AuthenticationService.resetPassword(payload);
 
-            console.log("DATA =", data);
 
             if (data?.status === true) {
                 setError("");

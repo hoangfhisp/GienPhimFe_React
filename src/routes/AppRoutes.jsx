@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import Register from '../pages/Dang_nhap/Register';
 import Help from '../pages/Dang_nhap/Help';
@@ -17,10 +17,8 @@ import ListTheTag from "../pages/Quan_tri_vien/QuanLyTheTag/List-The-Tag";
 import ListDaoDien from "../pages/Quan_tri_vien/QuanLyDaoDien/List-Dao-Dien";
 import ListDienVien from "../pages/Quan_tri_vien/QuanLyDienVien/List-Dien-Vien";
 import ListNguoiDung from "../pages/Quan_tri_vien/QuanLyNguoiDung/List-Nguoi-Dung.jsx";
-import RoleList from '../pages/Quan_tri_vien/QuanLyVaiTro/List-Vai-Tro';
 import ListGoiThanhVien from "../pages/Quan_tri_vien/QuanLyGoiThanhVien/List-Goi-Thanh-Vien";
 import ListBot from "../pages/Quan_tri_vien/QuanLyBot/List-Bot.jsx";
-import LichSuGiaoDichList from '../pages/Quan_tri_vien/QuanLyLichSuGiaoDich/List-Lich-Su-Giao-Dich';
 import Login from '../pages/Dang_nhap/Login.jsx'
 import Phim from "../pages/Phim/Phim.jsx";
 import XemPhim from "../pages/XemPhim/XemPhim.jsx";
@@ -34,6 +32,9 @@ import InfoAccount from "../pages/InfoAccount/InfoAccount.jsx";
 import GoiThanhVien from "../pages/GoiThanhVien/GoiThanhVien.jsx";
 import LichSuGiaoDich from "../pages/LichSuGiaoDich/LichSuGiaoDich.jsx";
 import AdminGuard from "../components/AdminGuard/AdminGuard";
+import DieuKhoan from "../pages/DieuKhoanChinhSach/DieuKhoan.jsx";
+import ChinhSach from "../pages/DieuKhoanChinhSach/ChinhSach.jsx";
+import TitleProvider from "../components/TitleProvider/TitleProvider.jsx";
 
 export default function AppRoutes() {
 
@@ -42,91 +43,97 @@ export default function AppRoutes() {
 
     return (
         <Routes>
-            {/* Router UI*/}
-            <Route path="/Home" element={<Home />} />
-            <Route path="/Phim/:id" element={<Phim />} />
-            <Route path="/XemPhim/:id/:tap" element={<XemPhim />} />
-            <Route path="/LienHe" element={<LienHe />} />
-            {userId && <Route path="/History" element={<History />} />}
-            {userId && <Route path="/InfoAccount" element={<InfoAccount />} />}
-            <Route path="/SearchPhim/:type/:timtheo" element={<SearchPhim />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route element={<TitleProvider />}>
             
-            {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
-            {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
+                {/* Redirect root / → /Home */}
+                <Route path="/" element={<Navigate to="/Home" replace />} />
 
-            {/* <Route path="/admin" element={<AdminLayout />}>
-                <Route path="Tong-Quan" element={<TongQuan />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Quoc-Gia" element={<ListQuocGia />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Ngon-Ngu" element={<ListNgonNgu />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-The-Loai" element={<ListTheLoai />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-The-Tag" element={<ListTheTag />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Dao-Dien" element={<ListDaoDien />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Dien-Vien" element={<ListDienVien />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Phim" element={<ListPhim />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Tap-Phim" element={<ListTapPhim />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Nguoi-Dung" element={<ListNguoiDung />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="List-Goi-Thanh-Vien" element={<ListGoiThanhVien />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="Bot" element={<ListBot />} />
-            </Route>
+                {/* Router UI*/}
+                <Route path="/Home" element={<Home />} />
+                <Route path="/Phim/:id" element={<Phim />} />
+                <Route path="/XemPhim/:id/:tap" element={<XemPhim />} />
+                <Route path="/LienHe" element={<LienHe />} />
+                <Route path="/History" element={<History />} />
+                {userId && <Route path="/InfoAccount" element={<InfoAccount />} />}
+                <Route path="/SearchPhim/:type/:timtheo" element={<SearchPhim />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/DieuKhoan" element={<DieuKhoan />} />
+                <Route path="/ChinhSach" element={<ChinhSach />} />
+                {userId && <Route path="/GoiThanhVien" element={<GoiThanhVien />} />}
+                {userId && <Route path="/LichSuGiaoDich" element={<LichSuGiaoDich />} />}
 
-            <Route path="/List-Vai-Tro" element={<RoleList />} /> */}
-            <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />
-
-            {/* Router Admin */}
-            <Route element={<AdminGuard />}>
-                <Route path="/admin" element={<AdminLayout />}>
+                {/* <Route path="/admin" element={<AdminLayout />}>
                     <Route path="Tong-Quan" element={<TongQuan />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Quoc-Gia" element={<ListQuocGia />} />
-                    <Route path="List-Dao-Dien" element={<ListDaoDien />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Ngon-Ngu" element={<ListNgonNgu />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-The-Loai" element={<ListTheLoai />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-The-Tag" element={<ListTheTag />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="List-Dao-Dien" element={<ListDaoDien />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Dien-Vien" element={<ListDienVien />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Phim" element={<ListPhim />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Tap-Phim" element={<ListTapPhim />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Nguoi-Dung" element={<ListNguoiDung />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="List-Goi-Thanh-Vien" element={<ListGoiThanhVien />} />
+                </Route>
+                <Route path="/admin" element={<AdminLayout />}>
                     <Route path="Bot" element={<ListBot />} />
                 </Route>
+
+                <Route path="/List-Vai-Tro" element={<RoleList />} /> */}
+                <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />
+
+                {/* Router Admin */}
+                <Route element={<AdminGuard />}>
+                    <Route path="/admin" element={<AdminLayout />}>
+                        <Route path="Tong-Quan" element={<TongQuan />} />
+                        <Route path="List-Quoc-Gia" element={<ListQuocGia />} />
+                        <Route path="List-Dao-Dien" element={<ListDaoDien />} />
+                        <Route path="List-Ngon-Ngu" element={<ListNgonNgu />} />
+                        <Route path="List-The-Loai" element={<ListTheLoai />} />
+                        <Route path="List-The-Tag" element={<ListTheTag />} />
+                        <Route path="List-Dien-Vien" element={<ListDienVien />} />
+                        <Route path="List-Phim" element={<ListPhim />} />
+                        <Route path="List-Tap-Phim" element={<ListTapPhim />} />
+                        <Route path="List-Nguoi-Dung" element={<ListNguoiDung />} />
+                        <Route path="List-Goi-Thanh-Vien" element={<ListGoiThanhVien />} />
+                        <Route path="Bot" element={<ListBot />} />
+                    </Route>
+                </Route>
+                {/* {userId && role === 'Admin' && <Route path="/List-Goi-Thanh-Vien" element={<GoiThanhVienList />} />}
+                {userId && role === 'Admin' && <Route path="/List-Lich-Su-Giao-Dich" element={<LichSuGiaoDichList />} />} */}
+
+
+                {/* Router nạp tiền */}
+                {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
+                {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
+
+                {/* Thêm route 404 nếu muốn */}
+                <Route path="*" element={<NotFound />} />
             </Route>
-            {/* {userId && role === 'Admin' && <Route path="/List-Goi-Thanh-Vien" element={<GoiThanhVienList />} />}
-            {userId && role === 'Admin' && <Route path="/List-Lich-Su-Giao-Dich" element={<LichSuGiaoDichList />} />} */}
-
-
-            {/* Router nạp tiền */}
-            {userId && <Route path="/NapTien/:phuongthuc" element={<NapTien />} />}
-            {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
-
-            {userId && <Route path="/TaoGiaoDichVIB" element={<TaoGiaoDichVIB />} />}
-            {/* Thêm route 404 nếu muốn */}
-            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 }

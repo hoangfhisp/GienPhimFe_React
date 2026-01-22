@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as authServices from "../../../services/Admin/AuthenticationService.jsx";
 import { decodeToken } from "../../../hooks/auth.jsx";
-
+import "./Profile.scss";
 function ProfileContent({ dataU }) {
     const [formData, setFormData] = useState({
         userName: "",
@@ -111,36 +111,40 @@ function ProfileContent({ dataU }) {
                 />
 
                 <label>Giới tính</label>
+
                 <div className="gender-options">
-                    <input
-                        type="radio"
-                        name="gioiTinh"
-                        id="male"
-                        value={1}
-                        checked={formData.gioiTinh === 1}
-                        onChange={HandleChange}
-                    />
-                    <label htmlFor="male">Nam</label>
+                    <label className="gender-item">
+                        <input
+                            type="radio"
+                            name="gioiTinh"
+                            value={1}
+                            checked={formData.gioiTinh === 1}
+                            onChange={HandleChange}
+                        />
+                        <span>Nam</span>
+                    </label>
 
-                    <input
-                        type="radio"
-                        name="gioiTinh"
-                        id="female"
-                        value={2}
-                        checked={formData.gioiTinh === 2}
-                        onChange={HandleChange}
-                    />
-                    <label htmlFor="female">Nữ</label>
+                    <label className="gender-item">
+                        <input
+                            type="radio"
+                            name="gioiTinh"
+                            value={2}
+                            checked={formData.gioiTinh === 2}
+                            onChange={HandleChange}
+                        />
+                        <span>Nữ</span>
+                    </label>
 
-                    <input
-                        type="radio"
-                        name="gioiTinh"
-                        id="other"
-                        value={0}
-                        checked={formData.gioiTinh === 0}
-                        onChange={HandleChange}
-                    />
-                    <label htmlFor="other">Không xác định</label>
+                    <label className="gender-item">
+                        <input
+                            type="radio"
+                            name="gioiTinh"
+                            value={0}
+                            checked={formData.gioiTinh === 0}
+                            onChange={HandleChange}
+                        />
+                        <span>Không xác định</span>
+                    </label>
                 </div>
 
                 <label>Mô tả bản thân</label>

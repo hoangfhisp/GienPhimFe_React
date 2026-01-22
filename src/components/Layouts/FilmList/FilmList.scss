@@ -34,5 +34,39 @@
       margin: 10px 0 0;
   }
 
+/* ================= MOBILE ONLY ================= */
+@media (max-width: 991px) {
 
+  .film-list {
+    width: 100%;
+    padding-inline: 5px;
+    padding-bottom: 15px;
+  }
+
+  .film-item {
+    padding: 6px;
+    border-radius: 8px;
+  }
+
+  .film-item img {
+    height: 140px;
+    border-radius: 6px;
+  }
+
+  .film-item p {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+
+}
+
+@media (max-width: 991px) {
+  .film-item {
+    transition: transform 0.15s ease;
+  }
+
+  .film-item:active {
+    transform: scale(0.96);
+  }
+}
   

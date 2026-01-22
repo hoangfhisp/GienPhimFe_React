@@ -10,28 +10,33 @@ html {
 }
 
 .login-container {
+    position: relative;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     background-image: url("https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQZjfXldWj-AR1QUOFBUVqe09pU1x8uHoPjWUUglrvEDlYLyPKsKe94fK_yL2d-GVxgOr7U-u_f0nY2UOOdLDkZ8CsHIwMHiy7rXgTbNDeeG5Jh5pgIiuTfFDS7jpwbwgum85LZveLvxlVUqWN94dlXlO6z8.jpg?r=fa8");
     background-size: cover;
-    width: 100%;
-    height: auto;
-    min-height: 100vh;
-    position: relative;
+    background-position: center;
+    overflow: hidden;
+    padding-top: 100px;
 }
 
 .login-overlay {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 0;
 }
 
+
 .login-header {
-    padding-top: 20px;
-    padding-left: 44px;
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
+    top: 20px;
+    left: 44px;
+    z-index: 2;
 }
 
 .login-header a {
@@ -45,15 +50,13 @@ html {
 
 .login-body {
     width: 448px;
-    height: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 5px;
+    max-width: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
     z-index: 1;
-    padding-bottom: 2.5%;
+    padding-bottom: 24px;
+    position: relative;
+    margin: 0 auto;
 }
 
 .login-error-message {
@@ -474,16 +477,14 @@ html {
 }
 
 .trogiup-body {
-    width: auto;
-    height: auto;
+    position: relative; // ❗ bỏ absolute
+    width: 100%;
+    max-width: 1200px;
+    margin: 60px 14px;
+
     background-color: rgba(0, 0, 0, 0.75);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 5px;
-    z-index: 1;
-    padding-bottom: 2.5%;
+    border-radius: 8px;
+    padding: 20px;
 }
 
 .trogiup-question {
@@ -696,12 +697,12 @@ a {
 //Nhập tiền
 .note-container {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 24px;
     padding: 16px;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     border: 1px solid transparent;
 
     .note-header {
@@ -773,7 +774,7 @@ a {
         }
 
         .amount-input {
-            flex: 1; // Thêm dòng này để input chiếm hết phần còn lại
+            flex: 1;
             background-color: transparent;
             border: none;
             outline: none;
@@ -781,7 +782,7 @@ a {
             font-size: 14px;
             padding: 8px 0;
             height: 100%;
-            min-width: 0; // Fix lỗi input tràn khi bên cạnh có phần tử khác
+            min-width: 0;
 
             &::placeholder {
                 color: #ffffff99;
@@ -791,30 +792,32 @@ a {
         .currency {
             color: #ffffff99;
             font-size: 14px;
-            white-space: nowrap; // Không bị xuống dòng
+            white-space: nowrap;
             padding-left: 4px;
         }
     }
 
     .submit-btn {
-        padding: 8px 20px;
+        padding: 10px 24px;
         background-color: #E50914;
         color: white;
         border: none;
-        border-radius: 36px;
-        font-size: 14px;
-        font-weight: 400;
+
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-left: 8px;
-        height: 36px;
-        display: flex;
-        align-items: center;
+
+        height: auto;
+        margin-left: 0;
+
+        display: inline-flex;
         justify-content: center;
 
         &:hover {
             background-color: #b5151d;
-            border-color: #b5151d;
         }
     }
 
@@ -934,4 +937,47 @@ input[type="number"] {
     width: 320px !important;
     max-width: 100% !important;
     border-radius: 999px !important;
+}
+
+@media (max-width: 768px) {
+
+    .login-container {
+        align-items: center;
+        padding-top: 80px;
+    }
+
+    .login-body {
+        width: 100%;
+        margin: 0 12px;
+        padding-bottom: 20px;
+    }
+
+    .login-form-container {
+        padding: 24px 20px 0;
+    }
+
+    .login-header {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        width: 100%;
+        text-align: center;
+        /* 👈 QUAN TRỌNG */
+    }
+
+    .login-header a {
+        display: inline-block;
+        /* 👈 đảm bảo căn giữa */
+        font-size: 4.5rem;
+        margin: 0;
+    }
+
+    .login-form-button,
+    .login-phone-button,
+    .login-email-button {
+        font-size: 1.6rem;
+        padding: 14px;
+    }
 }

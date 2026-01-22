@@ -159,8 +159,6 @@ export default function ListPhim({ page, limit, data, pagination, onPageChange }
                 backendData = mapToBackendFormat(movieData);
             }
 
-            console.log("Dữ liệu gửi lên API:", backendData);
-
             if (cardAction === 'create') {
                 await movieServices.createMovie(backendData);
             } else {

@@ -35,8 +35,6 @@ export default function Register() {
             try {
                 const res = await AuthenticationService.register(userData);
 
-                console.log("API Response:", res);
-
                 if (res?.status) {
                     setErrorMessage("");        // xoá thông báo cũ
                     navigate("/login");

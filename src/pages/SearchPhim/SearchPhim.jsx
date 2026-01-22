@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import BoxTitle from "../../components/Commons/BoxTitle";
 import AnimeList from "../../components/Layouts/AnimeList/AnimeList";
 import Notice from "../../components/Layouts/Notice/Notice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import RenderPagination from "../../components/Commons/RenderPagination";
 
 function SearchPhim(){
@@ -11,7 +11,7 @@ function SearchPhim(){
     const [pagination,setPagination] = useState([]);
     const [currentPage,setCurrentPage] = useState(1);
 
-    console.log(type)
+
     return(
         <>
             <div className="container-main">
