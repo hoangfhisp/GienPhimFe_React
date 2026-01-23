@@ -37,7 +37,7 @@ jobs:
         run: |
           & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
             -verb:sync `
-            -source:contentPath=build `
+            -source:contentPath="$PWD\build" `
             -dest:contentPath=GienPhimClient,computerName=https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd,userName=${{ secrets.IIS_USERNAME }},password=${{ secrets.IIS_PASSWORD }},authType=Basic `
             -skip:objectName=filePath,absolutePath=web.config `
             -allowUntrusted
