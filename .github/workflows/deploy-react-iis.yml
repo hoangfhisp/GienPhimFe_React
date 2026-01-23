@@ -31,16 +31,19 @@ jobs:
         run: |
           $env:CI="false"
           npm run build
+      - name: Deploy to IIS via SCP (keep web.config)
+        shell: pwsh
+        run: |
+          # Upload build lên thư mục tạm
+          scp -r build/* `
+            ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }}:/C:/deploy_temp
 
-      - name: Deploy to IIS via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.IIS_SERVER }}
-          username: ${{ secrets.IIS_USERNAME }}
-          password: ${{ secrets.IIS_PASSWORD }}
-          port: 22
-          source: "build/*"
-          target: ${{ secrets.IIS_SITE_PATH_FE }}
-          strip_components: 1
-          exclude: |
-            web.config
+          # Xóa file cũ TRỪ web.config
+          ssh ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
+            "powershell -Command `
+            Get-ChildItem ${{ secrets.IIS_SITE_PATH_FE }} -Recurse -Exclude web.config | Remove-Item -Recurse -Force"
+
+          # Copy file mới vào IIS folder
+          ssh ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
+            "powershell -Command `
+            Copy-Item 'C:\deploy_temp\*' ${{ secrets.IIS_SITE_PATH_FE }} -Recurse -Force"
