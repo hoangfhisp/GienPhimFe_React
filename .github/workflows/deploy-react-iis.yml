@@ -32,12 +32,15 @@ jobs:
           $env:CI="false"
           npm run build
 
-      - name: Deploy to IIS (Web Deploy)
-        shell: pwsh
-        run: |
-          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
-            -verb:sync `
-            -source:contentPath="$PWD\build" `
-            -dest:contentPath=GienPhimClient,computerName=https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd,userName=${{ secrets.IIS_USERNAME }},password=${{ secrets.IIS_PASSWORD }},authType=Basic `
-            -skip:objectName=filePath,absolutePath=web.config `
-            -allowUntrusted
+      - name: Deploy to IIS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.IIS_SERVER }}
+          username: ${{ secrets.IIS_USERNAME }}
+          password: ${{ secrets.IIS_PASSWORD }}
+          port: 22
+          source: "build/*"
+          target: ${{ secrets.IIS_SITE_PATH_FE }}
+          strip_components: 1
+          exclude: |
+            web.config
