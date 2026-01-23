@@ -34,16 +34,22 @@ jobs:
       - name: Deploy to IIS via SCP (keep web.config)
         shell: pwsh
         run: |
-          # Upload build lên thư mục tạm
+          # 1. Tạo thư mục tạm nếu chưa có
+          ssh ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
+            "powershell -Command `
+            if (!(Test-Path 'C:\deploy_temp')) { New-Item -ItemType Directory -Path 'C:\deploy_temp' }"
+
+          # 2. Upload build lên thư mục tạm
           scp -r build/* `
             ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }}:/C:/deploy_temp
 
-          # Xóa file cũ TRỪ web.config
+          # 3. Xóa file cũ TRỪ web.config
           ssh ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
             "powershell -Command `
-            Get-ChildItem ${{ secrets.IIS_SITE_PATH_FE }} -Recurse -Exclude web.config | Remove-Item -Recurse -Force"
+            Get-ChildItem '${{ secrets.IIS_SITE_PATH_FE }}' -Recurse -Exclude 'web.config' | Remove-Item -Recurse -Force"
 
-          # Copy file mới vào IIS folder
+          # 4. Copy file mới vào IIS folder
           ssh ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
             "powershell -Command `
-            Copy-Item 'C:\deploy_temp\*' ${{ secrets.IIS_SITE_PATH_FE }} -Recurse -Force"
+            Copy-Item 'C:\deploy_temp\*' '${{ secrets.IIS_SITE_PATH_FE }}' -Recurse -Force"
+
