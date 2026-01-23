@@ -31,25 +31,18 @@ jobs:
         run: |
           $env:CI="false"
           npm run build
-      - name: Deploy to IIS via SCP (keep web.config)
+
+      - name: Deploy to IIS via MSDeploy (keep web.config)
         shell: pwsh
         run: |
-          $sshOpt = "-o StrictHostKeyChecking=no"
-
-          # 1. Tạo thư mục tạm
-          ssh $sshOpt ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
-            "powershell -Command if (!(Test-Path 'C:\deploy_temp')) { New-Item -ItemType Directory -Path 'C:\deploy_temp' }"
-
-          # 2. Upload build
-          scp $sshOpt -r build/* `
-            ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }}:/C:/deploy_temp
-
-          # 3. Xóa file cũ trừ web.config
-          ssh $sshOpt ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
-            "powershell -Command Get-ChildItem '${{ secrets.IIS_SITE_PATH_FE }}' -Recurse -Exclude 'web.config' | Remove-Item -Recurse -Force"
-
-          # 4. Copy file mới
-          ssh $sshOpt ${{ secrets.IIS_USERNAME }}@${{ secrets.IIS_SERVER }} `
-            "powershell -Command Copy-Item 'C:\deploy_temp\*' '${{ secrets.IIS_SITE_PATH_FE }}' -Recurse -Force"
-
+          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+            -verb:sync `
+            -source:contentPath="build" `
+            -dest:contentPath="${{ secrets.IIS_SITE_PATH_FE }}",
+                  computerName="https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd",
+                  userName="${{ secrets.IIS_USERNAME }}",
+                  password="${{ secrets.IIS_PASSWORD }}",
+                  authType=Basic `
+            -skip:objectName=filePath,absolutePath="\\web.config$" `
+            -allowUntrusted
 
