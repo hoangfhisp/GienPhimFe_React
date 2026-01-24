@@ -10,6 +10,8 @@ import * as authHook from '../../../hooks/auth.jsx'
 import ThongBao from '../ThongBao/ThongBao.jsx';
 import useScrollTo from '../../../hooks/useScrollTo.jsx';
 import useIsMobile from '../../../hooks/useIsMobile.jsx';
+import PhimBannerSkeleton from './PhimBannerSkeleton.jsx';
+import ExpandBox from '../../Commons/ExpandBox/ExpandBox.jsx';
 
 function PhimBanner({ id }) {
     const [rating, setRating] = useState("0");
@@ -17,9 +19,15 @@ function PhimBanner({ id }) {
     const [dataTap, setDataTap] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [showThongBao, setShowThongBao] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const location = useLocation();
     const bannerPhimRef = useRef(null);
+
+    // show more description
+    const descRef = useRef(null);
+    const [isTruncated, setIsTruncated] = useState(false);
+    const [showDesc, setShowDesc] = useState(false);
 
     const userId = authHook.getUserIdFromToken();
     const { scrollToRef } = useScrollTo();
@@ -35,15 +43,34 @@ function PhimBanner({ id }) {
     }, [isMobile, location.state]);
 
     useEffect(() => {
+        if (descRef.current) {
+            setIsTruncated(
+                descRef.current.scrollHeight > descRef.current.clientHeight
+            );
+        }
+    }, [dataPhim]);
+
+    useEffect(() => {
         if (id == null) {
             return;
         }
 
         const fetchApi = async () => {
-            const resultPhim = await phimServices.phim(id);
-            const resultTapPhim = await phimServices.tapPhims(id);
-            setDataPhim(resultPhim.data);
-            setDataTap(resultTapPhim.data);
+            try {
+                setLoading(true);
+                const resultPhim = await phimServices.phim(id);
+                const resultTapPhim = await phimServices.tapPhims(id);
+                setDataPhim(resultPhim.data);
+                setDataTap(resultTapPhim.data);
+            } catch (error) {
+                console.error("Lỗi load phim banner:", error);
+                setDataPhim([]);
+                setDataTap([]);
+            }
+            finally {
+                setLoading(false);
+            }
+
         }
         fetchApi();
     }, [id])
@@ -67,8 +94,8 @@ function PhimBanner({ id }) {
     }
 
     return (
-        <>
-            <div className="banner-phim"
+        <>  {loading ? <PhimBannerSkeleton /> : (
+            <><div className="banner-phim"
                 style={{
                     background: `url(${dataPhim.avatarP ? formatURLImage(dataPhim.avatarP) : null}) center/cover no-repeat`,
 
@@ -96,7 +123,15 @@ function PhimBanner({ id }) {
                         <div className="phim-details">
                             <h1>{dataPhim.tenP}</h1>
                             <p className="phim-subtitle">{dataPhim.tenP}</p>
-                            <p className="phim-description">{dataPhim.moTaP}</p>
+                            <p
+                                ref={descRef}
+                                className={`phim-description ${isTruncated ? "truncate clickable" : ""}`}
+                                onClick={() => {
+                                    if (isTruncated) setShowDesc(true);
+                                }}
+                            >
+                                {dataPhim.moTaP}
+                            </p>
                             <div className="rating">
                                 <span className="rating-score">{rating}</span>
                                 <span className="stars">☆☆☆☆☆</span>
@@ -111,7 +146,16 @@ function PhimBanner({ id }) {
                     </div>
                 </div>
             </div>
-            {showThongBao && <ThongBao show={showThongBao} type={"warning"} title={"Chức năng đang hoàn thiện"} message={"Chức năng xem chung với bạn bè đang được đội ngũ Giền Phim phát triển, xin vui lòng đợi."} onClose={() => setShowThongBao(false)} />}
+                {showThongBao && <ThongBao show={showThongBao} type={"warning"} title={"Chức năng đang hoàn thiện"} message={"Chức năng xem chung với bạn bè đang được đội ngũ Giền Phim phát triển, xin vui lòng đợi."} onClose={() => setShowThongBao(false)} />}
+            </>
+        )}
+            <ExpandBox
+                open={showDesc}
+                title={dataPhim.tenP}
+                onClose={() => setShowDesc(false)}
+            >
+                <p>{dataPhim.moTaP}</p>
+            </ExpandBox>
         </>
     );
 }

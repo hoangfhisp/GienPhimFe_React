@@ -248,3 +248,13 @@
     margin-right: 0;
   }
 }
+
+.phim-description.clickable {
+    cursor: pointer;
+}
+
+.phim-description.clickable::after {
+    content: " Xem thêm";
+    color: #4ade80;
+    font-weight: 500;
+}

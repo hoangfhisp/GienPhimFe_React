@@ -270,3 +270,15 @@ hr {
     border: 0;
     border-top: 2px solid rgb(255, 255, 255);
 }
+
+.loader-overlat-wrapper {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 1);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 9999;
+}

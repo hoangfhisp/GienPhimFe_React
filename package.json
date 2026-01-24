@@ -37,6 +37,7 @@
         "react-scripts": "5.0.1",
         "react-select": "^5.10.1",
         "recharts": "^2.15.3",
+        "styled-components": "^6.3.8",
         "swiper": "^11.2.6",
         "video.js": "^8.23.4",
         "web-vitals": "^2.1.4",

@@ -9,15 +9,19 @@ import WrapperPopper from "../../Popper/Wrapper.jsx";
 import * as phimServices from "../../../services/User/FilmService.jsx"
 import * as searchServices from '../../../services/User/SearchSevice.jsx'
 import { formatDateTimeVN, formatURLImage } from "../../../untils/Format.jsx";
+import useIsMobile from "../../../hooks/useIsMobile.jsx";
+import AnimeSkeleton from "./AnimeSkeleton.jsx";
 
 
 export default function AnimeList({ userId, timtheo, page, limit, webpage, onPagination, typePhim }) {
     const [listPhimResult, setListPhimResult] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = useIsMobile();
     useEffect(() => {
         const fetchApi = async () => {
             try {
+                setLoading(true);
                 let result;
                 const data = {
                     ngonNguSlug: null,
@@ -47,29 +51,37 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
                             }
                         };
                     }
-                } else if (webpage === "SearchPhim") { // trang search
+                }
+                else if (webpage === "SearchPhim") { // trang search
 
                     if (typePhim === "TheLoai") {
                         data.theLoaiSlug = timtheo;
                         result = await searchServices.searchFilterPhims(data, page, limit)
                     }
+
                     else if (typePhim === "QuocGia") {
                         data.quocGiaSlug = timtheo;
                         result = await searchServices.searchFilterPhims(data, page, limit)
                     }
 
                     else if (typePhim === "DangPhim") {
-
                         result = await searchServices.searchDangPhimSlug(timtheo, page, limit);
-                    } else if (typePhim === "TopPhim") {
+                    }
+
+                    else if (typePhim === "TopPhim") {
                         result = await searchServices.searchTopPhim(page, limit);
-                    } else if (typePhim === "SearchNamePhim") {
+                    }
+
+                    else if (typePhim === "SearchNamePhim") {
                         result = await searchServices.searchphim(timtheo);
                     }
                 }
                 else {
                     result = await phimServices.listphim(page, limit);
                 }
+
+                if (!result || !result.data) return;
+
                 if (result && result.data) {
                     setListPhimResult(result.data);
                     onPagination(result.pagination);
@@ -77,6 +89,9 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
 
             } catch (error) {
                 console.error("Lỗi khi tải danh sách phim:", error);
+                return { data: [], pagination: null };
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -85,7 +100,10 @@ export default function AnimeList({ userId, timtheo, page, limit, webpage, onPag
 
     return (
         <>
-            {listPhimResult.length > 0 ? (
+            {/* 1️⃣ LOADING */}
+            {loading && <AnimeSkeleton count={limit} />}
+
+            {!loading && listPhimResult.length > 0 ? (
                 <>
                     <div className="anime-list" id="anime-list">
                         {listPhimResult.map((result) => {

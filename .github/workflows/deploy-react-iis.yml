@@ -32,13 +32,17 @@ jobs:
           $env:CI="false"
           npm run build
 
-      - name: Deploy to IIS (Web Deploy)
+      - name: Deploy to IIS via MSDeploy (keep web.config)
         shell: pwsh
         run: |
+          $source = "contentPath=$PWD\build"
+          $dest = "contentPath=${{ secrets.IIS_SITE_PATH_FE }},computerName=https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd,userName=${{ secrets.IIS_USERNAME }},password=${{ secrets.IIS_PASSWORD }},authType=Basic"
+
           & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
-            -verb:sync `
-            -source:contentPath="build" `
-            -dest:contentPath="GienPhimClient",computerName="https://${{ secrets.IIS_SERVER }}:8172/msdeploy.axd", `
-            userName="${{ secrets.IIS_USERNAME }}",password="${{ secrets.IIS_PASSWORD }}",authType=Basic `
-            -skip:objectName=filePath,absolutePath=web.config `
-            -allowUntrusted
+          -verb:sync `
+          -source:$source `
+          -dest:$dest `
+          -enableRule:DoNotDeleteRule=false `
+          -skip:objectName=filePath,absolutePath=\\web.config$ `
+          -allowUntrusted
+

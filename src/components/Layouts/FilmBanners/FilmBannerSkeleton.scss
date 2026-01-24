@@ -1,0 +1,141 @@
+/* ===== SKELETON BANNER ===== */
+.banner.skeleton {
+    background: #1f1f1f;
+    position: relative;
+    overflow: hidden;
+}
+
+/* shimmer chạy ngang */
+.banner.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.06) 50%,
+            transparent 100%);
+    animation: shimmer-banner 1.4s infinite;
+    pointer-events: none;
+}
+
+/* overlay giữ nguyên */
+.banner.skeleton .overlay-banner {
+    background: linear-gradient(to right,
+            rgba(0, 0, 0, 0.85) 30%,
+            rgba(0, 0, 0, 0.35) 75%);
+}
+
+/* ===== TEXT BLOCK ===== */
+.banner.skeleton .content-banner * {
+    color: transparent !important;
+}
+
+/* block nền chung */
+.banner.skeleton .content-banner>* {
+    background: #3a3a3a;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* shimmer từng block */
+.banner.skeleton .content-banner>*::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            transparent 100%);
+    animation: shimmer-text 1.4s infinite;
+}
+
+/* title */
+.banner.skeleton .title-banner {
+    width: 65%;
+    height: 28px;
+    margin-bottom: 10px;
+}
+
+/* h7 */
+.banner.skeleton h7 {
+    display: block;
+    width: 40%;
+    height: 16px;
+    margin-bottom: 12px;
+}
+
+/* hr */
+.banner.skeleton hr {
+    height: 8px;
+    border: none;
+    margin: 10px 0;
+}
+
+/* info */
+.banner.skeleton .info-banner span {
+    width: 70px;
+    height: 20px;
+}
+
+/* description */
+.banner.skeleton p {
+    height: 48px;
+    margin: 12px 0;
+}
+
+/* studio */
+.banner.skeleton .genres-banner {
+    display: flex;
+    justify-content: center;
+    /* 👈 căn giữa ngang */
+    align-items: center;
+    flex-wrap: nowrap;
+    /* 👈 giữ 1 hàng */
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    min-height: 26px;
+    background: transparent !important;
+}
+
+
+/* genres */
+.banner.skeleton .genres-banner span {
+    width: 60px;
+    height: 20px;
+    border-radius: 4px;
+    background: #3a3a3a;
+}
+
+
+
+/* button */
+.banner.skeleton .watch-btn {
+    width: 160px;
+    height: 40px;
+    border-radius: 15px;
+    margin-top: 14px;
+    pointer-events: none;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes shimmer-banner {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes shimmer-text {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
