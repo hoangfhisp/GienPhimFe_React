@@ -1,0 +1,121 @@
+.expandbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+}
+
+.expandbox {
+    background: #121212;
+    color: #fff;
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: expandFade 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.expandbox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #161616;
+    min-height: 52px; // khóa chiều cao header
+
+    h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        color: #fff;
+    }
+}
+
+.expandbox-close-btn {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    user-select: none;
+
+    font-size: 18px;
+    line-height: 1;
+    border-radius: 20%;
+    background: rgba(255, 0, 0, 0.7);
+
+    opacity: 0.85;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+
+    &:hover {
+        opacity: 1;
+        transform: scale(1.1); // giảm nhẹ
+        background-color: red;
+    }
+}
+
+
+.expandbox-content {
+    padding: 18px;
+    line-height: 1.7;
+    font-size: 15px;
+    color: #ddd;
+    overflow-y: auto;
+
+    /* scrollbar đẹp */
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+/* Animation */
+@keyframes expandFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile tối ưu */
+@media (max-width: 576px) {
+    .expandbox {
+        max-height: 90vh;
+        border-radius: 14px;
+    }
+
+    .expandbox-header h3 {
+        font-size: 16px;
+    }
+
+    .expandbox-content {
+        font-size: 14px;
+        padding: 16px;
+    }
+}

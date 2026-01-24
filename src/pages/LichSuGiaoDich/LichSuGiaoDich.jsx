@@ -6,7 +6,7 @@ import LoginContainer from '../../components/Login-container/Login-container';
 import * as authHook from "../../hooks/auth.jsx";
 import * as userService from '../../services/User/UserService.jsx';
 import '../../components/Login-container/Login.scss';
-import RenderPagination from '../../components/Commons/RenderPagination.jsx';
+import RenderPagination from '../../components/Commons/RenderPagination/RenderPagination.jsx';
 import './LichSuGiaoDich.scss';
 
 export default function LichSuGiaoDich() {
@@ -61,7 +61,7 @@ export default function LichSuGiaoDich() {
     };
 
 
-    
+
     const columns = [
         { header: "Loại Giao Dịch", accessor: "loaiGiaoDich" },
         { header: "Mô Tả", accessor: "moTa" },

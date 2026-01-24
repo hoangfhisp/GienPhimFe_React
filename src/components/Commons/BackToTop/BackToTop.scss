@@ -1,0 +1,109 @@
+.button-back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 999;
+
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgb(20, 20, 20);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: visible;
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        width 0.3s ease,
+        border-radius 0.3s ease,
+        background-color 0.3s ease;
+
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+
+.button-back-to-top::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    bottom: -5px;
+    right: -4.5px;
+    border-radius: inherit;
+    border: 4px solid rgba(255, 59, 59, 0.65);
+    pointer-events: none;
+}
+
+.button-back-to-top.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.svgIcon {
+    width: 14px;
+    transition: transform 0.3s ease;
+}
+
+.svgIcon path {
+    fill: white;
+}
+
+
+/* DESKTOP ONLY (hover)  */
+@media (hover: hover) and (pointer: fine) {
+    .button-back-to-top:hover {
+        width: 140px;
+        border-radius: 50px;
+        background-color: rgba(255, 59, 59, 0.85);
+    }
+
+    .button-back-to-top:hover .svgIcon {
+        transform: translateY(-200%);
+        margin-bottom: 8px;
+    }
+
+    .button-back-to-top::before {
+        content: "Back to Top";
+        position: absolute;
+        color: white;
+        font-size: 0;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .button-back-to-top:hover::before {
+        font-size: 13px;
+        opacity: 1;
+    }
+}
+
+
+/* MOBILE / TOUCH ONLY  */
+@media (hover: none) {
+    .button-back-to-top {
+        width: 50px !important;
+        border-radius: 50% !important;
+    }
+
+    .button-back-to-top::before {
+        display: none !important;
+    }
+
+    .button-back-to-top .svgIcon {
+        transform: none !important;
+    }
+
+    @media (max-width: 768px) {
+        .button-back-to-top {
+            bottom: 80px;
+            right: 16px;
+        }
+    }
+}
+

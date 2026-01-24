@@ -3,26 +3,26 @@ import BoxTitle from "../../components/Commons/BoxTitle";
 import AnimeList from "../../components/Layouts/AnimeList/AnimeList";
 import Notice from "../../components/Layouts/Notice/Notice";
 import { useState } from "react";
-import RenderPagination from "../../components/Commons/RenderPagination";
+import RenderPagination from "../../components/Commons/RenderPagination/RenderPagination";
 
-function SearchPhim(){
-    const {type,timtheo} = useParams();
+function SearchPhim() {
+    const { type, timtheo } = useParams();
 
-    const [pagination,setPagination] = useState([]);
-    const [currentPage,setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
 
-    return(
+    return (
         <>
             <div className="container-main">
-                <Notice/>
+                <Notice />
 
                 <BoxTitle>Bạn Đang tìm phim theo: {timtheo}</BoxTitle>
                 <br /> <hr />
-                
-                <AnimeList typePhim = {type} timtheo = {timtheo} page={currentPage} limit={18} webpage={'SearchPhim'} onPagination={setPagination}/>
-                
-                <RenderPagination data={pagination} onPageChange={setCurrentPage}/>
+
+                <AnimeList typePhim={type} timtheo={timtheo} page={currentPage} limit={18} webpage={'SearchPhim'} onPagination={setPagination} />
+
+                <RenderPagination data={pagination} onPageChange={setCurrentPage} />
             </div>
         </>
     );
