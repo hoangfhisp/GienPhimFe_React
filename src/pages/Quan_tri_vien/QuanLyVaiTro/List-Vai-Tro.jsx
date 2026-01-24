@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
 import ListRole from '../../../components/Layouts/AdminList/ListRole';
 import Search from '../../../components/Layouts/SearchAdmin/Search';
-import RenderPagination from '../../../components/Commons/RenderPagination';
+import RenderPagination from '../../../components/Commons/RenderPagination/RenderPagination';
 
 export default function RoleList() {
     const [paginations, setPaginations] = useState([]);

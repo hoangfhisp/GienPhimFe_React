@@ -3,7 +3,7 @@ import * as movieServices from "../../../services/Admin/MovieService";
 // bạn để đúng file service bạn đang dùng (MembershipPlan/PlanOption)
 
 import DataTable from "../DataTable/DataTable";
-import RenderPagination from "../../Commons/RenderPagination";
+import RenderPagination from "../../Commons/RenderPagination/RenderPagination";
 import ActionCard from "../ActionCard/ActionCard";
 import Modal from "../../Modal/Modal";
 import ConfirmModal from "../../Modal/ConfirmModal";

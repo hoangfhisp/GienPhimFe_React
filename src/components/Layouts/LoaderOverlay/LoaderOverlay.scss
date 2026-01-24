@@ -1,0 +1,55 @@
+.loader-overlay {
+    position: fixed; // 👈 che toàn màn hình
+    inset: 0;
+    background: #434242;
+    backdrop-filter: blur(2px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 9999;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column; // 👈 loader trên, chữ dưới
+    align-items: center;
+}
+
+.loader-name {
+    margin-top: 12px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff0000; // 🔥 đỏ thương hiệu
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.loader-name {
+    animation: pulse 1.5s infinite;
+}
+
+.loader-name {
+    text-shadow: 0 0 10px rgba(255, 42, 42, 0.6);
+}
+
+@media (max-width: 768px) {
+    .loader-name {
+        font-size: 22px;
+    }
+}

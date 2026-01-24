@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminBoard from '../../../components/Layouts/Admin-board/Admin-board';
 import ListLichSuGiaoDich from '../../../components/Layouts/AdminList/ListLichSuGiaoDich';
 import Search from '../../../components/Layouts/SearchAdmin/Search';
-import RenderPagination from '../../../components/Commons/RenderPagination';
+import RenderPagination from '../../../components/Commons/RenderPagination/RenderPagination';
 
 export default function LichSuGiaoDichList() {
     const [paginations, setPaginations] = useState([]);

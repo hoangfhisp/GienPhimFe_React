@@ -7,11 +7,18 @@ import React from 'react';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
+if (process.env.NODE_ENV === "development") {
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+} else {
+  root.render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
-);
-
+  );
+}
