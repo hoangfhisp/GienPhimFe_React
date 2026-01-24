@@ -1,5 +1,4 @@
-
-
+import "./RenderPagination.scss";
 function RenderPagination({ data, onPageChange }) {
 
     const handlePageChange = (newPage) => {
@@ -20,7 +19,7 @@ function RenderPagination({ data, onPageChange }) {
         pages.push(
             <button
                 key={page}
-                className={`page-btn ${currentPage === page ? 'active' : ''}`}
+                className={`page-btn-pagination ${currentPage === page ? 'active' : ''}`}
                 onClick={() => handlePageChange(page)}
             >
                 {page}
@@ -65,9 +64,9 @@ function RenderPagination({ data, onPageChange }) {
     }
 
     return (
-        <div className="table-pagination">
+        <div className="table-page-pagination">
             <button
-                className="page-btn"
+                className="page-btn-pagination"
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
             >
@@ -75,7 +74,7 @@ function RenderPagination({ data, onPageChange }) {
             </button>
             {pages}
             <button
-                className="page-btn"
+                className="page-btn-pagination"
                 disabled={currentPage === endPage}
                 onClick={() => handlePageChange(currentPage + 1)}
             >

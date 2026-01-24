@@ -1,0 +1,120 @@
+/* ===== BANNER SKELETON ===== */
+.banner-phim.skeleton {
+  background: #111;
+}
+
+/* POSTER */
+.skeleton-poster {
+  width: 200px;
+  height: 300px;
+  border-radius: 15px;
+  background: linear-gradient(
+    90deg,
+    #333 25%,
+    #444 37%,
+    #333 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* BUTTON */
+.skeleton-btn {
+  margin-top: 12px;
+  width: 200px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #333 25%,
+    #444 37%,
+    #333 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* TITLE */
+.skeleton-title {
+  width: 300px;
+  height: 38px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, #333 25%, #444 37%, #333 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* SUBTITLE */
+.skeleton-subtitle {
+  width: 220px;
+  height: 18px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  background: linear-gradient(90deg, #333 25%, #444 37%, #333 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* DESCRIPTION */
+.skeleton-desc div {
+  width: 420px;
+  height: 14px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #333 25%, #444 37%, #333 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* RATING */
+.skeleton-rating {
+  width: 180px;
+  height: 20px;
+  margin-top: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #333 25%, #444 37%, #333 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* STATS */
+.skeleton-stats {
+  width: 300px;
+  height: 16px;
+  margin-top: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #333 25%, #444 37%, #333 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .skeleton-poster {
+    width: 160px;
+    height: 240px;
+  }
+
+  .skeleton-btn {
+    width: 180px;
+  }
+
+  .skeleton-title {
+    width: 200px;
+    height: 26px;
+  }
+
+  .skeleton-desc div {
+    width: 90%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}

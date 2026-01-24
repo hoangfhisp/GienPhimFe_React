@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import * as botServices from "../../../services/Admin/MovieService"; // sửa lại
 
-import RenderPagination from "../../Commons/RenderPagination";
+import RenderPagination from "../../Commons/RenderPagination/RenderPagination";
 import DataTable from "../DataTable/DataTable";
 
 import BotConfigCard from "../BotConfigCard/BotConfigCard";

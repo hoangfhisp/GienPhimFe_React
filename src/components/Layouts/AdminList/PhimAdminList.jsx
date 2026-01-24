@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import * as movieServices from "../../../services/Admin/MovieService";
 import DataTable from "../DataTable/DataTable";
-import RenderPagination from "../../Commons/RenderPagination";
+import RenderPagination from "../../Commons/RenderPagination/RenderPagination";
 import { resolveImageUrl } from "../../../untils/media";
 import ActionCard from "../ActionCard/ActionCard";
 import Modal from "../../Modal/Modal";
