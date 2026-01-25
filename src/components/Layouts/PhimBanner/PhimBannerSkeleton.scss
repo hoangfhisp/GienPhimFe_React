@@ -8,12 +8,10 @@
   width: 200px;
   height: 300px;
   border-radius: 15px;
-  background: linear-gradient(
-    90deg,
-    #333 25%,
-    #444 37%,
-    #333 63%
-  );
+  background: linear-gradient(90deg,
+      #333 25%,
+      #444 37%,
+      #333 63%);
   background-size: 400% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -24,12 +22,10 @@
   width: 200px;
   height: 36px;
   border-radius: 6px;
-  background: linear-gradient(
-    90deg,
-    #333 25%,
-    #444 37%,
-    #333 63%
-  );
+  background: linear-gradient(90deg,
+      #333 25%,
+      #444 37%,
+      #333 63%);
   background-size: 400% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -91,22 +87,97 @@
 
 /* MOBILE */
 @media (max-width: 768px) {
+
+  .banner-phim.skeleton .background-overlay {
+    border-radius: 0;
+  }
+
+  /* ===== CONTAINER ===== */
+  .banner-phim.skeleton .container-phim {
+    padding: 20px 16px 30px;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+  }
+
+  /* ===== LAYOUT CHÍNH ===== */
+  .banner-phim.skeleton .phim-info-banner {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* ===== POSTER ===== */
+  .banner-phim.skeleton .phim-poster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .skeleton-poster {
     width: 160px;
     height: 240px;
+    border-radius: 12px;
   }
 
   .skeleton-btn {
-    width: 180px;
+    margin-top: 12px;
+    width: 100%;
+    max-width: 180px;
+    height: 36px;
+  }
+
+  /* ===== DETAILS ===== */
+  .banner-phim.skeleton .phim-details {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .skeleton-title {
-    width: 200px;
+    width: 70%;
+    max-width: 260px;
     height: 26px;
+  }
+
+  .skeleton-subtitle {
+    width: 55%;
+    max-width: 200px;
+    height: 16px;
+    margin-bottom: 10px;
+  }
+
+  /* ===== DESCRIPTION ===== */
+  .skeleton-desc {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .skeleton-desc div {
     width: 90%;
+    max-width: 320px;
+    height: 14px;
+    margin-bottom: 6px;
+  }
+
+  /* ===== RATING ===== */
+  .skeleton-rating {
+    width: 140px;
+    height: 18px;
+    margin-top: 10px;
+  }
+
+  /* ===== STATS ===== */
+  .skeleton-stats {
+    width: 200px;
+    height: 14px;
+    margin-top: 8px;
   }
 }
 
@@ -114,6 +185,7 @@
   0% {
     background-position: -400px 0;
   }
+
   100% {
     background-position: 400px 0;
   }

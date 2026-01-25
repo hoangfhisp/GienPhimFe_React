@@ -36,9 +36,9 @@ export default function Footer() {
           <div className="col-12 col-md-4 text-center text-md-end">
             <h6 className="footer-title">Kết nối</h6>
             <div className="footer-social">
-              <a href="/" aria-label="Facebook"><i className="fab fa-facebook-f" /></a>
+              <a href="https://www.facebook.com/profile.php?id=61587108330332" aria-label="Facebook"><i className="fab fa-facebook-f" /></a>
               <a href="/" aria-label="Twitter"><i className="fab fa-twitter" /></a>
-              <a href="/" aria-label="Instagram"><i className="fab fa-instagram" /></a>
+              <a href="https://www.instagram.com/gienphimmanager/" aria-label="Instagram"><i className="fab fa-instagram" /></a>
               <a href="/" aria-label="Youtube"><i className="fab fa-youtube" /></a>
             </div>
           </div>

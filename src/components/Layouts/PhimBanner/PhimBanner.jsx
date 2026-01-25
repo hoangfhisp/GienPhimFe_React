@@ -12,6 +12,7 @@ import useScrollTo from '../../../hooks/useScrollTo.jsx';
 import useIsMobile from '../../../hooks/useIsMobile.jsx';
 import PhimBannerSkeleton from './PhimBannerSkeleton.jsx';
 import ExpandBox from '../../Commons/ExpandBox/ExpandBox.jsx';
+import { RatingStar } from '../../Commons/RatingStar/RatingStar.jsx';
 
 function PhimBanner({ id }) {
     const [rating, setRating] = useState("0");
@@ -31,16 +32,18 @@ function PhimBanner({ id }) {
 
     const userId = authHook.getUserIdFromToken();
     const { scrollToRef } = useScrollTo();
-    const isMobile = useIsMobile();
+
+    const scrollTarget = location.state?.scrollTarget;
 
     useEffect(() => {
-        if (!isMobile) return;
-        if (location.state?.scroll === "banner-phim" && bannerPhimRef.current) {
-            setTimeout(() => {
-                scrollToRef(bannerPhimRef, 80);
-            }, 100);
-        }
-    }, [isMobile, location.state]);
+        if (!dataPhim?.phimId) return;
+        if (scrollTarget !== "banner-phim") return;
+
+        // Sử dụng requestAnimationFrame để đảm bảo DOM đã được cập nhật
+        requestAnimationFrame(() => {
+            scrollToRef(bannerPhimRef, 80);
+        });
+    }, [scrollTarget, dataPhim]);
 
     useEffect(() => {
         if (descRef.current) {
@@ -49,6 +52,7 @@ function PhimBanner({ id }) {
             );
         }
     }, [dataPhim]);
+
 
     useEffect(() => {
         if (id == null) {
@@ -134,7 +138,8 @@ function PhimBanner({ id }) {
                             </p>
                             <div className="rating">
                                 <span className="rating-score">{rating}</span>
-                                <span className="stars">☆☆☆☆☆</span>
+                                <RatingStar  score={rating}/>
+
                                 <span className="reviews"> {`( ${dataPhim.luotThichP + dataPhim.luotDislikeP} )`} Đánh giá</span>
                             </div>
                             <div className="phim-stats">
