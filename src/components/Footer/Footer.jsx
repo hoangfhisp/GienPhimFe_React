@@ -15,7 +15,7 @@ export default function Footer() {
             <p className="footer-desc">
               Nền tảng web xem phim trực tuyến chất lượng cao, cập nhật nhanh, giúp tăng
               trải nghiệm sống động trên mọi thiết bị.
-              <hr/>
+              <hr />
               Có nhiều phim có nội dung 18+, vui lòng cân nhắc trước khi xem.
             </p>
             <br />
@@ -36,10 +36,10 @@ export default function Footer() {
           <div className="col-12 col-md-4 text-center text-md-end">
             <h6 className="footer-title">Kết nối</h6>
             <div className="footer-social">
-              <a href="https://www.facebook.com/profile.php?id=61587108330332" aria-label="Facebook"><i className="fab fa-facebook-f" /></a>
-              <a href="/" aria-label="Twitter"><i className="fab fa-twitter" /></a>
-              <a href="https://www.instagram.com/gienphimmanager/" aria-label="Instagram"><i className="fab fa-instagram" /></a>
-              <a href="/" aria-label="Youtube"><i className="fab fa-youtube" /></a>
+              <a target="_blank" href="https://www.facebook.com/profile.php?id=61587108330332" aria-label="Facebook"><i className="fab fa-facebook-f" /></a>
+              <a target="_blank" href="https://x.com/GienPhim" aria-label="Twitter"><i className="fa-brands fa-x-twitter"></i></a>
+              <a target="_blank" href="https://www.instagram.com/gienphimmanager/" aria-label="Instagram"><i className="fab fa-instagram" /></a>
+              <a target="_blank" href="https://www.youtube.com/@Gien-Phim" aria-label="Youtube"><i className="fab fa-youtube" /></a>
             </div>
           </div>
 

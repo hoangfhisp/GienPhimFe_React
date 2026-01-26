@@ -3,6 +3,7 @@
     border-radius: 14px;
     box-shadow: 0px 0px 32px rgba(136, 152, 170, 0.15);
     overflow: hidden; // bo góc table
+    overflow-x: auto;
 }
 
 .DataTable__table {
@@ -16,6 +17,7 @@
     padding: 12px 14px;
     font-size: 18px;
     color: #525f7f;
+    white-space: nowrap;
 }
 
 .DataTable__th {
@@ -133,4 +135,26 @@
 
 .DataTable__tr--active {
     background: rgba(0, 0, 0, 0.03);
+}
+
+@media (max-width: 768px) {
+    .DataTable {
+        border-radius: 10px;
+    }
+
+    .DataTable__th,
+    .DataTable__td {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .DataTable__th--actions,
+    .DataTable__td--actions {
+        width: 120px;
+    }
+
+    .DataTable__action {
+        width: 30px;
+        height: 30px;
+    }
 }
