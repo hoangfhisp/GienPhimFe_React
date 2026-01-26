@@ -43,7 +43,7 @@ function FilmVideo({ id, tap, userId }) {
 
     // Cuộn đến video khi thay đổi tập
     useEffect(() => {
-        if (location.state?.scroll === "video-container") {
+        if (location.state?.scrollTarget === "video-container") {
             setTimeout(() => {
                 scrollToRef(videoContainerRef, 80);
             }, 10);

@@ -1,5 +1,6 @@
 import "./Sidebar.scss";
 import { NavLink, useNavigate } from "react-router-dom";
+import avatar from "../../../assets/img/LogoDefaultUser.png";
 import {
     LayoutDashboard,
     Globe,
@@ -17,6 +18,7 @@ import {
     Home,
     LogOut,
 } from "lucide-react";
+import { formatURLImage } from "../../../untils/Format";
 
 const menus = [
     // { id: "tong-quan", label: "Thông tin", icon: LayoutDashboard, to: "/admin/Tong-Quan" },
@@ -34,36 +36,44 @@ const menus = [
     { id: "bot", label: "Bot", icon: Bot, to: "/admin/Bot" },
 ];
 
-export default function Sidebar({ onlogins }) {
+export default function Sidebar({ onlogins, dataUser, onClose }) {
     const navigate = useNavigate();
-
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("rf_token");
         onlogins?.(false);
         navigate("/login");
-    };
 
+    };
     return (
         <aside className="Sidebar">
             {/* LOGO */}
             <div
                 className="Sidebar__logo"
-                style={{ cursor: "pointer" }}
                 onClick={() => navigate("/home")}
             >
                 <img src="/images/logo-gienphimvuong-3.png" alt="GienPhim" />
+            </div>
+
+            {/* USER INFO */}
+            <div className="Sidebar__user">
+                <img
+                    className="Sidebar__avatar"
+                    src={formatURLImage(dataUser?.avatarND) ?? avatar}
+                    alt="avatar"
+                />
+                <div className="Sidebar__email">{dataUser?.email}</div>
             </div>
 
             {/* MENU */}
             <nav className="Sidebar__nav">
                 {menus.map((m) => {
                     const Icon = m.icon;
-
                     return (
                         <NavLink
                             key={m.id}
                             to={m.to}
+                            onClick={onClose}   // 👈 QUAN TRỌNG
                             className={({ isActive }) =>
                                 `Sidebar__item ${isActive ? "Sidebar__item--active" : ""}`
                             }

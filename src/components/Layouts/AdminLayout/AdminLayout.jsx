@@ -1,38 +1,70 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { decodeToken } from "../../../hooks/auth";
+import { decodeToken, getUserIdFromToken } from "../../../hooks/auth";
 import Sidebar from "../Sidebar/Sidebar";
 import SearchExpand from "../SearchExpand/SearchExpand";
 import adminRouteTitles from "./adminRouteTitles";
+import * as authServices from "../../../services/Admin/AuthenticationService.jsx";
 
 import "./AdminLayout.scss";
+import { SwitchMenu } from "../../Commons/SwithMenu/SwithMenu";
+import useIsMobile from "../../../hooks/useIsMobile";
 
 export default function AdminLayout() {
     const [q, setQ] = useState("");
-    const location = useLocation();
+    const [sidebarOpen, setSidebarOpen] = useState(false); // 👈 STATE
+    const [isLogin, setIsLogin] = useState(false);
+    const [dataUser, setDataUser] = useState([]);
 
+    const location = useLocation();
+    const isMobile = useIsMobile();
     const title = useMemo(() => {
-        // fallback nếu chưa map
         return adminRouteTitles[location.pathname] || "BẢNG THÔNG TIN";
     }, [location.pathname]);
 
     const decoded = decodeToken();
-    const email =
-        decoded?.email ||
-        decoded?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"];
+    const userId = getUserIdFromToken();
+    useEffect(() => {
+        if (!userId) {
+            setIsLogin(false);
+            return;
+        }
+        setIsLogin(true);
 
+        const fetchApi = async () => {
+            var result = await authServices.getUserById(userId);
+            setDataUser(result.data);
+        }
+        fetchApi();
+
+    }, [userId]);
     return (
-        <div className="AdminLayout">
-            <Sidebar />
-
+        <div className={`AdminLayout ${sidebarOpen ? "sidebar-open" : ""}`}>
+            <Sidebar onClose={() => setSidebarOpen(false)} dataUser={dataUser} />
+            {sidebarOpen && (
+                <div
+                    className="SidebarOverlay"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
             <div className="AdminLayout__main">
                 <div className="BackgroundHeader" />
 
                 <div className="NavBar">
-                    {/* Title giữa header */}
-                    <div className="NavBar__title NavBar__title--center">{title}</div>
+                    {/* MENU BUTTON */}
+                    {isMobile && (
+                        <div className="NavBar__menu">
+                            <SwitchMenu
+                                open={sidebarOpen}
+                                onToggle={() => setSidebarOpen(!sidebarOpen)}
+                            />
+                        </div>
+                    )}
 
-                    {/* Search dưới cùng */}
+                    <div className="NavBar__title NavBar__title--center">
+                        {title}
+                    </div>
+
                     <div className="NavBar__searchBottom">
                         <SearchExpand
                             value={q}
@@ -41,16 +73,12 @@ export default function AdminLayout() {
                                 window.dispatchEvent(
                                     new CustomEvent("admin-search", { detail: text })
                                 );
+                                setSidebarOpen(false);
                             }}
                         />
                     </div>
-
-                    {/* Admin góc phải trên */}
-                    <div className="NavBar__right">
-                        <div className="NavBar__name">{email || "Admin"}</div>
-                        <img className="NavBar__avatar" src="/images/avataradmin.png" alt="avatar" />
-                    </div>
                 </div>
+
 
                 <div className="AdminLayout__content">
                     <Outlet />

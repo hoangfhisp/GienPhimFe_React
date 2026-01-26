@@ -1,0 +1,59 @@
+.CreateMode {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 0;
+}
+
+.CreateMode .Btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+    /* khoảng cách icon - text */
+    min-height: 52px;
+    /* chuẩn touch target */
+    padding: 14px 20px;
+
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    /* ⭐ FIX LỆCH CHỮ */
+    border-radius: 12px;
+
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .CreateMode {
+        flex-direction: column;
+        gap: 14px;
+        padding: 16px 0;
+    }
+
+    .CreateMode .Btn {
+        width: 100%;
+        min-height: 56px;
+        /* mobile chuẩn */
+        font-size: 17px;
+        border-radius: 14px;
+    }
+}
+
+@media (min-width: 769px) {
+    .CreateMode .Btn {
+        min-width: 260px;
+        min-height: 52px;
+        font-size: 16px;
+    }
+}
+
+.CreateMode .Btn:hover {
+    transform: translateY(-1px);
+}
+
+.CreateMode .Btn:active {
+    transform: scale(0.97);
+}

@@ -121,6 +121,31 @@
     text-align: left;
 }
 
+.Sidebar__user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin: 0 14px 10px;
+
+    background: rgba(94, 114, 228, 0.08);
+    border-radius: 12px;
+}
+
+.Sidebar__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    object-fit: cover;
+}
+
+.Sidebar__email {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5e72e4;
+    word-break: break-all;
+}
+
 /* màu đỏ nhẹ cho nút đăng xuất */
 .Sidebar__item--danger {
     color: #e03131;

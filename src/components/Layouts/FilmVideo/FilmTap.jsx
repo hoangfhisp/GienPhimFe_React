@@ -25,7 +25,7 @@ function FilmTap({ data, children, idphim, slugtap, onSelect,currentType,type })
                         className={`tap ${result.slugTap === slugtap && currentType === type ? 'active' : ''}`}
                         key={result.tapPhimId}
                         onClick={onSelect}
-                        state={{ scroll: "video-container" , scrollTop: false}}
+                        state={{ scrollTarget: "video-container" , scrollTop: false}}
                     >{result.tenTap}</Link>
                 ))}
 
