@@ -1,15 +1,23 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import * as movieServices from "../../../services/Admin/MovieService";
-import DataTable from "../DataTable/DataTable";
-import RenderPagination from "../../Commons/RenderPagination/RenderPagination";
-import { resolveImageUrl } from "../../../untils/media";
-import ActionCard from "../ActionCard/ActionCard";
-import Modal from "../../Modal/Modal";
-import ConfirmModal from "../../Modal/ConfirmModal";
-import PhimForm from "../AdminForms/PhimForm";
-import ImagePreviewModal from "../../Modal/ImagePreviewModal";
+import * as movieServices from "../../../../services/Admin/MovieService";
+import DataTable from "../../DataTable/DataTable";
+import RenderPagination from "../../../Commons/RenderPagination/RenderPagination";
+import { resolveImageUrl } from "../../../../untils/media";
+import ActionCard from "../../ActionCard/ActionCard";
+import Modal from "../../../Modal/Modal";
+import ConfirmModal from "../../../Modal/ConfirmModal";
+import PhimForm from "../../AdminForms/PhimForm";
+import ImagePreviewModal from "../../../Modal/ImagePreviewModal";
+import AddPhimApiForm from "../../AdminForms/AddPhimApiForm/AddPhimApiForm";
+
+import "./PhimAdminList.scss";
+
 
 export default function PhimAdminList() {
+    const CREATE_MODE = {
+        API: "api",
+        MANUAL: "manual",
+    };
     const [rows, setRows] = useState([]);
     const [keyword, setKeyword] = useState("");
     const [paging, setPaging] = useState({ page: 1, limit: 10, last: 1, total: 0 });
@@ -18,6 +26,8 @@ export default function PhimAdminList() {
     const [editing, setEditing] = useState(null); // null=create | object=edit/view
     const [saving, setSaving] = useState(false);
     const [viewMode, setViewMode] = useState(false);
+
+    const [createMode, setCreateMode] = useState(null);
 
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [deleting, setDeleting] = useState(false);
@@ -292,6 +302,7 @@ export default function PhimAdminList() {
     const openCreate = () => {
         setViewMode(false);
         setEditing(null);
+        setCreateMode(null); // reset về chọn mode
         setOpen(true);
     };
 
@@ -384,7 +395,61 @@ export default function PhimAdminList() {
             setSaving(false);
         }
     };
+    function CreateModeSelector({ onSelect }) {
+        return (
+            <div className="CreateMode">
+                <button
+                    className="Btn Btn--primary"
+                    onClick={() => onSelect(CREATE_MODE.API)}
+                >
+                    📡 Lấy phim từ API
+                </button>
 
+                <button
+                    className="Btn Btn--ghost"
+                    onClick={() => onSelect(CREATE_MODE.MANUAL)}
+                >
+                    ✍️ Thêm phim thủ công
+                </button>
+            </div>
+        );
+    }
+    // STEP 1: chọn kiểu thêm phim
+    const renderCreateMode = () => {
+        if (editing || viewMode || createMode !== null) return null;
+
+        return (
+            <div className="CreateMode">
+                <button
+                    className="Btn Btn--primary"
+                    onClick={() => setCreateMode("api")}
+                >
+                    Lấy phim từ API
+                </button>
+
+                <button
+                    className="Btn Btn--ghost"
+                    onClick={() => setCreateMode("manual")}
+                >
+                    Thêm phim thủ công
+                </button>
+            </div>
+        );
+    };
+
+    // STEP 2B: thêm phim từ API
+    const renderAddFromApi = () => {
+        if (createMode !== "api") return null;
+
+        return (
+            <AddPhimApiForm
+                onSuccess={async () => {
+                    closeModal();
+                    await fetchData();
+                }}
+            />
+        );
+    };
     return (
         <>
             <div className="BotConfigTitle"><span>Thông tin chung:</span></div>
@@ -450,22 +515,45 @@ export default function PhimAdminList() {
                 onClose={closeModal}
                 size="lg"
             >
-                <PhimForm
-                    initialValues={editing}
-                    onCancel={closeModal}
-                    onSubmit={handleSubmitForm}
-                    submitText={editing?.phimId ? "Cập nhật" : "Tạo mới"}
-                    loading={saving}
-                    readOnly={viewMode}
-                    hideSubmit={viewMode}
-                    quocGiaOptions={quocGiaOptions}
-                    ngonNguOptions={ngonNguOptions}
-                    theLoaiOptions={theLoaiOptions}
-                    daoDienOptions={daoDienOptions}
-                    dienVienOptions={dienVienOptions}
-                    theTagOptions={theTagOptions}
-                />
+                {renderCreateMode()}
+
+                {createMode === "manual" && (
+                    <PhimForm
+                        initialValues={null}
+                        onCancel={closeModal}
+                        onSubmit={handleSubmitForm}
+                        submitText="Tạo mới"
+                        loading={saving}
+                        quocGiaOptions={quocGiaOptions}
+                        ngonNguOptions={ngonNguOptions}
+                        theLoaiOptions={theLoaiOptions}
+                        daoDienOptions={daoDienOptions}
+                        dienVienOptions={dienVienOptions}
+                        theTagOptions={theTagOptions}
+                    />
+                )}
+
+                {renderAddFromApi()}
+
+                {(editing || viewMode) && (
+                    <PhimForm
+                        initialValues={editing}
+                        onCancel={closeModal}
+                        onSubmit={handleSubmitForm}
+                        submitText={editing?.phimId ? "Cập nhật" : "Tạo mới"}
+                        loading={saving}
+                        readOnly={viewMode}
+                        hideSubmit={viewMode}
+                        quocGiaOptions={quocGiaOptions}
+                        ngonNguOptions={ngonNguOptions}
+                        theLoaiOptions={theLoaiOptions}
+                        daoDienOptions={daoDienOptions}
+                        dienVienOptions={dienVienOptions}
+                        theTagOptions={theTagOptions}
+                    />
+                )}
             </Modal>
+
 
             <ConfirmModal
                 open={confirmOpen}

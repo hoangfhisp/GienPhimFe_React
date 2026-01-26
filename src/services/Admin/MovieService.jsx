@@ -45,9 +45,9 @@ export const searchPhims = async (keyword) => {
 };
 
 // API để nhập dữ liệu từ nguồn ngoài
-export const addMovieFromAPI = (apiLink) => {
-    return request.post("/api/Phim/ImportFromApi", null,
-        { params: { slug: apiLink } },
+export const addMovieFromAPI = (slugNameFilmApi) => {
+    return request.post("/Phim/ImportFromApi", null,
+        { params: { slug: slugNameFilmApi } },
         true
     );
 };

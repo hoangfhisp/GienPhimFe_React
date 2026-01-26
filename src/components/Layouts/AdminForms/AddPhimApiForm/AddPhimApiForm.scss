@@ -1,0 +1,102 @@
+/* Wrapper */
+.ApiAddForm {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Label */
+.ApiAddForm label {
+    display: flex;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: center;
+    color: #333;
+}
+
+/* Input */
+.ApiAddForm input {
+    width: 100%;
+    height: 48px;
+
+    padding: 0 14px;
+    font-size: 15px;
+    line-height: 1;
+
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    outline: none;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ApiAddForm input::placeholder {
+    color: #aaa;
+}
+
+/* Focus input */
+.ApiAddForm input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+/* Button */
+.ApiAddForm .Btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 52px;
+    padding: 14px 20px;
+
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+/* Hover / Active */
+.ApiAddForm .Btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.ApiAddForm .Btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+/* Disabled */
+.ApiAddForm .Btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Message */
+.ApiAddForm p {
+    font-size: 14px;
+    color: #444;
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+    .ApiAddForm {
+        padding: 12px 0;
+    }
+
+    .ApiAddForm input {
+        height: 52px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    .ApiAddForm .Btn {
+        min-height: 56px;
+        font-size: 17px;
+        border-radius: 14px;
+    }
+}

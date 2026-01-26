@@ -9,7 +9,7 @@ import Modal from "../../Modal/Modal";
 import ConfirmModal from "../../Modal/ConfirmModal";
 
 import GoiThanhVienForm from "../AdminForms/GoiThanhVienForm";
-import PlanOptionForm from "../AdminForms/PlanOptionForm";
+import PlanOptionForm from "../AdminForms/PlanOptionForm/PlanOptionForm";
 
 export default function GoiThanhVienAdminList() {
     const [rows, setRows] = useState([]);
