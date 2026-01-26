@@ -41,6 +41,7 @@ function FilmPanel({ data, onSelect, nguoiDungId }) {
         const number = parseInt(parts[1], 10); // Lấy mảng thứ 1 
 
         if (isNaN(number)) {
+            setTapTiep(tap); // Nếu không phải số thì giữ nguyên tập hiện tại
             return;
         }
 
@@ -48,11 +49,11 @@ function FilmPanel({ data, onSelect, nguoiDungId }) {
         const nextSlug = `tap-${String(nextNumber).padStart(2, '0')}`;
 
         if (nextNumber <= dataTap.length) {
-
             setTapTiep(nextSlug);
+        } else {
+            setTapTiep(tap); // Nếu vượt quá thì giữ nguyên tập hiện tại
         }
-
-    }, [tap, data])
+    }, [tap, dataTap])
 
     //Hàm gọi api để check xem user có like hay dislike
     useEffect(() => {
@@ -82,7 +83,9 @@ function FilmPanel({ data, onSelect, nguoiDungId }) {
                     </Link>
                 </>
             )}
-            <Link to={`/Phim/${id}`}>
+            <Link to={`/Phim/${id}`}
+                state={{ scrollTarget: "banner-phim", scrollTop: false }}
+            >
                 <button >📺 Chi tiết phim</button>
             </Link>
 
@@ -93,7 +96,7 @@ function FilmPanel({ data, onSelect, nguoiDungId }) {
             <Link to={'#'} >
                 <button type="button">⬇ Tải về</button>
             </Link>
-            { nguoiDungId &&
+            {nguoiDungId &&
                 <Link to={'/History'} >
                     <button>🕒 Lịch sử xem</button>
                 </Link>

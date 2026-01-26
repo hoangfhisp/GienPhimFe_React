@@ -70,7 +70,7 @@ export default function Header() {
                                 </a>
                                 <ul className="dropdown-menu dropdown-menu-dark dropdown-menu-end ">
                                     {isLogin && <UserLogin data={dataUser} role={roleLogin} onlogins={setIsLogin} />}
-                                    {!isLogin && <UserLogout />}
+                                    {!isLogin && <UserLogout/>}
                                 </ul>
                             </li>
                         </ul>
@@ -136,7 +136,7 @@ export default function Header() {
                                     setShowSidebar={setShowSidebar}
                                 />
                             ) : (
-                                <UserLogout />
+                                <UserLogout setShowSidebar={setShowSidebar} />
                             )}
                         </ul>
                     </li>
@@ -182,7 +182,7 @@ export default function Header() {
     );
 }
 
-function UserLogout(setShowSidebar) {
+function UserLogout({ setShowSidebar }) {
     const closeSidebar = () => {
         if (typeof setShowSidebar === "function") {
             setShowSidebar(false);

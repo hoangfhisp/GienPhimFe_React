@@ -39,7 +39,7 @@ export default function AppRoutes() {
 
     const userId = authHook.getUserIdFromToken();
     const role = authHook.getRolseUserFromToken();
-
+    const isLockFeature = true;
     return (
         <Routes>
             <Route element={<TitleProvider />}>
@@ -103,7 +103,7 @@ export default function AppRoutes() {
                 </Route>
 
                 <Route path="/List-Vai-Tro" element={<RoleList />} /> */}
-                <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />
+                {!isLockFeature && <Route path="/watch-party/:groupId" element={<WatchPartyLayout />} />}
 
                 {/* Router Admin */}
                 <Route element={<AdminGuard />}>

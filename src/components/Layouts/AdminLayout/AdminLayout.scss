@@ -1,13 +1,13 @@
-// AdminLayout.scss
 $sidebarWidth: 250px;
-$headerHeight: 301px;
+$headerHeightDesktop: 301px;
+$headerHeightMobile: 180px;
 
 .AdminLayout {
     min-height: 100vh;
     display: flex;
 }
 
-/* cột bên phải */
+/* MAIN */
 .AdminLayout__main {
     flex: 1;
     min-width: 0;
@@ -15,12 +15,12 @@ $headerHeight: 301px;
     background: #f7fafc;
 }
 
-/* background-header: KHÔNG fixed nữa */
+/* BACKGROUND HEADER */
 .BackgroundHeader {
     position: absolute;
     left: 0;
     right: 0;
-    height: $headerHeight;
+    height: $headerHeightDesktop;
     z-index: 0;
 
     background: linear-gradient(90deg,
@@ -28,74 +28,63 @@ $headerHeight: 301px;
             rgba(247, 110, 110, 1) 100%);
 }
 
-/* nav-bar nằm trên background */
+/* NAV BAR */
 .NavBar {
     position: relative;
     z-index: 1;
 
-    height: $headerHeight;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 24px;
-    margin-top: 24px;
+    height: $headerHeightDesktop;
+    padding: 24px;
     color: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+.NavBar__menu {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1100;
+}
+
+/* TITLE */
 .NavBar__title {
     font-weight: 800;
-    color: #ffffff;
     font-size: 32px;
-    letter-spacing: 0;
-    line-height: normal;
+    text-align: center;
 }
 
 .NavBar__title--center {
-    position: absolute;
-    left: 50%;
-    top: 40%;
-    /* đổi 40% -> 50% nếu bạn muốn đúng giữa tuyệt đối */
-    transform: translate(-50%, -50%);
-    text-align: center;
-    white-space: nowrap;
+    margin-top: 40px;
 }
 
+/* SEARCH */
 .NavBar__searchBottom {
-    position: absolute;
-    left: 50%;
-    bottom: 24px;
-    transform: translateX(-50%);
+    margin-top: auto;
+    margin-bottom: 24px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .NavBar__searchBottom .SearchExpand {
     width: 420px;
-    max-width: 90vw;
+    max-width: 100%;
 }
 
-.NavBar__right {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
+/* RIGHT USER */
 .NavBar__right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    cursor: pointer;
 }
 
 .NavBar__name {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
     font-weight: 700;
-    color: #ffffff;
     font-size: 14px;
-    letter-spacing: 0;
-    line-height: normal;
 }
 
 .NavBar__avatar {
@@ -105,14 +94,135 @@ $headerHeight: 301px;
     object-fit: cover;
 }
 
-/* content: ĐẨY XUỐNG DƯỚI HEADER */
+/* CONTENT */
 .AdminLayout__content {
     position: relative;
     z-index: 1;
-
     padding: 24px;
-
-    /* Kéo content lên để nằm trong vùng header */
     margin-top: -5px;
-    /* chỉnh 120~200 tuỳ bạn thấy đẹp */
+}
+
+/* ================================================= */
+/* ================= MOBILE ======================== */
+/* ================================================= */
+
+@media (max-width: 768px) {
+    .BackgroundHeader {
+        height: $headerHeightMobile;
+    }
+
+    .NavBar {
+        height: $headerHeightMobile;
+        padding: 16px;
+        align-items: stretch;
+    }
+
+    /* TITLE MOBILE */
+    .NavBar__title {
+        font-size: 20px;
+        margin-top: 16px;
+        text-align: center;
+    }
+
+    .NavBar__title--center {
+        position: static;
+        transform: none;
+    }
+
+    /* USER MOBILE */
+    .NavBar__right {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+    }
+
+    .NavBar__name {
+        display: none; // ẩn email cho gọn
+    }
+
+    .NavBar__avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* SEARCH MOBILE */
+    .NavBar__searchBottom {
+        margin-top: 16px;
+        margin-bottom: 0;
+    }
+
+    .NavBar__searchBottom .SearchExpand {
+        width: 100%;
+    }
+
+    /* CONTENT MOBILE */
+    .AdminLayout__content {
+        padding: 12px;
+        margin-top: 0;
+    }
+}
+
+/* ================================================= */
+/* ================= SMALL MOBILE ================== */
+/* ================================================= */
+
+@media (max-width: 480px) {
+    .NavBar__title {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .Sidebar {
+        position: fixed;
+        top: 0;
+        left: -$sidebarWidth;
+        width: $sidebarWidth;
+        height: 100vh;
+
+        background: #ffffff;
+        z-index: 1000;
+
+        overflow-y: auto; // ✅ CHO PHÉP KÉO
+        -webkit-overflow-scrolling: touch; // ✅ mượt iOS
+
+        transition: left 0.3s ease;
+    }
+
+    .AdminLayout.sidebar-open .Sidebar {
+        left: 0;
+    }
+
+    /* 👉 KHI BẬT MENU */
+    .AdminLayout.sidebar-open .Sidebar {
+        left: 0;
+    }
+
+    /* Overlay che nền */
+    @media (max-width: 768px) {
+        .SidebarOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 900;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .NavBar__menu {
+        top: 12px;
+        right: 12px;
+    }
+
+    .toggle {
+        width: 36px;
+        height: 28px;
+    }
+
+    .bars {
+        width: 100%;
+        height: 3px;
+        border-radius: 2px;
+    }
 }

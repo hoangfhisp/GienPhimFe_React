@@ -7,7 +7,7 @@ export default function FilmList({ data, isPhimPage }) {
         <div className="film-item" >
             <Link
                 to={`/Phim/${data.phimId}`}
-                state={isPhimPage ? { scroll: "banner-phim" } : undefined}
+                state={isPhimPage ? { scrollTarget: "banner-phim", scrollTop: false } : undefined}
             >
                 <img src={data.avatarPoster ? formatURLImage(data.avatarPoster) : null} alt={data.tenP} />
                 <p><strong>{data.tenP}</strong></p>
